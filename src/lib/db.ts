@@ -1,19 +1,25 @@
-import { PrismaClient } from '@prisma/client'
-import "server-only"
+import { PrismaClient } from "@prisma/client"
+import { PrismaPg } from "@prisma/adapter-pg"
+import { Pool } from "pg"
 
-declare global {
-  // eslint-disable-next-line no-var, no-unused-vars
-  var cachedPrisma: PrismaClient
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+})
+
+const adapter = new PrismaPg(pool)
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
 }
 
-let prisma: PrismaClient
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient()
-} else {
-  if (!global.cachedPrisma) {
-    global.cachedPrisma = new PrismaClient()
-  }
-  prisma = global.cachedPrisma
-}
+export const db =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    adapter,
+    log:
+      process.env.NODE_ENV === "development"
+        ? ["query", "error", "warn"]
+        : ["error"],
+  })
 
-export const db = prisma
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db

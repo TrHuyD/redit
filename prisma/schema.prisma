@@ -6,14 +6,13 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
+  provider     = "postgresql"
   relationMode = "prisma"
-}
 
+}
 model Account {
   id                String  @id @default(cuid())
-  userId            String
+  userId            String  @unique
   type              String
   provider          String
   providerAccountId String
@@ -41,6 +40,7 @@ model Session {
 model User {
   id            String    @id @default(cuid())
   name          String?
+  username      String?
   email         String?   @unique
   emailVerified DateTime?
 
