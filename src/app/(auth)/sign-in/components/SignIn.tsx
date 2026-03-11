@@ -1,5 +1,5 @@
 'use client'
-import Logo from "@/components/ui/Icons";
+import {Logo} from "@/components/ui/Icons";
 import Link from "next/link";
 import UserAuthForm from "./UserAuthForm";
 

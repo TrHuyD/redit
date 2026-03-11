@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { buttonVariants } from "./Button";
-import Logo from "./Icons";
+import {Logo} from "./Icons";
 import { getAuthSession } from "@/lib/auth";
+import { UserAccountNav } from "./user/UserAccountNav";
 
 const Navbar =async() =>{
 
     const session= await getAuthSession()
+    console.log(session)
     return (<div className="fixed top-0 inset-x-0 h-fit border-b bg-zinc-300 z-[10] py-2">
     <div className="container max-w-7xl h-full  mx-auto flex items-center justify-between gap-2">
     {/* logo */}
@@ -18,7 +20,7 @@ const Navbar =async() =>{
     {/*search bar */}
     {
     session?.user?
-    (<p>You re logged in</p>):
+    (<UserAccountNav user={session.user}/>):
     (<Link href ='/sign-in' className={buttonVariants()}>Sign in</Link>)
     }
     </div>

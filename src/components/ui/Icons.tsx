@@ -1,4 +1,4 @@
-import { Apple } from "lucide-react"
+import { Apple,User  } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 type TSize = "sm" | "md" | "lg"
@@ -11,6 +11,10 @@ const logoSizeMap: Record<TSize, string> = {
   md: "h-8 w-8",
   lg: "h-12 w-12",
 }
-export default function Logo({ size = "md", className }: LogoProps) {
+export function Logo({ size = "md", className }: LogoProps) {
   return <Apple className={cn(logoSizeMap[size], "fill-red-500", className)} />
+}
+
+export function UserLogo({ size = "md", className }: LogoProps) {
+  return <User className={cn(logoSizeMap[size], className)} />
 }
