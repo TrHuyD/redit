@@ -1,4 +1,3 @@
-
 import { getServerSession, NextAuthOptions } from "next-auth"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import GoogleProvider from "next-auth/providers/google"
@@ -26,9 +25,10 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-      // If user just signed in
+      // first login
       if (user) {
         token.id = user.id
+        token.image = user.image
       }
 
       const dbUser = await db.user.findUnique({
@@ -37,17 +37,18 @@ export const authOptions: NextAuthOptions = {
         },
       })
 
-      if (!dbUser) {
-        return token
-      }
+      if (!dbUser) return token
 
+      // create username if missing
       if (!dbUser.username) {
-        await db.user.update({
+        const updatedUser = await db.user.update({
           where: { id: dbUser.id },
           data: {
             username: nanoid(10),
           },
         })
+
+        dbUser.username = updatedUser.username
       }
 
       return {
@@ -55,6 +56,8 @@ export const authOptions: NextAuthOptions = {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
+        image: dbUser.image,
+        username: dbUser.username,
       }
     },
 
@@ -63,14 +66,17 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string
         session.user.name = token.name
         session.user.email = token.email
-        session.user.username=token.username
+        session.user.image = token.image as string
+        session.user.username = token.username as string
       }
 
       return session
     },
-    redirect(){
-        return '/'
-    }
+
+    redirect() {
+      return "/"
+    },
   },
 }
+
 export const getAuthSession = () => getServerSession(authOptions)
