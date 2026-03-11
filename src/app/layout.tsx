@@ -12,13 +12,16 @@ const inter = Inter ( { subsets : ['latin']})
 
 export default function RootLayout({
   children,
+  authModal
 }: {
-  children: React.ReactNode
+  children: React.ReactNode,
+  authModal: React.ReactNode
 }) {
   return (
     <html lang='en' className= {cn('text-slate-900 bg-white antialiased light', inter.className)}>
       <body className ={cn('min-h-screen pt-12 bg-slate-50 antialiased')}>
        <Navbar/>
+       {authModal}
         <div className={cn('container max-w-7xl mx-auto h-full pt-12')}>
           
           {children}
