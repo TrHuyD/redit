@@ -7,9 +7,9 @@ generator client {
 
 datasource db {
   provider     = "postgresql"
-  relationMode = "prisma"
-
+  relationMode = "foreignKeys"
 }
+
 model Account {
   id                String  @id @default(cuid())
   userId            String  @unique
@@ -47,4 +47,98 @@ model User {
   image    String?
   accounts Account[]
   sessions Session[]
+
+  posts        Post[]
+  postVotes    PostVote[]
+  comments     Comment[]
+  CommentVotes CommentVote[]
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  userId      String
+  subredditId String
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subreddit Subreddit @relation(fields: [subredditId], references: [id], onDelete: Cascade)
+
+  @@id([userId, subredditId])
+  @@index([userId])
+}
+
+model Subreddit {
+  id             String   @id @default(cuid())
+  name           String   @unique
+  createdAt      DateTime @default(now())
+  latestUpdateAt DateTime @default(now())
+  posts          Post[]
+
+  subscribers Subscription[]
+}
+
+model Post {
+  id             String   @id @default(cuid())
+  title          String
+  content        Json?
+  createdAt      DateTime @default(now())
+  latestUpdateAt DateTime @default(now())
+
+  subredditId String
+  subreddit   Subreddit @relation(fields: [subredditId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User       @relation(fields: [authorId], references: [id])
+  comments Comment[]
+  votes    PostVote[]
+
+  @@index([title])
+}
+
+model Comment {
+  id             String   @id @default(cuid())
+  content        Json
+  createdAt      DateTime @default(now())
+  latestUpdateAt DateTime @default(now())
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  replyToId String?
+  replyTo   Comment?  @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  replies   Comment[] @relation("ReplyTo")
+
+  votes CommentVote[]
+}
+
+enum VoteType {
+  UPVOTE
+  DOWNVOTE
+}
+
+model PostVote {
+  type VoteType
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@id([postId, userId])
+}
+
+model CommentVote {
+  type VoteType
+
+  commentId String
+  comment   Comment @relation(fields: [commentId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@id([commentId, userId])
 }
