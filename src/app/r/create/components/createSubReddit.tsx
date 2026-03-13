@@ -10,12 +10,10 @@ import { useRouter } from "next/navigation"
 
 export default function CreateSubReddit() {
   const [inputName, setInputName] = useState("")
-  const router = useRouter()
 
   const { mutate: createCommunity, isLoading } = useMutation({
     mutationFn: withToast(createSubreddit),
     onSuccess: () => {
-      router.back()
     }
   })
 
