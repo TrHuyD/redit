@@ -19,7 +19,6 @@ export default function UserAuthForm({className,...props}: UserAuthFormProps)
         }
         catch (error)
         {
-            console.log("b")
             toast.error("There was a problem", {
                 description: "Your changes were not saved",
               })

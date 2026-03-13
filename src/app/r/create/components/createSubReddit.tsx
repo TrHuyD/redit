@@ -6,7 +6,8 @@ import { useState } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { createSubreddit } from "@/lib/api/Subreddit/Create"
 import { withToast } from "@/lib/withToast"
-import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+// import { useRouter } from "next/navigation"
 
 export default function CreateSubReddit() {
   const [inputName, setInputName] = useState("")
@@ -14,6 +15,7 @@ export default function CreateSubReddit() {
   const { mutate: createCommunity, isLoading } = useMutation({
     mutationFn: withToast(createSubreddit),
     onSuccess: () => {
+        toast.success("Community created successfully! fowarding to community page")
     }
   })
 

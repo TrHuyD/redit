@@ -15,12 +15,13 @@ export const POST = withErrorHandler(withAuth(async (req: Request) => {
     }
     else
     {
+       
         if(result.error === "SUBREDDIT_EXISTS"){
-            return new Response("Subreddit already exists", { status: 400 })
+            return Response.json({ error:"Subreddit already exists" }, { status: 400 })
         }
         else
         {
-            return new Response("Internal Server Error", { status: 500 })
+            return  Response.json({ error:"Internal error" }, { status: 500 })
         }
     }
 }
