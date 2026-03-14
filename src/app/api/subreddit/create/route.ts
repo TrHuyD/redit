@@ -1,28 +1,25 @@
 import { withAuth } from "@/server/lib/withAuth"
 import { withErrorHandler } from "@/server/lib/withErrorHandler"
 import { SubredditValidator } from "@/lib/validators/subreddit"
-import { getAuthSession } from "@/lib/auth"
 import { createSubreddit } from "@/server/services/subreddit/create"
-export const POST = withErrorHandler(withAuth(async (req: Request) => {
+import { NextRequest } from "next/server"
+
+export const POST = withErrorHandler(withAuth(async (req: NextRequest, token) => {
     const body = await req.json()
-    const {name}  = SubredditValidator.parse(body)
-    const session = await getAuthSession()
-    const userId = session?.user.id as string
+    const { name } = SubredditValidator.parse(body)
+
+    const userId = token.id
+
     const result = await createSubreddit({ name, userId })
-    console.log(result)
-    if(result.ok){
-        return new Response(name,{ status: 200 })
+
+    if (result.ok) {
+      return new Response(name, { status: 200 })
     }
-    else
-    {
-       
-        if(result.error === "SUBREDDIT_EXISTS"){
-            return Response.json({ error:"Subreddit already exists" }, { status: 400 })
-        }
-        else
-        {
-            return  Response.json({ error:"Internal error" }, { status: 500 })
-        }
+
+    if (result.error === "SUBREDDIT_EXISTS") {
+      return Response.json({ error: "Subreddit already exists" }, { status: 400 })
     }
-}
-))
+
+    return Response.json({ error: "Internal error" }, { status: 500 })
+  })
+)

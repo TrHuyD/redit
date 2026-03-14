@@ -1,14 +1,16 @@
-import { getAuthSession } from "@/lib/auth"
+import { getToken, type JWT } from "next-auth/jwt"
+import { NextRequest } from "next/server"
 
+export function withAuth(
+  handler: (req: NextRequest, token: JWT) => Promise<Response>
+) {
+  return async (req: NextRequest) => {
+    const token = await getToken({ req })
 
-export function withAuth<T extends (...args: any[]) => any>(handler: T) {
-  return async (...args: Parameters<T>) => {
-    const session = await getAuthSession()
-
-    if (!session?.user|| !session.user.id) {
-      return new Response("Unauthorized "+session?.user.id, { status: 500 })
+    if (!token?.id) {
+      return new Response("Unauthorized", { status: 401 })
     }
 
-    return handler(...args)
+    return handler(req, token)
   }
 }
