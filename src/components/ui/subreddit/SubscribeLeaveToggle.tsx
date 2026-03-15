@@ -66,26 +66,28 @@ export const SubscribeLeaveToggle = ({subreddit,}: {subreddit: SubredditTogglePr
   })
 
   if (isCreator) return (
-    <p className="w-full mt-1 mb-4">
-      You created this community
+    <p className="w-full">
+      <Button className="w-full" disabled>
+      Owner 
+      </Button>
     </p>
   )
   
   return isMember ? (
     <Button
-      className="w-full mt-1 mb-4"
+      className="w-full"
       disabled={isUnsubLoading}
       onClick={() => unsubscribe()}
     >
-      Leave community
+      Leave
     </Button>
   ) : (
     <Button
-      className="w-full mt-1 mb-4"
+      className="w-full"
       disabled={isSubLoading}
       onClick={() => subscribe()}
     >
-      Join to post
+      Join
     </Button>
   )
 }

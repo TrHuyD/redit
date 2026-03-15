@@ -11,7 +11,7 @@ export default function CreatePostButton (){
     const router = useRouter()
     const pathname = usePathname()
     const submit = () => router.push(`${pathname}/submit`)
-    return <Button onClick={submit} variant="outline" >
+    return <Button onClick={submit} variant="secondary" >
       <Plus />
       Create Post</Button>
     // return <li className='overflow-hidden rounded-md bg-white shadow'>

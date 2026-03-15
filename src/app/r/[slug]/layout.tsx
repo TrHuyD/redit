@@ -24,7 +24,7 @@ export default async function Layout({ children, params }: LayoutProps) {
   const subreddit = await getSubreddit(slug, token?.id)
 
   return (
-    <div className="min-h-screen bg-[#dae0e6] dark:bg-zinc-900">
+    <div className="min-h-screen ">
       <SubredditBanner subreddit={subreddit} />
       <SubredditHeader subreddit={subreddit} />
 

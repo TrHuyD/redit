@@ -6,6 +6,7 @@ import Navbar from '@/components/ui/Navbar'
 import { Toaster } from 'sonner'
 import { ModalProvider } from "@/components/ui/providers/modal-provider";
 import {QueryProvider} from "@/components/ui/providers/query-provider"
+import { ThemeProvider } from 'next-themes'
 
 export const metadata = {
   title: 'Redit',
@@ -24,8 +25,11 @@ export default async function RootLayout({
 
 
   return (
-    <html lang='en' className= {cn('text-slate-900 bg-white antialiased light', inter.className)}>
-      <body className ={cn('min-h-screen bg-slate-50 antialiased')}>
+    <html lang='en'  className= {cn('text-slate-900  antialiased', inter.className)}  >
+    {/*text-slate-900 bg-white antialiased light', inter.className */}
+      <body className ={cn('min-h-screen antialiased')}>
+      <ThemeProvider attribute="class" defaultTheme='dark'>
+
       <QueryProvider>
       <ModalProvider>
        <Navbar/>
@@ -36,6 +40,8 @@ export default async function RootLayout({
       <Toaster/>
       </ModalProvider>
       </QueryProvider>
+    </ThemeProvider>
+
       </body>
     </html>
   )

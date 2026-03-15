@@ -1,7 +1,9 @@
 // components/subreddit/SubredditHeader.tsx
+
 import CreatePostButton from "@/components/post/CreatePostButton"
 import { SubscribeLeaveToggle } from "@/components/ui/subreddit/SubscribeLeaveToggle"
 import { SubredditWithMembership } from "@/types/subreddit"
+
 
 interface Props {
   subreddit: SubredditWithMembership
@@ -9,7 +11,9 @@ interface Props {
 
 export function SubredditHeader({ subreddit }: Props) {
   const { name } = subreddit
-
+  // if(IsInAPost())  {
+  //   return null
+  // }
   return (
     <div className="bg-white dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700 shadow-sm">
       <div className="max-w-5xl mx-auto px-4 flex items-end gap-4 pb-3">

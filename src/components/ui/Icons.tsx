@@ -1,4 +1,4 @@
-import { Apple,User  } from "lucide-react"
+import { Drama,User  } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 type TSize = "sm" | "md" | "lg"
@@ -12,7 +12,7 @@ const logoSizeMap: Record<TSize, string> = {
   lg: "h-12 w-12",
 }
 export function Logo({ size = "md", className }: LogoProps) {
-  return <Apple className={cn(logoSizeMap[size], "fill-red-500", className)} />
+  return <Drama className={cn(logoSizeMap[size], className)} />
 }
 
 export function UserLogo({ size = "md", className }: LogoProps) {
