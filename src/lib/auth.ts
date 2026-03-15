@@ -4,6 +4,9 @@ import GoogleProvider from "next-auth/providers/google"
 import { nanoid } from "nanoid"
 import { cache } from "react"
 import { db } from "./db"
+import { headers } from "next/headers"
+import { NextRequest } from "next/server"
+import { getToken, JWT } from "next-auth/jwt"
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
@@ -82,3 +85,15 @@ export const authOptions: NextAuthOptions = {
 export const getAuthSession = cache(() =>
   getServerSession(authOptions)
 )
+export const getAuthToken = cache(async (): Promise<JWT | null> => {
+  const headersList = await headers()
+  const req = new NextRequest("http://localhost", {
+    headers: headersList,
+  })
+
+  const token = await getToken({ req })
+
+  if (!token?.id) return null
+
+  return token
+})

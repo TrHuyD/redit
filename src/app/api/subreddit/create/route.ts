@@ -17,7 +17,7 @@ export const POST = withErrorHandler(withAuth(async (req: NextRequest, token) =>
     }
 
     if (result.error === "SUBREDDIT_EXISTS") {
-      return Response.json({ error: "Subreddit already exists" }, { status: 400 })
+      return Response.json({ error: `Subreddit ${name} already exists` }, { status: 400 })
     }
 
     return Response.json({ error: "Internal error" }, { status: 500 })

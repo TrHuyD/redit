@@ -1,5 +1,5 @@
 
-import { getAuthSession } from "@/lib/auth"
+import { getAuthToken } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { notFound } from "next/navigation"
 
@@ -11,6 +11,6 @@ interface PageProps {
   
   export default async function Page({ params }: PageProps) {
     const { slug } = await params
-    const session= await getAuthSession()
+    const session= await getAuthToken()
   
   }
