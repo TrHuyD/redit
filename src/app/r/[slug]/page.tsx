@@ -10,7 +10,6 @@ interface PageProps {
   }
   
   export default async function Page({ params }: PageProps) {
-    const { slug } = await params
-    const session= await getAuthToken()
+    console.log("subreddit 's page loaded ")
   
   }

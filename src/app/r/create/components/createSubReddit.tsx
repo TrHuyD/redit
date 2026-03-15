@@ -16,7 +16,6 @@ export default function CreateSubReddit() {
     mutationFn: withToast(createSubreddit),
     onSuccess: () => {
         toast.success("Community created successfully! fowarding to community page")
-        router.back()
         router.push(`/r/${inputName}`)
         
     }

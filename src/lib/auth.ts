@@ -4,8 +4,8 @@ import GoogleProvider from "next-auth/providers/google"
 import { nanoid } from "nanoid"
 import { cache } from "react"
 import { db } from "./db"
-import { headers } from "next/headers"
-import { NextRequest } from "next/server"
+import { cookies, headers } from "next/headers"
+
 import { getToken, JWT } from "next-auth/jwt"
 
 export const authOptions: NextAuthOptions = {
@@ -86,12 +86,16 @@ export const getAuthSession = cache(() =>
   getServerSession(authOptions)
 )
 export const getAuthToken = cache(async (): Promise<JWT | null> => {
-  const headersList = await headers()
-  const req = new NextRequest("http://localhost", {
-    headers: headersList,
+  const cookieStore = await cookies()
+  
+  const token = await getToken({
+    req: {
+      cookies: Object.fromEntries(
+        cookieStore.getAll().map(({ name, value }) => [name, value])
+      ),
+      headers: {},
+    } as any,
   })
-
-  const token = await getToken({ req })
 
   if (!token?.id) return null
 
