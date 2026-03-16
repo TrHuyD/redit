@@ -1,5 +1,5 @@
 // app/r/[slug]/layout.tsx
-import { getSubreddit } from "@/lib/api/Subreddit/GetSubreddit"
+import { getSubreddit, getSubredditWithMembership } from "@/lib/api/Subreddit/GetSubreddit"
 import { getAuthToken } from "@/lib/auth"
 import { Metadata } from "next"
 import { SubredditBanner } from "@/components/ui/subreddit/SubredditBanner"
@@ -7,6 +7,8 @@ import { SubredditHeader } from "@/components/ui/subreddit/SubredditHeader"
 import { SubredditAbout } from "@/components/ui/subreddit/SubredditAbout"
 import { SubredditRules } from "@/components/ui/subreddit/SubredditRules"
 import { SubredditModerators } from "@/components/ui/subreddit/SubredditModerators"
+import { sub } from "date-fns"
+import { notFound } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "Redit",
@@ -21,8 +23,8 @@ interface LayoutProps {
 export default async function Layout({ children, params }: LayoutProps) {
   const { slug } = await params
   const token = await getAuthToken()
-  const subreddit = await getSubreddit(slug, token?.id)
-
+  const subreddit = await getSubredditWithMembership(slug, token?.id)
+  if(subreddit === null) { return notFound() }
   return (
     <div className="min-h-screen ">
       <SubredditBanner subreddit={subreddit} />

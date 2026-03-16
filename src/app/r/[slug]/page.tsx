@@ -10,6 +10,5 @@ interface PageProps {
   }
   
   export default async function Page({ params }: PageProps) {
-    console.log("subreddit 's page loaded ")
   
   }
