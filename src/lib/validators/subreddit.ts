@@ -4,7 +4,6 @@ export const SubredditValidator = z.object({
 })
 export const SubscriptionValidator = z.object({
     subredditId: z.string().min(1, "Subreddit ID is required"),
-    userId: z.string().min(1, "User ID is required")
 })
 export type UserCreateSubredditPayload = z.infer<typeof SubredditValidator>
 export type SubscribeToSubredditPayload = z.infer<typeof SubscriptionValidator>
@@ -16,4 +15,10 @@ export const CreateSubredditRequestValidator = z.object({
     userId: z.string().min(1, "User ID is required")
 })
 
+export const UserSubredditRequestValidator = z.object({
+    subredditId: z.string().min(1, "Subreddit ID is required"),
+    userId: z.string().min(1, "User ID is required")
+})
+
 export type CreateSubredditRequestPayload = z.infer<typeof CreateSubredditRequestValidator>
+export type UserSubredditRequestPayload = z.infer<typeof UserSubredditRequestValidator>

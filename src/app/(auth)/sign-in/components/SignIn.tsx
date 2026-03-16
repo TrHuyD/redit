@@ -15,9 +15,9 @@ export default function SignIn()
             </p>    
             {/* sign in here  */}
             <UserAuthForm />
-            <p className='px-8 text-center text-sm text-zinc-700'>
+            <p className='px-8 text-center text-sm'>
                 New to Breadit?{' '}
-                <Link href ='/sign-up' className='hover:text-zinc-800 text-sm underline-offset-4'>Sign up</Link>
+                <Link href ='/sign-up' className=' text-sm underline-offset-4'>Sign up</Link>
             </p>
 
         </div>

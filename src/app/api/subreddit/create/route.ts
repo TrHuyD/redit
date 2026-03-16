@@ -7,7 +7,7 @@ import { NextRequest } from "next/server"
 export const POST = withErrorHandler(withAuth(async (req: NextRequest, token) => {
     const body = await req.json()
     const { name } = SubredditValidator.parse(body)
-
+  
     const userId = token.id
 
     const result = await createSubreddit({ name, userId })

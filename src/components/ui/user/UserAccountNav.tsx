@@ -19,7 +19,7 @@ export const UserAccountNav = ({ user }: UserAccountNavProp) => {
   
         <DropdownMenuPortal>
           <DropdownMenuContent
-            className="bg-white"
+     
             align="end"
             sideOffset={8}
           >

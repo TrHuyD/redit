@@ -34,7 +34,7 @@ export const SubscribeLeaveToggle = ({subreddit,}: {subreddit: SubredditTogglePr
         }
       }
 
-      toast.error("There was a problem. Please try again.")
+      toast.error(`There was a problem. Please try again.${err}`)
     },
 
     onSuccess: () => {

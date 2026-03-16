@@ -1,8 +1,8 @@
-import { SubscribeToSubredditPayload } from "@/lib/validators/subreddit";
+import {UserSubredditRequestPayload } from "@/lib/validators/subreddit";
 import {db} from "@/lib/db"
 import { Result } from "@/lib/Result"
 import { Prisma } from "@prisma/client";
-export async function LeaveSubreddit(data: SubscribeToSubredditPayload) : Promise<Result<null>>{
+export async function LeaveSubreddit(data: UserSubredditRequestPayload) : Promise<Result<null>>{
     const subreddit = await db.subreddit.findUnique({
         where: { id: data.subredditId },
         select: {
