@@ -74,6 +74,7 @@ export const SubscribeLeaveToggle = ({subreddit,}: {subreddit: SubredditTogglePr
   )
   
   return isMember ? (
+    <p className="w-full">
     <Button
       className="w-full"
       disabled={isUnsubLoading}
@@ -81,7 +82,9 @@ export const SubscribeLeaveToggle = ({subreddit,}: {subreddit: SubredditTogglePr
     >
       Leave
     </Button>
+    </p>
   ) : (
+    <p className="w-full">
     <Button
       className="w-full"
       disabled={isSubLoading}
@@ -89,5 +92,6 @@ export const SubscribeLeaveToggle = ({subreddit,}: {subreddit: SubredditTogglePr
     >
       Join
     </Button>
+    </p>
   )
 }

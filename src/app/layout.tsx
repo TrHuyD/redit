@@ -34,7 +34,7 @@ export default async function RootLayout({
       <ModalProvider>
        <Navbar/>
        {popModal}
-        <div className={cn('container max-w-7xl mx-auto h-full pt-14')}>
+       <div className={cn('w-full h-full pt-14')}>
           {children}
         </div>
       <Toaster/>

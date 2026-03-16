@@ -1,0 +1,21 @@
+import { SubscribeToSubredditPayload } from "@/lib/validators/subreddit";
+import {db} from "@/lib/db"
+import { Result } from "@/lib/Result"
+import { Prisma } from "@prisma/client";
+export async function LeaveSubreddit(data: SubscribeToSubredditPayload) : Promise<Result<null>>{
+    const subreddit = await db.subreddit.findUnique({
+        where: { id: data.subredditId },
+        select: {
+          id: true,
+          creatorId: true
+        }
+      })
+    if(!subreddit) return { ok: false, error: "Subreddit not found" }
+    if(subreddit.creatorId === data.userId) return { ok: false, error: "You can't leave your own subreddit!" }
+    await db.subscription.deleteMany({where: {subredditId: data.subredditId,userId: data.userId}})
+    return { ok: true ,data:null}
+     
+}
+    
+
+
