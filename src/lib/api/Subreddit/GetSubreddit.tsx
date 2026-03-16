@@ -1,23 +1,22 @@
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config"
 import { db } from "@/lib/db"
 import { SubredditWithMembership } from "@/types/subreddit"
-import { Subreddit } from "@prisma/client"
+import { cache } from "react"
 import { notFound } from "next/navigation"
 
-// export async function getSubreddit(slug: string): Promise<Subreddit>
-export async function getSubreddit(slug: string, userId?: string ): Promise<SubredditWithMembership>
 
-export async function getSubreddit(slug: string, userId?: string) {
+export const getSubreddit = cache(async (slug: string) => {
   const subreddit = await db.subreddit.findFirst({
     where: { name: slug },
   })
+
   if (!subreddit) notFound()
+  return subreddit
+})
 
-  if (!userId) {
-    return subreddit
-  }
-
-  const membership = await db.subscription.findFirst({
+export async function getSubredditWithMembership(slug: string, userId?: string) {
+  const subreddit = await getSubreddit(slug)
+  var membership =!userId?null: await db.subscription.findFirst({
     where: {
       subredditId: subreddit.id,
       userId,
