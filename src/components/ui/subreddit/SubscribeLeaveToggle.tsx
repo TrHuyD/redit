@@ -1,7 +1,7 @@
 "use client"
-
 import { Button } from "@/components/ui/Button"
 import { loginToast } from "@/lib/customToast"
+import { withToast } from "@/lib/withToast" // your withToast wrapper
 import { SubscribeToSubredditPayload } from "@/lib/validators/subreddit"
 import { SubredditWithMembership } from "@/types/subreddit"
 import { useMutation } from "@tanstack/react-query"
@@ -9,89 +9,57 @@ import axios, { AxiosError } from "axios"
 import { useRouter } from "next/navigation"
 import { startTransition } from "react"
 import { toast } from "sonner"
+
 type SubredditToggleProps = Pick<
   SubredditWithMembership,
   "id" | "name" | "isMember" | "isCreator"
 >
-export const SubscribeLeaveToggle = ({subreddit,}: {subreddit: SubredditToggleProps}) => {
+
+export const SubscribeLeaveToggle = ({ subreddit }: { subreddit: SubredditToggleProps }) => {
   const { id, name, isMember, isCreator } = subreddit
   const router = useRouter()
 
-  const payload: SubscribeToSubredditPayload = {
-    subredditId: id,
-  }
+  const payload: SubscribeToSubredditPayload = { subredditId: id }
 
   const { mutate: subscribe, isLoading: isSubLoading } = useMutation({
-    mutationFn: async () => {
+    mutationFn: withToast(async () => {
       const { data } = await axios.post("/api/subreddit/subscribe", payload)
       return data as string
-    },
-
-    onError: (err) => {
-      if (err instanceof AxiosError) {
-        if (err.response?.status === 401) {
-          return loginToast()
-        }
-      }
-
-      toast.error(`There was a problem. Please try again.${err}`)
-    },
-
+    }),
     onSuccess: () => {
-      startTransition(() => {
-        router.refresh()
-      })
-
       toast.success(`You are now subscribed to r/${name}`)
+      startTransition(() => router.refresh())
     },
   })
 
   const { mutate: unsubscribe, isLoading: isUnsubLoading } = useMutation({
-    mutationFn: async () => {
+    mutationFn: withToast(async () => {
       const { data } = await axios.post("/api/subreddit/unsubscribe", payload)
       return data as string
-    },
-
-    onError: (err: AxiosError) => {
-      toast.error((err.response?.data as string) || "Something went wrong")
-    },
-
+    }),
     onSuccess: () => {
-      startTransition(() => {
-        router.refresh()
-      })
-
-      toast.success(`You are now unsubscribed from r/${name}`)
+      toast.success(`You are now unsubscribed to r/${name}`)
+      startTransition(() => router.refresh())
     },
   })
 
   if (isCreator) return (
     <p className="w-full">
-      <Button className="w-full" disabled>
-      Owner 
-      </Button>
+      <Button className="w-full" disabled>Owner</Button>
     </p>
   )
-  
+
   return isMember ? (
     <p className="w-full">
-    <Button
-      className="w-full"
-      disabled={isUnsubLoading}
-      onClick={() => unsubscribe()}
-    >
-      Leave
-    </Button>
+      <Button className="w-full" disabled={isUnsubLoading} onClick={() => unsubscribe()}>
+        Leave
+      </Button>
     </p>
   ) : (
     <p className="w-full">
-    <Button
-      className="w-full"
-      disabled={isSubLoading}
-      onClick={() => subscribe()}
-    >
-      Join
-    </Button>
+      <Button className="w-full" disabled={isSubLoading} onClick={() => subscribe()}>
+        Join
+      </Button>
     </p>
   )
 }
