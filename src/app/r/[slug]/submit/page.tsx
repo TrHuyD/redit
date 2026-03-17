@@ -16,7 +16,7 @@ interface PageProps {
     return (
       <div className='flex flex-col items-start gap-6'>
       {/* heading */}
-      <SubredditSelector/>
+      <SubredditSelector slug={slug}/>
       <div className='border-b  pb-5'>
         <div className='-ml-2 -mt-2 flex flex-wrap items-baseline'>
           <h3 className='ml-2 mt-2 text-base font-semibold leading-6 '>
