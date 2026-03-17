@@ -8,9 +8,9 @@
 .dark .cdx-button,
 .dark .ce-popover,
 .dark .ce-toolbar__plus:hover {
-  background: theme('colors.popover.DEFAULT');
+  background: theme('colors.gray.800');        /* softer dark background */
   color: inherit;
-  border-color: theme('colors.border');
+  border-color: theme('colors.gray.700');      /* subtle border */
 }
 
 .dark .ce-inline-tool,
@@ -23,20 +23,21 @@
 
 .dark .ce-popover__item-icon,
 .dark .ce-conversion-tool__icon {
-  background-color: theme('colors.muted.DEFAULT');
-  box-shadow: none;
+  background-color: theme('colors.gray.700');  /* darker icon background */
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .dark .cdx-search-field {
-  border-color: theme('colors.border');
-  background: theme('colors.input');
+  border-color: theme('colors.gray.800');
+  background: theme('colors.gray.900');        /* input background */
   color: inherit;
 }
 
 .dark ::selection {
-  background: theme('colors.accent.DEFAULT');
+  background: theme('colors.accent.DEFAULT');  /* keep accent for selection */
 }
 
+/* Softer hover effects */
 .dark .cdx-settings-button:hover,
 .dark .ce-settings__button:hover,
 .dark .ce-toolbox__button--active,
@@ -47,8 +48,8 @@
 .dark .ce-popover__item:hover,
 .dark .ce-conversion-tool:hover,
 .dark .ce-toolbar__settings-btn:hover {
-  background-color: theme('colors.accent.DEFAULT');
-  color: theme('colors.accent.foreground');
+  background-color: rgba(255, 255, 255, 0.4); /* subtle light overlay */
+  color: inherit;
 }
 
 .dark .cdx-notify--error {
