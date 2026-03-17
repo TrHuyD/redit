@@ -77,8 +77,8 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
     const InlineCode = (await import('@editorjs/inline-code')).default
     const ImageTool = (await import('@editorjs/image')).default
 
-    if (ref.current) return
 
+    if (!ref.current) {
     const editor = new EditorJS({
       holder: 'editor',
       onReady() {
@@ -92,7 +92,7 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
         linkTool: {
           class: LinkTool,
           config: {
-            endpoint: '/api/link',
+            endpoint: '/api/link',  
           },
         },
         image: {
@@ -104,7 +104,7 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
                 const url = uploaded?.[0]?.url
 
                 if (!url) throw new Error('Upload failed')
-
+                
                 return {
                   success: 1,
                   file: { url },
@@ -120,7 +120,7 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
         embed: Embed,
       },
     })
-  }, [startUpload])
+  }}, [startUpload])
 
   useEffect(() => {
     for (const [, value] of Object.entries(errors)) {
