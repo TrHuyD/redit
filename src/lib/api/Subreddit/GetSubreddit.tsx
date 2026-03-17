@@ -1,9 +1,17 @@
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config"
 import { db } from "@/lib/db"
-import { SubredditWithMembership } from "@/types/subreddit"
+
 import { cache } from "react"
 import { notFound } from "next/navigation"
 
+export const getSubredditMemberCount = cache(async (subId: string) => {
+  const count = await db.subscription.count({
+    where: {
+      subredditId: subId,
+    },
+  })
+  return count
+})
 
 export const getSubreddit = cache(async (slug: string) => {
   const subreddit = await db.subreddit.findFirst({
@@ -13,20 +21,27 @@ export const getSubreddit = cache(async (slug: string) => {
   if (!subreddit) notFound()
   return subreddit
 })
-
-export async function getSubredditWithMembership(slug: string, userId?: string) {
+export const getSubredditManifestedMetadata = cache(async (slug: string) => {
   const subreddit = await getSubreddit(slug)
-  var membership =!userId?null: await db.subscription.findFirst({
-    where: {
-      subredditId: subreddit.id,
+  var memberCount = await getSubredditMemberCount(subreddit.id)
+  return {
+    ...subreddit,
+    userCount: memberCount
+  }
+})
+export async function getSubredditWithMembership(slug: string, userId?: string) {
+  var metadata = await getSubredditManifestedMetadata(slug)
+  var membership =!userId?null: await db.subscription.findUnique({
+    where: {userId_subredditId: {
+      subredditId: metadata.id,
       userId,
-    },
+     } },
   })
 
   return {
-    ...subreddit,
+    ...metadata,
     isMember: !!membership,
-    isCreator: subreddit.creatorId === userId,
+    isCreator: metadata.creatorId === userId,
   }
 }
 

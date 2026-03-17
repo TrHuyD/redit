@@ -1,120 +1,201 @@
-"use client"
+'use client'
 
-import { cn } from "@/lib/utils"
-import TextareaAutosize from "react-textarea-autosize"
-import { useRef, useState } from "react"
-import { ImageIcon, Link2, Bold, Italic, List, Code } from "lucide-react"
-import { Button } from "@/components/ui/Button"
+import EditorJS from '@editorjs/editorjs'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { usePathname, useRouter } from 'next/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import TextareaAutosize from 'react-textarea-autosize'
+import { z } from 'zod'
+
+import { toast } from 'sonner'
+import { useUploadThing } from '@/lib/uploadthing'
+import { PostCreationRequest, PostValidator } from '@/lib/validators/post'
+import { useMutation } from '@tanstack/react-query'
+import axios, { AxiosError } from 'axios'
+
+import '@/styles/editor.css'
+
+type FormData = z.infer<typeof PostValidator>
 
 interface EditorProps {
-  className?: string
-  onSubmit?: (data: { title: string; content: string }) => void
-  isLoading?: boolean
-  placeholder?: string
+  subredditId: string
 }
 
-export default function Editor({
-  className,
-  onSubmit,
-  isLoading,
-  placeholder = "What are your thoughts?",
-}: EditorProps) {
-  const [title, setTitle] = useState("")
-  const [content, setContent] = useState("")
-  const contentRef = useRef<HTMLTextAreaElement>(null)
+export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(PostValidator),
+    defaultValues: {
+      subredditId,
+      title: '',
+      content: null,
+    },
+  })
 
-  const applyFormat = (tag: string) => {
-    const textarea = contentRef.current
-    if (!textarea) return
+  const ref = useRef<EditorJS | undefined>(undefined)
+  const _titleRef = useRef<HTMLTextAreaElement>(null)
+  const router = useRouter()
+  const pathname = usePathname()
+  const [isMounted, setIsMounted] = useState<boolean>(false)
 
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const selected = content.slice(start, end)
+  const { startUpload } = useUploadThing('imageUploader')
 
-    const formats: Record<string, string> = {
-      bold: `**${selected}**`,
-      italic: `*${selected}*`,
-      code: `\`${selected}\``,
-      link: `[${selected}](url)`,
-      list: `\n- ${selected}`,
+  const { mutate: createPost, isLoading } = useMutation({
+    mutationFn: async ({ title, content, subredditId }: PostCreationRequest) => {
+      const payload: PostCreationRequest = { title, content, subredditId }
+      const { data } = await axios.post('/api/subreddit/post/create', payload)
+      return data
+    },
+    onError: (err: AxiosError) => {
+      const message =
+        err.response?.status === 422
+          ? 'Please fill in all required fields correctly.'
+          : 'Your post was not published. Please try again.'
+
+      toast.error('Something went wrong.', { description: message })
+    },
+    onSuccess: () => {
+      const newPathname = pathname.split('/').slice(0, -1).join('/')
+      router.push(newPathname)
+      router.refresh()
+      toast.success('Your post has been published.')
+    },
+  })
+
+  const initializeEditor = useCallback(async () => {
+    const EditorJS = (await import('@editorjs/editorjs')).default
+    const Header = (await import('@editorjs/header')).default
+    const Embed = (await import('@editorjs/embed')).default
+    const Table = (await import('@editorjs/table')).default
+    const List = (await import('@editorjs/list')).default
+    const Code = (await import('@editorjs/code')).default
+    const LinkTool = (await import('@editorjs/link')).default
+    const InlineCode = (await import('@editorjs/inline-code')).default
+    const ImageTool = (await import('@editorjs/image')).default
+
+    if (ref.current) return
+
+    const editor = new EditorJS({
+      holder: 'editor',
+      onReady() {
+        ref.current = editor
+      },
+      placeholder: 'Type here to write your post...',
+      inlineToolbar: true,
+      data: { blocks: [] },
+      tools: {
+        header: Header,
+        linkTool: {
+          class: LinkTool,
+          config: {
+            endpoint: '/api/link',
+          },
+        },
+        image: {
+          class: ImageTool,
+          config: {
+            uploader: {
+              async uploadByFile(file: File) {
+                const uploaded = await startUpload([file])
+                const url = uploaded?.[0]?.url
+
+                if (!url) throw new Error('Upload failed')
+
+                return {
+                  success: 1,
+                  file: { url },
+                }
+              },
+            },
+          },
+        },
+        list: List,
+        code: Code,
+        inlineCode: InlineCode,
+        table: Table,
+        embed: Embed,
+      },
+    })
+  }, [startUpload])
+
+  useEffect(() => {
+    for (const [, value] of Object.entries(errors)) {
+      toast.error('Something went wrong.', {
+        description: (value as { message: string }).message,
+      })
+    }
+  }, [errors])
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isMounted) return
+
+    const init = async () => {
+      await initializeEditor()
+      setTimeout(() => _titleRef.current?.focus(), 0)
     }
 
-    const replacement = formats[tag] ?? selected
-    setContent(content.slice(0, start) + replacement + content.slice(end))
+    init()
+
+    return () => {
+      ref.current?.destroy()
+      ref.current = undefined
+    }
+  }, [isMounted, initializeEditor])
+
+  async function onSubmit(data: FormData): Promise<void> {
+    const blocks = await ref.current?.save()
+
+    createPost({
+      title: data.title,
+      content: blocks,
+      subredditId,
+    })
   }
 
-  const handleSubmit = () => {
-    if (!title.trim()) return
-    onSubmit?.({ title, content })
-  }
+  if (!isMounted) return null
+
+  const { ref: titleRef, ...rest } = register('title')
 
   return (
-    <div className={cn("w-full rounded-lg border border-zinc-700 bg-zinc-900 overflow-hidden", className)}>
-      
-      {/* Title */}
-      <TextareaAutosize
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        maxRows={3}
-        className="w-full resize-none bg-transparent px-4 pt-4 text-xl font-semibold placeholder:text-zinc-500 text-zinc-100 focus:outline-none"
-      />
-
-      <div className="h-px bg-zinc-700 mx-4" />
-
-      {/* Toolbar */}
-      <div className="flex items-center gap-1 px-3 py-2">
-        {[
-          { icon: <Bold size={15} />, tag: "bold" },
-          { icon: <Italic size={15} />, tag: "italic" },
-          { icon: <Code size={15} />, tag: "code" },
-          { icon: <Link2 size={15} />, tag: "link" },
-          { icon: <List size={15} />, tag: "list" },
-        ].map(({ icon, tag }) => (
-          <button
-            key={tag}
-            type="button"
-            onClick={() => applyFormat(tag)}
-            className="p-1.5 rounded text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700 transition-colors"
-          >
-            {icon}
-          </button>
-        ))}
-
-        <div className="ml-auto">
-          <button
-            type="button"
-            className="p-1.5 rounded text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700 transition-colors"
-          >
-            <ImageIcon size={15} />
-          </button>
+    <div className="w-full p-4 rounded-xl border border-border 
+    bg-background 
+    dark:bg-zinc-900 
+    bg-zinc-100 
+    text-foreground 
+    shadow-sm hover:shadow-md transition">
+      <form
+        id='subreddit-post-form'
+        className='w-fit'
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div className='prose prose-stone dark:prose-invert'>
+          <TextareaAutosize
+            ref={(e) => {
+              titleRef(e)
+              _titleRef.current = e
+            }}
+            {...rest}
+            placeholder='Title'
+            className='w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none'
+          />
+          <div id='editor' className='min-h-[500px]' />
+          <p className='text-sm'>
+            Use{' '}
+            <kbd className='rounded-md border bg-muted px-1 text-xs uppercase'>
+              Tab
+            </kbd>{' '}
+            to open the command menu.
+          </p>  
         </div>
-      </div>
-
-      <div className="h-px bg-zinc-700 mx-4" />
-
-      {/* Body */}
-      <TextareaAutosize
-        ref={contentRef}
-        placeholder={placeholder}
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        minRows={6}
-        className="w-full resize-none bg-transparent px-4 py-3 text-sm placeholder:text-zinc-500 text-zinc-300 focus:outline-none"
-      />
-
-      {/* Footer */}
-      <div className="flex items-center justify-between px-4 py-3 border-t border-zinc-700">
-        <p className="text-xs text-zinc-500">
-          {content.length > 0 ? `${content.length} characters` : "Markdown supported"}
-        </p>
-        <Button
-          onClick={handleSubmit}
-          disabled={!title.trim() || isLoading}>
-          Post
-        </Button>
-      </div>
-
+      </form>
     </div>
   )
 }

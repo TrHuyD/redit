@@ -25,7 +25,7 @@ export function SubredditAbout({ subreddit }: Props) {
         <div className="flex gap-6 pt-2 border-t border-zinc-200 dark:border-zinc-700">
           <div>
             {/* TODO: subreddit.memberCount */}
-            <p className="font-bold text-sm text-zinc-900 dark:text-white">0</p>
+            <p className="font-bold text-sm text-zinc-900 dark:text-white">{subreddit.userCount}</p>
             <p className="text-xs text-zinc-500 flex items-center gap-1">
               <Users className="w-3 h-3" /> Members
             </p>
@@ -41,7 +41,7 @@ export function SubredditAbout({ subreddit }: Props) {
 
         <div className="flex flex-col gap-2 pt-2 border-t border-zinc-200 dark:border-zinc-700">
           {/* TODO: subreddit.createdAt */}
-          <p className="text-xs text-zinc-500">Created [date]</p>
+          <p className="text-xs text-zinc-500">Created {subreddit.createdAt.toDateString()}</p>
           <CreatePostButton />
         </div>
       </div>
