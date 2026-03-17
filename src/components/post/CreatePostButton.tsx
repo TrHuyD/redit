@@ -4,7 +4,7 @@ import { Session } from "next-auth"
 import { usePathname, useRouter } from "next/navigation"
 import { UserAvatar } from "../ui/user/UserAvatar"
 import { Input } from "../ui/input"
-import { Button } from "../ui/Button"
+import { Button } from "../ui/button"
 import {Plus} from "lucide-react"
 
 export default function CreatePostButton (){

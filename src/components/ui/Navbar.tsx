@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { buttonVariants } from "./Button";
+import { buttonVariants } from "./button";
 import {Logo} from "./Icons";
 import {  getAuthToken } from "@/lib/auth";
 import { UserAccountNav } from "./user/UserAccountNav";

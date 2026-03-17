@@ -1,5 +1,5 @@
 "use client"
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 import { loginToast } from "@/lib/customToast"
 import { withToast } from "@/lib/withToast" // your withToast wrapper
 import { SubscribeToSubredditPayload } from "@/lib/validators/subreddit"

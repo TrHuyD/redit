@@ -3,7 +3,7 @@
 import { HomeIcon } from "lucide-react";
 import { useModal } from "@/components/ui/providers/modal-provider";
 // import Link from 'next/link';
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import CreateSubreddit from "./r/create/components/createSubReddit";
 
 function Home() {

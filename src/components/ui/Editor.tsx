@@ -184,8 +184,13 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
             }}
             {...rest}
             placeholder='Title'
-            className='w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none'
+            className='w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none '
           />
+              <div className="my-6 flex items-center gap-2">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs text-muted-foreground">Content</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
           <div id='editor' className='min-h-[500px]' />
           <p className='text-sm'>
             Use{' '}
