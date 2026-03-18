@@ -75,7 +75,7 @@ model Subreddit{
   createdAt DateTime @default(now())
   latestUpdateAt DateTime @default(now())
   posts Post[]
-
+  image    String? @default("https://cdn.discordapp.com/embed/avatars/4.png")
   subscribers Subscription[]
 
   creatorId   String?

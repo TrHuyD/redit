@@ -1,0 +1,29 @@
+import { Subreddit, User } from "@prisma/client";
+
+import { UserAvatar } from "../user/UserAvatar";
+import Link from "next/link";
+import { SubredditAvatar } from "../subreddit/SubredditAvatar";
+
+interface CombinedTagProps {
+  subreddit: Pick<Subreddit, "image" | "name">;
+  user: Pick<User, "image" | "username" | "name">;
+  className?: string;
+}
+
+export default function CombinedTag({ subreddit, user }: CombinedTagProps) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link href={`/r/${subreddit.name}`}>
+          <SubredditAvatar subreddit={subreddit} className="h-8 w-8" />
+        </Link>
+        <div className="flex flex-col">
+          <Link href={`/r/${subreddit.name}`} className="text-xs font-medium leading-tight">
+            r/{subreddit.name}
+          </Link>
+          <Link href={`/u/${user.username}`} className="text-xs text-muted-foreground leading-tight">
+            u/{user.name}
+          </Link>
+        </div>
+      </div>
+    );
+  }

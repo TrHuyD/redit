@@ -3,6 +3,7 @@
 import CreatePostButton from "@/components/post/CreatePostButton"
 import { SubscribeLeaveToggle } from "@/components/ui/subreddit/SubscribeLeaveToggle"
 import { SubredditWithMembership } from "@/types/subreddit"
+import { SubredditAvatar } from "./SubredditAvatar"
 
 
 interface Props {
@@ -19,11 +20,8 @@ export function SubredditHeader({ subreddit }: Props) {
       <div className="max-w-5xl mx-auto px-4 flex items-end gap-4 pb-3">
 
         {/* Community icon */}
-        <div className="w-[72px] h-[72px] rounded-full border-4 border-white dark:border-zinc-800 bg-blue-500 flex items-center justify-center -mt-4 shrink-0">
-          {/* TODO: replace with subreddit.iconUrl */}
-          <span className="text-white text-2xl font-bold">
-            {name?.charAt(0).toUpperCase() ?? "r"}
-          </span>
+        <div className="w-[72px] h-[72px] rounded-full border-4 border-white dark:border-zinc-800 bg-blue-500 flex items-center justify-center -mt-4 shrink-0 overflow-hidden">
+          <SubredditAvatar subreddit={subreddit} className="w-[72px] h-[72px]" />
         </div>
 
         {/* Name + actions */}

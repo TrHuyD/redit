@@ -1,6 +1,6 @@
 import { getSubreddit } from "@/lib/api/Subreddit/GetSubreddit"
 import { notFound } from "next/navigation"
-import  {Editor}  from "@/components/ui/Editor"
+import  Editor  from "@/components/ui/Editor"
 import { SubredditSelector } from "../components/SubredditSelector"
 import { Button } from "@/components/ui/button"
 interface PageProps {

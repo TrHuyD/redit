@@ -28,7 +28,7 @@ export default async function RootLayout({
     <html lang='en'  className= {cn('text-slate-900  antialiased', inter.className)}  >
     {/*text-slate-900 bg-white antialiased light', inter.className */}
       <body className ={cn('min-h-screen antialiased')}>
-      <ThemeProvider attribute="class" defaultTheme='dark'>
+      <ThemeProvider attribute="class" defaultTheme='light'>
 
       <QueryProvider>
       <ModalProvider>
