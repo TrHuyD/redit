@@ -26,7 +26,7 @@ export default function PostOut({  post,
   subreddit,
   commentAmt,}: PostProps) {
     const pRef = useRef<HTMLParagraphElement>(null)
-    return <div className="rounded-md shadow dark:shadow-black/50">
+    return <div className="rounded-md shadow bg-white dark:shadow-black/50 dark:bg-slate-900">
         <div className='px-4' >
         <div className="py-1 flex items-center gap-2">
             <span>
@@ -34,7 +34,7 @@ export default function PostOut({  post,
             
             </span>
             <UsernameTag user={post.author} />
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-500 ">
               {formatTimeToNow(new Date(post.createdAt))}
             </span>
           </div>
@@ -52,7 +52,7 @@ export default function PostOut({  post,
             ref={pRef}>
             <EditorOutput content={post.content} />
             {pRef.current?.clientHeight === 160 ? (
-              <div className='absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t to-transparent'></div>
+               <div className='absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent'></div>
             ) : null}
           </div>   
               <CommentAmtDisplay amt={commentAmt}/>

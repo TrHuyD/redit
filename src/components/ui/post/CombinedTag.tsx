@@ -12,7 +12,12 @@ interface CombinedTagProps {
 
 export default function CombinedTag({ subreddit, user }: CombinedTagProps) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 
+        px-2 py-1 rounded-full
+        text-zinc-800 hover:text-zinc-400
+        bg-transparent hover:bg-white/5
+        ring-1 ring-transparent hover:ring-white/10
+        transition-all duration-200">
         <Link href={`/r/${subreddit.name}`}>
           <SubredditAvatar subreddit={subreddit} className="h-8 w-8" />
         </Link>

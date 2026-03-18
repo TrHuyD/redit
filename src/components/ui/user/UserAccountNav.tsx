@@ -5,12 +5,16 @@ import { UserAvatar } from './UserAvatar'
 
 import Link from "next/link"
 import { signOut } from 'next-auth/react'
+import { useThemeToggle } from '@/lib/themeSwap'
+import { Moon, Sun } from 'lucide-react'
 interface UserAccountNavProp 
 {
     user:Pick<User,'name'|'image'|'email'>
 }
 
 export const UserAccountNav = ({ user }: UserAccountNavProp) => {
+  const { isDark, toggleTheme } = useThemeToggle()
+
     return (
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger>
@@ -34,6 +38,13 @@ export const UserAccountNav = ({ user }: UserAccountNavProp) => {
               </div>
             </div>
           <DropdownMenuSeparator/>
+          <DropdownMenuItem
+              onClick={toggleTheme}
+              className="cursor-pointer flex items-center gap-2"
+            >
+              {isDark ? (<div className='flex'><Sun className="h-4 w-4" />Light Mode</div>) : 
+              (<div className='flex'><Moon className="h-4 w-4" />Dark Mode Not supported</div>)}
+            </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href='/'> Feed</Link>
           </DropdownMenuItem>

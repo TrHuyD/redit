@@ -10,9 +10,22 @@ interface EntityTagProps {
 
 export default function EntityTag({ href, avatar, label, className }: EntityTagProps) {
   return (
-    <Link href={href} className={`flex items-center gap-2 ${className ?? ""}`}>
-      {avatar}
-      <span className="py-1">{label}</span>
+    <Link
+      href={href}
+      className={`
+        group flex items-center gap-2 w-fit
+        px-2 py-1 rounded-full
+        text-zinc-800 hover:text-zinc-400
+        bg-transparent hover:bg-white/5
+        ring-1 ring-transparent hover:ring-white/10
+        transition-all duration-200
+        ${className ?? ""}
+      `}
+    >
+      <span className="shrink-0 opacity-90 group-hover:opacity-100 transition-opacity">
+        {avatar}
+      </span>
+      <span className="text-sm font-medium tracking-wide">{label}</span>
     </Link>
   );
 }

@@ -30,7 +30,7 @@ export default async function Layout({ children, params }: LayoutProps) {
       <SubredditBanner subreddit={subreddit} />
       <SubredditHeader subreddit={subreddit} />
 
-      <div className=" mx-auto px-4 py-5">
+      <div className=" mx-auto px-4 py-5 dark:bg-[#0B1416]">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
 
           {/* Feed — fills all 3 cols on mobile, 2 on md+ */}
