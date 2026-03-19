@@ -1,5 +1,5 @@
 // app/r/[slug]/layout.tsx
-import { getSubreddit, getSubredditWithMembership } from "@/lib/api/Subreddit/GetSubreddit"
+import { getSubreddit, getSubredditWithMembership } from "@/server/services/subreddit/Get"
 import { getAuthToken } from "@/lib/auth"
 import { Metadata } from "next"
 import { SubredditBanner } from "@/components/ui/subreddit/SubredditBanner"

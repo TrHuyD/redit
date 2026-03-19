@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { MessageSquare } from 'lucide-react'
 import CommentAmtDisplay from './CommentAmtDisplay'
 import EditorOutput from './EditorOutput'
+import PostVoteClient from './PostVoteClient'
 interface PostProps {
     post: Post & {
       author: User
@@ -30,7 +31,6 @@ export default function PostOut({  post,
         <div className='px-4' >
         <div className="py-1 flex items-center gap-2">
             <span>
-              {/* <UsernameTag user={post.author} /> */}
             
             </span>
             <UsernameTag user={post.author} />
@@ -54,8 +54,11 @@ export default function PostOut({  post,
             {pRef.current?.clientHeight === 160 ? (
                <div className='absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent'></div>
             ) : null}
-          </div>   
+          </div >
+            <div className='flex gap-3'>  
+              <PostVoteClient postId={post.id} initialVote={null} initialVotesAmt={1}/>
               <CommentAmtDisplay amt={commentAmt}/>
+              </div> 
           </div>       
           </div>    
        </div>

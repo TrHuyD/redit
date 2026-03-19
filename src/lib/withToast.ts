@@ -8,6 +8,11 @@ export function withToast<TArgs extends any[], TResult>(
     try {
       return await fn(...args)
     } catch (error: any) {
+      if(error.status===404)
+      {
+        toast.error("404")
+      }
+      else
       if (error.status === 401) {
         loginToast()
       } else {

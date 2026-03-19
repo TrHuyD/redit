@@ -1,7 +1,7 @@
 
 import PostFeed from "@/components/ui/post/PostFeed"
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config"
-import { getSubreddit } from "@/lib/api/Subreddit/GetSubreddit"
+import { getSubreddit } from "@/server/services/subreddit/Get"
 import { getAuthToken } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { notFound } from "next/navigation"

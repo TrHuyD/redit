@@ -1,4 +1,4 @@
-import { getSubreddit } from "@/lib/api/Subreddit/GetSubreddit"
+import { getSubreddit } from "@/server/services/subreddit/Get"
 import { notFound } from "next/navigation"
 import  Editor  from "@/components/ui/Editor"
 import { SubredditSelector } from "../components/SubredditSelector"
