@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation"
 export default function CreateSubReddit() {
   const [inputName, setInputName] = useState("")
   var router = useRouter()
-  const { mutate: createCommunity, isLoading } = useMutation({
+  const { mutate: createCommunity, isPending } = useMutation({
     mutationFn: withToast(createSubreddit),
     onSuccess: () => {
         toast.success("Community created successfully! fowarding to community page")
@@ -23,7 +23,7 @@ export default function CreateSubReddit() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (isLoading) return  
+    if (isPending) return  
     if (!inputName.trim()) return
 
     createCommunity({ name: inputName })
@@ -62,7 +62,7 @@ export default function CreateSubReddit() {
           <div className="flex justify-end gap-4">
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isPending}
             >
               Submit
             </Button>

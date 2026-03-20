@@ -1,3 +1,7 @@
-export type Result<T, E = string> =
-| { ok: true; data: T }
-| { ok: false; error: E }
+export type ApiError = {
+  code?: string |"404"
+  message: string
+}
+export type Result<T> =
+  | { ok: true; data: T }
+  | { ok: false; error: ApiError }

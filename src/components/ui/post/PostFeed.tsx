@@ -20,26 +20,35 @@ export default function PostFeed({initialPosts,subredditName}: PostFeedProps) {
         threshold: 1
     })
 
-    const {data, fetchNextPage, isFetchingNextPage}= useInfiniteQuery(['infinite-query'],
-            async ({pageParam = 1})=>{
-                const params = new URLSearchParams({
-                    limit: INFINITE_SCROLLING_PAGINATION_RESULTS.toString(),
-                    page: pageParam.toString(),
-                    ...(subredditName && { subredditName }),
-                })
-                const query = `/api/posts?${params.toString()}`
-                const {data}= await axios.get(query)
-                return data as ExtendedPost[]
-                },{
-                    getNextPageParam: (_, pages) => {
-                        return pages.length + 1
-                    },
-                    initialData: {
-                        pages: [initialPosts],
-                        pageParams: [1]
-                    }
-                })
-                const posts = data?.pages.flatMap(page => page) ?? initialPosts
+    const {
+        data,
+        fetchNextPage,
+        isFetchingNextPage,
+      } = useInfiniteQuery({
+        queryKey: ['infinite-query', subredditName], 
+        queryFn: async ({ pageParam = 1 }) => {
+          const params = new URLSearchParams({
+            limit: INFINITE_SCROLLING_PAGINATION_RESULTS.toString(),
+            page: pageParam.toString(),
+            ...(subredditName && { subredditName }),
+          })
+      
+          const query = `/api/posts?${params.toString()}`
+          const { data } = await axios.get(query)
+      
+          return data as ExtendedPost[]
+        },
+        initialPageParam: 1, 
+        getNextPageParam: (_lastPage, pages) => {
+          return pages.length + 1
+        },
+        initialData: {
+          pages: [initialPosts],
+          pageParams: [1],
+        },
+      })
+      
+      const posts = data?.pages.flatMap((page) => page) ?? initialPosts
 
     return (
         <ul className="flex flex-col col-span-2 space-y-6">

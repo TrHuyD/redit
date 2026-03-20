@@ -14,10 +14,10 @@ export async function JoinSubreddit(data: UserSubredditRequestPayload) : Promise
       } catch (err) {
         if (err instanceof Prisma.PrismaClientKnownRequestError) {
           if (err.code === "P2002")
-            return { ok: false, error: "User already joined this subreddit!" }
+            return { ok: false, error: {code:"409", message:"User already joined this subreddit"} }
       
           if (err.code === "P2003")
-            return { ok: false, error: "Subreddit not found" }
+            return { ok: false, error:{code:"500",message: "Subreddit not found" }}
         }
       
         throw err

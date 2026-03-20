@@ -44,7 +44,7 @@ export default function Editor({ subredditId }: EditorProps) {
 
   const { startUpload } = useUploadThing('imageUploader')
 
-  const { mutate: createPost, isLoading } = useMutation({
+  const { mutate: createPost, isPending } = useMutation({
     mutationFn: async ({ title, content, subredditId }: PostCreationRequest) => {
       const payload: PostCreationRequest = { title, content, subredditId }
       const { data } = await axios.post('/api/subreddit/post/create', payload)

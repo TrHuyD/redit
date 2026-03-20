@@ -9,8 +9,8 @@ export const POST = withErrorHandler(withAuth(async (req: NextRequest, token) =>
     const { subredditId :name } = SubscriptionValidator.parse(body)
     const userId = token.id
     const result = await JoinSubreddit({ subredditId: name, userId })
-    if (!result.ok) {
-        return Response.json({error :result.error}, {status: 400 })}
+    if (!result.ok&&result.error.code!="409" ) {
+        return Response.json({error :result}, {status: 400 })}
     return new Response("ok", { status: 200 }) 
 
 }))

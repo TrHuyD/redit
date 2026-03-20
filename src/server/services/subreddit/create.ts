@@ -9,7 +9,7 @@ export async function createSubreddit(data: CreateSubredditRequestPayload) : Pro
       })
       
       if (existing) {
-        return { ok: false, error: "SUBREDDIT_EXISTS" }
+        return { ok: false, error:{code:"409",message: "SUBREDDIT_EXISTS"} }
       }
 
       const subreddit = await db.subreddit.create({
