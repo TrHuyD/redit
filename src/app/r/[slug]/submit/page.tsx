@@ -19,13 +19,6 @@ interface PageProps {
       {/* heading */}
       <SubredditSelector slug={slug}/>
       <div className='border-b  pb-5'>
-        <div className='-ml-2 -mt-2 flex flex-wrap items-baseline'>
-          <h3 className='ml-2 mt-2 text-base font-semibold leading-6 '>
-            Create Post
-          </h3>
-          <p className='ml-2 mt-1 truncate text-sm'>in r/{slug}
-          </p>
-        </div>
       </div>
       <Editor subredditId={subreddit.id}/>
       <div className='w-full flex justify-end'>

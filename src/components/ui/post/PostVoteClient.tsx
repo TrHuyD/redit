@@ -9,6 +9,7 @@ import { ArrowBigDown, ArrowBigUp, Vote } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Button } from "../Button"
 import { cn } from "@/lib/utils"
+import { useSession } from "next-auth/react"
 
 interface PostVoteClientProps {
     postId: string
@@ -24,12 +25,16 @@ export default function PostVoteClient({postId,initialVotesAmt,initialVote}:Post
         const [currentVote, setCurrentVote] = useState(initialVote)
         const [votesAmt, setVotesAmt] = useState<number>(initialVotesAmt)
         const prevVote = usePrevious(currentVote)
+        const { data: session } = useSession()
         useEffect(() => setCurrentVote(initialVote),[initialVote])
         const {mutate: vote } = useMutation({
             mutationFn : withToast(async (type: VoteType)=> {
                 return votePost({type:type,postId:postId})
             }),
-            onMutate:(type:VoteType) =>{
+            onMutate:(type:VoteType) =>
+              {
+                if(session?.user==null)
+                  return;
                 if (currentVote === type)
                 {    
                     setCurrentVote(undefined)

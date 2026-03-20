@@ -165,7 +165,7 @@ export default function Editor({ subredditId }: EditorProps) {
   const { ref: titleRef, ...rest } = register('title')
 
   return (
-    <div className="w-full p-4 rounded-xl border border-border 
+    <div className="w-full max-w-3xl p-4 rounded-xl border border-border 
     bg-background 
     dark:bg-zinc-900 
     bg-zinc-100 

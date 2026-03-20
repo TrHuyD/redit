@@ -8,13 +8,16 @@ import { createSubreddit } from "@/lib/api/Subreddit/Create"
 import { withToast } from "@/lib/withToast"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { useModal } from "@/components/ui/providers/modal-provider"
 
 export default function CreateSubReddit() {
   const [inputName, setInputName] = useState("")
   var router = useRouter()
+  const { closeModal } = useModal() 
   const { mutate: createCommunity, isPending } = useMutation({
     mutationFn: withToast(createSubreddit),
     onSuccess: () => {
+        closeModal()
         toast.success("Community created successfully! fowarding to community page")
         router.push(`/r/${inputName}`)
         

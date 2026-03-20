@@ -47,7 +47,7 @@ export function SubredditSelector({ slug }: SubredditSelectorProps) {
     if (slug) setValue(slug)
   }, [slug])
 
-  // 🔥 Simulate dynamic API filtering
+  // Simulate dynamic API filtering
   React.useEffect(() => {
     const all = [
       { value: 'reactjs', label: 'r/reactjs' },
@@ -64,7 +64,7 @@ export function SubredditSelector({ slug }: SubredditSelectorProps) {
     setSubreddits(filtered)
   }, [search])
 
-  // ✅ Always derive selected from value (NOT list)
+  // Always derive selected from value (NOT list)
   const selected = value
     ? { value, label: `r/${value}` }
     : null
@@ -77,7 +77,8 @@ export function SubredditSelector({ slug }: SubredditSelectorProps) {
         {!open && (
           <Button
             onClick={() => setOpen(true)}
-            className="w-full h-[48px] px-4 rounded-full border bg-muted hover:bg-muted/80 transition text-base flex items-center gap-2"
+            variant="secondary"
+            className="w-full h-[48px] px-4 rounded-full border  transition text-base flex items-center gap-2"
           >
             <div className="w-6 h-6 rounded-full bg-primary/20 shrink-0" />
             <span className="flex-1 text-left">
@@ -90,16 +91,8 @@ export function SubredditSelector({ slug }: SubredditSelectorProps) {
         {/* OPEN */}
         {open && (
           <Command
-            shouldFilter={false} // ❗ important
-            className="h-[48px] w-full rounded-full border bg-background overflow-hidden
-              [&_[cmdk-input-wrapper]]:flex
-              [&_[cmdk-input-wrapper]]:items-center
-              [&_[cmdk-input-wrapper]]:w-full
-              [&_[cmdk-input-wrapper]]:h-full
-              [&_[cmdk-input-wrapper]]:px-4
-              [&_[cmdk-input-wrapper]]:gap-2
-              [&_[cmdk-input-wrapper]_svg]:hidden"
-          >
+            shouldFilter={false}
+            className="h-[48px] w-full rounded-full border bg-background overflow-hidden">
             {/* INPUT ROW */}
             <div className="flex items-center h-full w-full">
               <CommandInput
@@ -122,7 +115,7 @@ export function SubredditSelector({ slug }: SubredditSelectorProps) {
                     e.stopPropagation()
                     setSearch('')
                   }}
-                  className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-muted-foreground/30 hover:bg-muted-foreground/50 transition"
+                  className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full  transition"
                 >
                   <X className="h-3 w-3" />
                 </Button>
