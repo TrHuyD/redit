@@ -7,7 +7,7 @@ import { VoteType } from "@prisma/client"
 import { useMutation } from "@tanstack/react-query"
 import { ArrowBigDown, ArrowBigUp, Vote } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Button } from "../button"
+import { Button } from "../Button"
 import { cn } from "@/lib/utils"
 
 interface PostVoteClientProps {

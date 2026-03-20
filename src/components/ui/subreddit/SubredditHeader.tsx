@@ -34,7 +34,7 @@ export function SubredditHeader({ subreddit }: Props) {
             <CreatePostButton />
             <button className="border border-zinc-300 dark:border-zinc-600 rounded-full px-3 py-1.5 text-sm font-bold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700">
               ···
-            </button>
+            </Button>
           </div>
         </div>
 

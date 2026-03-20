@@ -83,7 +83,7 @@ export function SubredditSelector({ slug }: SubredditSelectorProps) {
               {selected?.label || 'Select a community'}
             </span>
             <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
-          </button>
+          </Button>
         )}
 
         {/* OPEN */}
@@ -124,7 +124,7 @@ export function SubredditSelector({ slug }: SubredditSelectorProps) {
                   className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-muted-foreground/30 hover:bg-muted-foreground/50 transition"
                 >
                   <X className="h-3 w-3" />
-                </button>
+                </Button>
               )}
             </div>
 

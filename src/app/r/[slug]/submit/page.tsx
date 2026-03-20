@@ -2,7 +2,7 @@ import { getSubreddit } from "@/server/services/subreddit/Get"
 import { notFound } from "next/navigation"
 import  Editor  from "@/components/ui/Editor"
 import { SubredditSelector } from "../components/SubredditSelector"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/Button"
 interface PageProps {
     params: Promise<{
       slug: string
