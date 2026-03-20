@@ -10,6 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command'
+import { Button } from '@/components/ui/Button'
 
 type SubredditSelectorProps = {
   slug?: string
@@ -74,7 +75,7 @@ export function SubredditSelector({ slug }: SubredditSelectorProps) {
 
         {/* CLOSED */}
         {!open && (
-          <button
+          <Button
             onClick={() => setOpen(true)}
             className="w-full h-[48px] px-4 rounded-full border bg-muted hover:bg-muted/80 transition text-base flex items-center gap-2"
           >
@@ -110,7 +111,7 @@ export function SubredditSelector({ slug }: SubredditSelectorProps) {
               />
 
               {search.length > 0 && (
-                <button
+                <Button
                   type="button"
                   onMouseDown={(e) => {
                     e.preventDefault()

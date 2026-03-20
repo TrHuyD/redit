@@ -4,6 +4,7 @@ import CreatePostButton from "@/components/post/CreatePostButton"
 import { SubscribeLeaveToggle } from "@/components/ui/subreddit/SubscribeLeaveToggle"
 import { SubredditWithMembership } from "@/types/subreddit"
 import { SubredditAvatar } from "./SubredditAvatar"
+import { Button } from "../Button"
 
 
 interface Props {
@@ -32,7 +33,7 @@ export function SubredditHeader({ subreddit }: Props) {
           <div className="flex items-center gap-2">
             <SubscribeLeaveToggle subreddit={subreddit} />
             <CreatePostButton />
-            <button className="border border-zinc-300 dark:border-zinc-600 rounded-full px-3 py-1.5 text-sm font-bold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700">
+            <Button className="border border-zinc-300 dark:border-zinc-600 rounded-full px-3 py-1.5 text-sm font-bold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700">
               ···
             </Button>
           </div>
