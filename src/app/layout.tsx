@@ -1,47 +1,36 @@
-
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
-import {Inter} from 'next/font/google'
+import { Inter } from 'next/font/google'
 import Navbar from '@/components/ui/Navbar'
-import { Toaster } from 'sonner'
-import { ModalProvider } from "@/components/ui/providers/modal-provider";
-import {QueryProvider} from "@/components/ui/providers/query-provider"
-import { ThemeProvider } from 'next-themes'
+import { Providers } from '@/components/ui/provider'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Redit',
   description: 'A Reddit clone built with Next.js and TypeScript.',
 }
 
-const inter = Inter ( { subsets : ['latin']})
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
-  popModal  
+  popModal,
 }: {
-  children: React.ReactNode,
+  children: React.ReactNode
   popModal: React.ReactNode
 }) {
-
-
   return (
-    <html lang='en'  className= {cn('text-slate-900  antialiased', inter.className)}  >
-    {/*text-slate-900 bg-white antialiased light', inter.className */}
-      <body className ={cn('min-h-screen antialiased')}>
-      <ThemeProvider attribute="class" defaultTheme='light'>
-
-      <QueryProvider>
-      <ModalProvider>
-       <Navbar/>
-       {popModal}
-       <div className={cn('w-full h-full pt-14')}>
-          {children}
-        </div>
-      <Toaster/>
-      </ModalProvider>
-      </QueryProvider>
-    </ThemeProvider>
-
+    <html
+      lang="en"
+      className={cn('text-slate-900 antialiased', inter.className)}
+    >
+      <body className="min-h-screen antialiased">
+        <Providers>
+          <Navbar />
+          {popModal}
+          <div className="w-full h-full pt-14">
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   )

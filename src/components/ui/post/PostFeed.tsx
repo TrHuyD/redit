@@ -8,6 +8,8 @@ import axios from "axios";
 import { useRef } from "react";
 import PostOut from "./PostOut";
 import { Loader2 } from "lucide-react";
+import { VoteType } from "@prisma/client";
+import { useSession } from "next-auth/react";
 interface PostFeedProps{
     initialPosts: ExtendedPost[];
     subredditName : string;
@@ -19,7 +21,7 @@ export default function PostFeed({initialPosts,subredditName}: PostFeedProps) {
         root: lastPostRef.current,
         threshold: 1
     })
-
+    const { data: session } = useSession()
     const {
         data,
         fetchNextPage,
@@ -49,17 +51,17 @@ export default function PostFeed({initialPosts,subredditName}: PostFeedProps) {
       })
       
       const posts = data?.pages.flatMap((page) => page) ?? initialPosts
-
+    
     return (
         <ul className="flex flex-col col-span-2 space-y-6">
             {posts.map((post, index) => {
                 const voteAmt= post.votes.reduce((acc, vote) => {
-                    if(vote.type === 'UP')
+                    if(vote.type ==VoteType.UPVOTE)
                         return acc + 1
-                    if(vote.type === 'DOWN')
+                    if(vote.type ==VoteType.DOWNVOTE)
                         return acc - 1
                     return acc},0) 
-            const currentVote = post.votes.find(vote => vote.userId === 'currentUserId')   
+            const currentVote =session? post.votes.find(vote => vote.userId === session.user.id):undefined   
             if(index === posts.length - 1){
             return (
             <li key={post.id} ref={ref}> 

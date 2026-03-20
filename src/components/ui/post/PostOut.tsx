@@ -56,7 +56,7 @@ export default function PostOut({  post,
             ) : null}
           </div >
             <div className='flex gap-3'>  
-              <PostVoteClient postId={post.id} initialVote={null} initialVotesAmt={post.votes.length}/>
+              <PostVoteClient postId={post.id} initialVote={_currentVote?.type} initialVotesAmt={_votesAmt}/>
               <CommentAmtDisplay amt={commentAmt}/>
               </div> 
           </div>       
