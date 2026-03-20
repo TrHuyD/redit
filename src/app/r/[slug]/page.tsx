@@ -1,9 +1,7 @@
 
 import PostFeed from "@/components/ui/post/PostFeed"
-import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config"
-import { getSubreddit } from "@/server/services/subreddit/Get"
-import { getAuthToken } from "@/lib/auth"
-import { db } from "@/lib/db"
+
+import {  getSubredditPosts } from "@/server/services/subreddit/Get"
 import { notFound } from "next/navigation"
 
 interface PageProps {
@@ -14,28 +12,11 @@ interface PageProps {
   
   export default async function Page({ params }: PageProps) {
     const { slug } = await params
-    // const subreddit = await getSubreddit(slug)
-    const subreddit = await db.subreddit.findFirst({
-      where: { name: slug },
-      include: {
-        posts: {
-          include: {
-            author: true,
-            votes: true,
-            comments: true,
-            subreddit: true,
-          },
-          orderBy: {
-            createdAt: 'desc'
-          },
-          take: INFINITE_SCROLLING_PAGINATION_RESULTS,
-        },
-      },
-    })
-    if(!subreddit)
+    const posts =await getSubredditPosts(slug)
+    if(!posts)
         return notFound()
     return (
-      <PostFeed initialPosts={subreddit.posts} subredditName={slug}/>
+      <PostFeed initialPosts={posts} subredditName="slug" />
     )
     
   }

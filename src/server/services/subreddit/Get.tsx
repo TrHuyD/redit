@@ -46,17 +46,27 @@ export async function getSubredditWithMembership(slug: string, userId?: string) 
 }
 
 export async function getSubredditPosts(slug: string,orderBy: "asc" | "desc" = "desc",take: number = INFINITE_SCROLLING_PAGINATION_RESULTS) {   
-    return db.post.findMany({
-      where: {
-        subreddit: { name: slug }
-      },
-      include: {
-        author: true,
-        votes: true,
-        comments: true,
-        subreddit: true,
-      },
-      orderBy: { createdAt: orderBy },
-      take  : take
-    })
-  }
+  
+  const subreddit = await getSubreddit(slug)
+  if(!subreddit)
+      return null
+  const _posts= await db.post.findMany({
+    where: { subredditId: subreddit.id },
+    include: {
+      author: true,
+      votes: true,
+      comments: true,
+    },
+    orderBy: { createdAt: orderBy },
+    take  : take
+  })
+  const posts = _posts.map(post => ({
+    ...post,
+    subreddit,
+  }))
+  return posts
+}
+  
+  
+  
+  

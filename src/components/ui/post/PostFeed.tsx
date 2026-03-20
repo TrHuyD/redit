@@ -10,9 +10,10 @@ import PostOut from "./PostOut";
 import { Loader2 } from "lucide-react";
 interface PostFeedProps{
     initialPosts: ExtendedPost[];
-    subredditName?: string;
+    subredditName : string;
+
 }
-export default function PostFeed({initialPosts, subredditName}: PostFeedProps) {
+export default function PostFeed({initialPosts,subredditName}: PostFeedProps) {
     const lastPostRef = useRef<HTMLDivElement>(null)
     const {ref, entry} = useIntersection({
         root: lastPostRef.current,
