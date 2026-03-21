@@ -2,6 +2,7 @@ import { CreateSubredditRequestPayload } from "@/lib/validators/subreddit"
 import {db} from "@/lib/db"
 import { Result } from "@/lib/Result"
 import { Subreddit } from "@prisma/client"
+import {  generateSubredditId } from "../Snowflake"
 export async function createSubreddit(data: CreateSubredditRequestPayload) : Promise<Result<Subreddit>>{
 
     const existing = await db.subreddit.findUnique({
@@ -14,6 +15,7 @@ export async function createSubreddit(data: CreateSubredditRequestPayload) : Pro
 
       const subreddit = await db.subreddit.create({
         data: {
+          id: generateSubredditId(),
           name: data.name,
           creatorId: data.userId
         }

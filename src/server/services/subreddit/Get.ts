@@ -3,8 +3,9 @@ import { db } from "@/lib/db"
 
 import { cache } from "react"
 import { notFound } from "next/navigation"
+import { ID } from "@/types/ID"
 
-export const getSubredditMemberCount = cache(async (subId: string) => {
+export const getSubredditMemberCount = cache(async (subId: ID) => {
   const count = await db.subscription.count({
     where: {
       subredditId: subId,
@@ -29,7 +30,7 @@ export const getSubredditManifestedMetadata = cache(async (slug: string) => {
     userCount: memberCount
   }
 })
-export async function getSubredditWithMembership(slug: string, userId?: string) {
+export async function getSubredditWithMembership(slug: string, userId?: ID) {
   var metadata = await getSubredditManifestedMetadata(slug)
   var membership =!userId?null: await db.subscription.findUnique({
     where: {userId_subredditId: {

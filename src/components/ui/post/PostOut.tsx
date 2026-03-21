@@ -38,7 +38,7 @@ export default function PostOut({  post,
               {formatTimeToNow(new Date(post.createdAt))}
             </span>
           </div>
-
+          
           <a href={`/r/${subreddit.name}/post/${post.id}`}>
           <h1 className='px-2 text-lg font-semibold py-1 leading-6'>
               {post.title}

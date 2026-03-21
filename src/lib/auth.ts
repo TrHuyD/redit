@@ -1,16 +1,15 @@
 import { getServerSession, NextAuthOptions } from "next-auth"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import GoogleProvider from "next-auth/providers/google"
 import { nanoid } from "nanoid"
 import { cache } from "react"
 import { db } from "./db"
-import { cookies, headers } from "next/headers"
-
+import { cookies } from "next/headers"
 import { getToken, JWT } from "next-auth/jwt"
+import { generateUserId } from "@/server/services/Snowflake"
+
+
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db),
-
   session: {
     strategy: "jwt",
   },
@@ -27,52 +26,64 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
-      // first login
-      if (user) {
-        token.id = user.id
-        token.image = user.image
-      }
+    async jwt({ token, account, profile }) {
+      if (account?.provider === "google" && profile) {
+        const googleProfile = profile as {
+          sub: string         
+          name?: string
+          email?: string
+          picture?: string
+        }
 
-      const dbUser = await db.user.findUnique({
-        where: {
-          email: token.email!,
-        },
-      })
+        const googleId = googleProfile.sub
 
-      if (!dbUser) return token
-
-      // create username if missing
-      if (!dbUser.username) {
-        const updatedUser = await db.user.update({
-          where: { id: dbUser.id },
-          data: {
-            username: nanoid(10),
-          },
+        let dbUser = await db.user.findUnique({
+          where: { googleId },
         })
 
-        dbUser.username = updatedUser.username
+        if (!dbUser && googleProfile.email) {
+          dbUser = await db.user.findUnique({
+            where: { email: googleProfile.email },
+          })
+
+          if (dbUser) {
+            dbUser = await db.user.update({
+              where: { id: dbUser.id },
+              data: { googleId },
+            })
+          }
+        }
+        if (!dbUser) {
+          dbUser = await db.user.create({
+            data: {
+              id: generateUserId(),
+              email: googleProfile.email!,
+              googleId,
+              name: googleProfile.name,
+              image: googleProfile.picture,
+              username: nanoid(10),
+            },
+          })
+        }
+
+        token.id = dbUser.id.toString()
+        token.image = dbUser.image
+        token.username = dbUser.username
+        token.name = dbUser.name
+        token.email = dbUser.email
       }
 
-      return {
-        ...token,
-        id: dbUser.id,
-        name: dbUser.name,
-        email: dbUser.email,
-        image: dbUser.image,
-        username: dbUser.username,
-      }
+      return token
     },
 
     async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string
+      if (session.user && token) {
+        session.user.id = token.id
         session.user.name = token.name
         session.user.email = token.email
         session.user.image = token.image as string
         session.user.username = token.username as string
       }
-
       return session
     },
 
@@ -82,12 +93,11 @@ export const authOptions: NextAuthOptions = {
   },
 }
 
-export const getAuthSession = cache(() =>
-  getServerSession(authOptions)
-)
+export const getAuthSession = cache(() => getServerSession(authOptions))
+
 export const getAuthToken = cache(async (): Promise<JWT | null> => {
   const cookieStore = await cookies()
-  
+
   const token = await getToken({
     req: {
       cookies: Object.fromEntries(
@@ -98,6 +108,5 @@ export const getAuthToken = cache(async (): Promise<JWT | null> => {
   })
 
   if (!token?.id) return null
-
   return token
 })

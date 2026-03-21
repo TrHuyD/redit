@@ -29,7 +29,6 @@ export const SubscribeLeaveToggle = ({ subreddit }: { subreddit: SubredditToggle
     }),
     onSuccess: () => {
       setMember(true) 
-      // toast.success(`You are now subscribed to r/${name}`)
       startTransition(() => router.refresh())
     },
   })
@@ -41,13 +40,12 @@ export const SubscribeLeaveToggle = ({ subreddit }: { subreddit: SubredditToggle
     }),
     onSuccess: () => {
       setMember(false) 
-      // toast.success(`You are now unsubscribed from r/${name}`)
       startTransition(() => router.refresh())
     },
   })
 
   const isLoading = isSubLoading || isUnsubLoading
-
+  
   if (isCreator) {
     return (
       <p className="w-full">

@@ -10,9 +10,10 @@ import { useEffect, useState } from "react"
 import { Button } from "../Button"
 import { cn } from "@/lib/utils"
 import { useSession } from "next-auth/react"
+import { ID } from "@/types/ID"
 
 interface PostVoteClientProps {
-    postId: string
+    postId: ID
     initialVotesAmt: number
     initialVote?: VoteType | null
   }

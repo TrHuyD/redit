@@ -2,16 +2,18 @@
 import { VoteType } from '@prisma/client'
 import {z} from 'zod'
 import { UserValidator } from './user'
+import { ID } from '@/types/ID'
+export const subredditMentionValidator = z.object({
+    subredditId: ID.zod(),
+})
 export const PostValidator = z.object({ 
     title: z.string().min(3, "Title must be at least 3 characters long").max(30, "Title must be less than 30 characters long"),
-    subredditId: z.string(),
     content: z.any(),
-})
+}).merge(subredditMentionValidator)
 export type PostCreationRequest = z.infer<typeof PostValidator>
-
 export const PostVoteValidator = z.object({
     type : z.nativeEnum(VoteType),
-    postId : z.string()
+    postId : ID.zod()
 })
 export const PostVoteRequestValidator =PostVoteValidator.merge(UserValidator)
 export type PostVotePayload = z.infer<typeof PostVoteValidator>

@@ -3,11 +3,12 @@ import { withErrorHandler } from "@/server/lib/withErrorHandler"
 import { SubscriptionValidator } from "@/lib/validators/subreddit"
 import { NextRequest } from "next/server"
 import { JoinSubreddit } from "@/server/services/subreddit/join"
+import { getId } from "@/lib/utils"
 
 export const POST = withErrorHandler(withAuth(async (req: NextRequest, token) => {
     const body = await req.json()
     const { subredditId :name } = SubscriptionValidator.parse(body)
-    const userId = token.id
+    const userId = getId(token)
     const result = await JoinSubreddit({ subredditId: name, userId })
     if (!result.ok&&result.error.code!="409" ) {
         return Response.json({error :result}, {status: 400 })}

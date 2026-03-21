@@ -15,11 +15,12 @@ import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 
 import '@/styles/editor.css'
+import { ID } from '@/types/ID'
 
 type FormData = z.infer<typeof PostValidator>
 
 interface EditorProps {
-  subredditId: string
+  subredditId: ID
 }
 
 export default function Editor({ subredditId }: EditorProps) {

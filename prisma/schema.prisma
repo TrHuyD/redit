@@ -11,8 +11,8 @@ datasource db {
 
 }
 model Account {
-  id                String  @id @default(cuid())
-  userId            String  @unique
+  id                BigInt  @id
+  userId            BigInt  @unique
   type              String
   provider          String
   providerAccountId String
@@ -32,18 +32,18 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String
+  userId       BigInt
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            BigInt    @id 
   name          String?
   username      String?
   email         String?   @unique
   emailVerified DateTime?
-
+  googleId String? @unique
   image    String?
   accounts Account[]
   sessions Session[]
@@ -59,8 +59,8 @@ model User {
 }
 
 model Subscription {
-  userId String
-  subredditId String
+  userId BigInt
+  subredditId BigInt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   subreddit Subreddit @relation(fields: [subredditId], references: [id], onDelete: Cascade)
@@ -70,7 +70,7 @@ model Subscription {
 }
 
 model Subreddit{
-  id String @id @default(cuid())
+  id BigInt @id 
   name String @unique
   createdAt DateTime @default(now())
   latestUpdateAt DateTime @default(now())
@@ -78,20 +78,20 @@ model Subreddit{
   image    String? @default("https://cdn.discordapp.com/embed/avatars/4.png")
   subscribers Subscription[]
 
-  creatorId   String?
+  creatorId   BigInt?
   Creator     User?          @relation("CreatedBy", fields: [creatorId], references: [id])
 }
 model Post{
-  id String @id @default(cuid())
+  id  BigInt @id
   title String
   content Json?
   createdAt DateTime @default(now())
   latestUpdateAt DateTime @default(now())
 
-  subredditId String
+  subredditId BigInt
   subreddit Subreddit @relation(fields: [subredditId], references: [id], onDelete: Cascade)
 
-  authorId String
+  authorId BigInt
   author User @relation(fields: [authorId], references: [id])
   comments Comment[]
   votes PostVote[]
@@ -99,18 +99,18 @@ model Post{
   @@index([title])
 }
 model Comment {
-  id String @id @default(cuid())
+  id BigInt @id 
   content Json
   createdAt DateTime @default(now())
   latestUpdateAt DateTime @default(now())
 
-  postId String
+  postId BigInt
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  authorId String
+  authorId BigInt
   author User @relation(fields: [authorId], references: [id])
 
-  replyToId String?
+  replyToId BigInt?
   replyTo Comment? @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: SetNull,onUpdate: SetNull)
   replies Comment[] @relation("ReplyTo")
 
@@ -125,10 +125,10 @@ enum VoteType {
 model PostVote {
   type VoteType
 
-  postId String
+  postId BigInt
   post Post @relation(fields: [postId], references: [id])
 
-  userId String
+  userId BigInt
   user User @relation(fields: [userId], references: [id])
 
   @@id([postId, userId])
@@ -136,10 +136,10 @@ model PostVote {
 model CommentVote {
   type VoteType
 
-  commentId String
+  commentId BigInt
   comment Comment @relation(fields: [commentId], references: [id])
 
-  userId String
+  userId BigInt
   user User @relation(fields: [userId], references: [id])
 
   @@id([commentId, userId])

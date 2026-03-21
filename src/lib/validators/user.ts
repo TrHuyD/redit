@@ -1,5 +1,6 @@
+import { ID } from "@/types/ID";
 import z from "zod";
 
 export const UserValidator = z.object({
-    userId: z.string(),
+    userId: ID.zod()
   })

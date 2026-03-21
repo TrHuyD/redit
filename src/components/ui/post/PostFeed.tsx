@@ -35,7 +35,7 @@ export default function PostFeed({initialPosts,subredditName}: PostFeedProps) {
             ...(subredditName && { subredditName }),
           })
       
-          const query = `/api/posts?${params.toString()}`
+          const query = `/api/post?${params.toString()}`
           const { data } = await axios.get(query)
       
           return data as ExtendedPost[]

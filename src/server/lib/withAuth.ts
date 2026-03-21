@@ -10,7 +10,6 @@ export function withAuth(
     if (!token?.id) {
       return new Response("Unauthorized", { status: 401 })
     }
-
     return handler(req, token)
   }
 }
