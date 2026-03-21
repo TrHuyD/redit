@@ -10,7 +10,12 @@ import {Plus} from "lucide-react"
 export default function CreatePostButton (){
     const router = useRouter()
     const pathname = usePathname()
-    const submit = () => router.push(`${pathname}/submit`)
+    const segments = pathname.split("/").filter(Boolean)
+    const base = segments.slice(0, 2).join("/")
+   
+    const submit = () => {
+      router.push(`/${base}/submit`, undefined)
+    }
     return <Button onClick={submit} variant="secondary" >
       <Plus />
       Create Post</Button>

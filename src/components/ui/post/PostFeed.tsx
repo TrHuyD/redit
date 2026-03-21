@@ -10,6 +10,7 @@ import PostOut from "./PostOut";
 import { Loader2 } from "lucide-react";
 import { VoteType } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import { bigint } from "zod";
 interface PostFeedProps{
     initialPosts: ExtendedPost[];
     subredditName : string;
@@ -22,32 +23,32 @@ export default function PostFeed({initialPosts,subredditName}: PostFeedProps) {
         threshold: 1
     })
     const { data: session } = useSession()
+    const userId = session? BigInt(session.user.id) :undefined
     const {
-        data,
-        fetchNextPage,
-        isFetchingNextPage,
+      data,
+      fetchNextPage,
+      isFetchingNextPage,
       } = useInfiniteQuery({
-        queryKey: ['infinite-query', subredditName], 
-        queryFn: async ({ pageParam = 1 }) => {
-          const params = new URLSearchParams({
-            limit: INFINITE_SCROLLING_PAGINATION_RESULTS.toString(),
-            page: pageParam.toString(),
-            ...(subredditName && { subredditName }),
-          })
-      
-          const query = `/api/post?${params.toString()}`
-          const { data } = await axios.get(query)
-      
-          return data as ExtendedPost[]
-        },
-        initialPageParam: 1, 
-        getNextPageParam: (_lastPage, pages) => {
-          return pages.length + 1
-        },
-        initialData: {
-          pages: [initialPosts],
-          pageParams: [1],
-        },
+          queryKey: ['infinite-query', subredditName],
+          queryFn: async ({ pageParam = 1 }) => {
+              const params = new URLSearchParams({
+                  limit: INFINITE_SCROLLING_PAGINATION_RESULTS.toString(),
+                  page: pageParam.toString(),
+                  ...(subredditName && { subredditName }),
+              })
+              const query = `/api/post?${params.toString()}`
+              const { data } = await axios.get(query)
+              return data as ExtendedPost[]
+          },
+          initialPageParam: 1,
+          getNextPageParam: (_lastPage, pages) => {
+              if (_lastPage.length < INFINITE_SCROLLING_PAGINATION_RESULTS) return undefined
+              return pages.length + 1
+          },
+          placeholderData: {        
+              pages: [initialPosts],
+              pageParams: [1],
+          },
       })
       
       const posts = data?.pages.flatMap((page) => page) ?? initialPosts
@@ -61,7 +62,7 @@ export default function PostFeed({initialPosts,subredditName}: PostFeedProps) {
                     if(vote.type ==VoteType.DOWNVOTE)
                         return acc - 1
                     return acc},0) 
-            const currentVote =session? post.votes.find(vote => vote.userId === session.user.id):undefined   
+            const currentVote =session? post.votes.find(vote => vote.userId === userId):undefined   
             if(index === posts.length - 1){
             return (
             <li key={post.id} ref={ref}> 
