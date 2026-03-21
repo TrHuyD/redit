@@ -12,14 +12,22 @@ export async function createSubreddit(data: CreateSubredditRequestPayload) : Pro
       if (existing) {
         return { ok: false, error:{code:"409",message: "SUBREDDIT_EXISTS"} }
       }
-
-      const subreddit = await db.subreddit.create({
-        data: {
-          id: generateSubredditId(),
-          name: data.name,
-          creatorId: data.userId
-        }
-      })
-    
+      const id = generateSubredditId()
+      await db.$transaction(async (tx) => {
+        const subreddit = await tx.subreddit.create({
+          data: {
+            id: id,
+            name: data.name,
+            creatorId: data.userId
+          }
+        })
+      
+        await tx.subscription.create({
+          data: {
+            userId: data.userId,
+            subredditId: id
+          }
+        })
       return { ok: true, data: subreddit }
+    })
     }
