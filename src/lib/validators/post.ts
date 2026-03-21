@@ -18,3 +18,13 @@ export const PostVoteValidator = z.object({
 export const PostVoteRequestValidator =PostVoteValidator.merge(UserValidator)
 export type PostVotePayload = z.infer<typeof PostVoteValidator>
 export type PostVoteRequestPayload = z.infer<typeof PostVoteRequestValidator>
+
+export const SubredditPostRetrieveValidator =z.object(
+    {
+        limit: z.coerce.number().int().positive().max(50).optional(),
+        cursorId: z.coerce.bigint().optional(),
+        subredditName : z.string()
+    }
+)
+
+export type SubredditPostRetrievePayload = z.infer<typeof SubredditPostRetrieveValidator>

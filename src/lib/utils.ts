@@ -57,3 +57,7 @@ export function formatTimeToNow(date: Date): string {
 export function getId<T extends { id: string }>(obj: T): bigint {
   return BigInt(obj.id);
 }
+export function getIdnull<T extends { id: string }>(obj: T | null | undefined): bigint | undefined {
+  if (!obj) return undefined
+  return BigInt(obj.id)
+}

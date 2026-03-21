@@ -10,22 +10,12 @@ import { MessageSquare } from 'lucide-react'
 import CommentAmtDisplay from './CommentAmtDisplay'
 import EditorOutput from './EditorOutput'
 import PostVoteClient from './PostVoteClient'
+import { PostDto } from '@/types/dto'
 interface PostProps {
-    post: Post & {
-      author: User
-      votes: PostVote[]
-    }
-    votesAmt: number
-    subreddit: Subreddit
-    currentVote?: PartialVote
-    commentAmt: number
+    post: PostDto
   }
 type PartialVote = Pick<PostVote, 'type'>
-export default function PostOut({  post,
-  votesAmt: _votesAmt,
-  currentVote: _currentVote,
-  subreddit,
-  commentAmt,}: PostProps) {
+export default function PostOut({  post}: PostProps) {
     const pRef = useRef<HTMLParagraphElement>(null)
     return <div className="rounded-md shadow bg-white dark:shadow-black/50 dark:bg-slate-900">
         <div className='px-4' >
@@ -33,13 +23,13 @@ export default function PostOut({  post,
             <span>
             
             </span>
-            <UsernameTag user={post.author} />
+            <UsernameTag user={post.creator} />
             <span className="text-sm text-gray-500 ">
               {formatTimeToNow(new Date(post.createdAt))}
             </span>
           </div>
           
-          <a href={`/r/${subreddit.name}/post/${post.id}`}>
+          <a href={`/r/${post.subreddit.name}/post/${post.id}`}>
           <h1 className='px-2 text-lg font-semibold py-1 leading-6'>
               {post.title}
           </h1>
@@ -56,8 +46,8 @@ export default function PostOut({  post,
             ) : null}
           </div >
             <div className='flex gap-3'>  
-              <PostVoteClient postId={post.id} initialVote={_currentVote?.type} initialVotesAmt={_votesAmt}/>
-              <CommentAmtDisplay amt={commentAmt}/>
+              <PostVoteClient postId={post.id} initialVote={post.currentVote} initialVotesAmt={post.votesAmt}/>
+              <CommentAmtDisplay amt={post.commentsAmt}/>
               </div> 
           </div>       
           </div>    

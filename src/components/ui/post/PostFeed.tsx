@@ -1,101 +1,86 @@
 'use client'
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
-import { ExtendedPost } from "@/types/db";
-import {useIntersection} from "@mantine/hooks"
+import { useIntersection } from "@mantine/hooks"
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
-
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import PostOut from "./PostOut";
 import { Loader2 } from "lucide-react";
-import { VoteType } from "@prisma/client";
-import { useSession } from "next-auth/react";
-import { bigint } from "zod";
-interface PostFeedProps{
-    initialPosts: ExtendedPost[];
-    subredditName : string;
+import { PostDto } from "@/types/dto";
 
+interface PostFeedProps {
+    initialPosts: PostDto[];
+    subredditName?: string;
 }
-export default function PostFeed({initialPosts,subredditName}: PostFeedProps) {
+
+export default function PostFeed({ initialPosts, subredditName }: PostFeedProps) {
     const lastPostRef = useRef<HTMLDivElement>(null)
-    const {ref, entry} = useIntersection({
+
+    const { ref, entry } = useIntersection({
         root: lastPostRef.current,
         threshold: 1
     })
-    const { data: session } = useSession()
-    const userId = session? BigInt(session.user.id) :undefined
+
+
     const {
-      data,
-      fetchNextPage,
-      isFetchingNextPage,
-      } = useInfiniteQuery({
-          queryKey: ['infinite-query', subredditName],
-          queryFn: async ({ pageParam = 1 }) => {
-              const params = new URLSearchParams({
-                  limit: INFINITE_SCROLLING_PAGINATION_RESULTS.toString(),
-                  page: pageParam.toString(),
-                  ...(subredditName && { subredditName }),
-              })
-              const query = `/api/post?${params.toString()}`
-              const { data } = await axios.get(query)
-              return data as ExtendedPost[]
-          },
-          initialPageParam: 1,
-          getNextPageParam: (_lastPage, pages) => {
-              if (_lastPage.length < INFINITE_SCROLLING_PAGINATION_RESULTS) return undefined
-              return pages.length + 1
-          },
-          placeholderData: {        
-              pages: [initialPosts],
-              pageParams: [1],
-          },
-      })
-      
-      const posts = data?.pages.flatMap((page) => page) ?? initialPosts
-    
+        data,
+        fetchNextPage,
+        isFetchingNextPage,
+    } = useInfiniteQuery({
+        queryKey: ['infinite-query', subredditName],
+        queryFn: async ({ pageParam }) => {
+            const params = new URLSearchParams({
+                limit: INFINITE_SCROLLING_PAGINATION_RESULTS.toString(),
+                ...(pageParam && { cursorId: pageParam.toString() }),
+                ...(subredditName && { subredditName }),
+            })
+
+            const res = await axios.get(`/api/posts?${params.toString()}`)
+            return res.data as PostDto[]
+        },
+        initialPageParam: null as bigint | null,
+
+        getNextPageParam: (lastPage: PostDto[]) => {
+            if (lastPage.length < INFINITE_SCROLLING_PAGINATION_RESULTS) return undefined
+            return lastPage[lastPage.length - 1]?.id ?? undefined
+        },
+
+        initialData: {
+            pages: [initialPosts],
+            pageParams: [null],
+        },
+
+        staleTime: 1000 * 60,
+    })
+
+    useEffect(() => {
+        if (entry?.isIntersecting) {
+            fetchNextPage()
+        }
+    }, [entry, fetchNextPage])
+
+    const posts = data?.pages.flatMap((page) => page) ?? []
+
     return (
         <ul className="flex flex-col col-span-2 space-y-6">
             {posts.map((post, index) => {
-                const voteAmt= post.votes.reduce((acc, vote) => {
-                    if(vote.type ==VoteType.UPVOTE)
-                        return acc + 1
-                    if(vote.type ==VoteType.DOWNVOTE)
-                        return acc - 1
-                    return acc},0) 
-            const currentVote =session? post.votes.find(vote => vote.userId === userId):undefined   
-            if(index === posts.length - 1){
-            return (
-            <li key={post.id} ref={ref}> 
-                <PostOut 
-                            key={post.id}
-                            post={post}
-                            commentAmt={post.comments.length}
-                            subreddit={post.subreddit}
-                            votesAmt={voteAmt}
-                            currentVote={currentVote}
-                />
-            </li>)
-            }
-            else
-            {
                 return (
-                <li key={post.id}> 
-                    <PostOut 
-                        key={post.id}
-                        post={post}
-                        commentAmt={post.comments.length}
-                        subreddit={post.subreddit}
-                        votesAmt={voteAmt}
-                        currentVote={currentVote}
-                    />
-                </li> )
-            }
-            })}   
+                    <li
+                        key={String(post.id)}
+                        ref={index === posts.length - 1 ? ref : undefined}
+                    >
+                        <PostOut
+                            post={post}
+                        />
+                    </li>
+                )
+            })}
+
             {isFetchingNextPage && (
-            <li className='flex justify-center'>
-            <Loader2 className='w-6 h-6 text-zinc-500 animate-spin' />
-            </li>
-      )}
+                <li className='flex justify-center'>
+                    <Loader2 className='w-6 h-6 text-zinc-500 animate-spin' />
+                </li>
+            )}
         </ul>
     )
 }

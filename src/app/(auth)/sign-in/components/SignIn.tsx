@@ -1,6 +1,5 @@
 'use client'
 import {Logo} from "@/components/ui/Icons";
-import Link from "next/link";
 import UserAuthForm from "./UserAuthForm";
 
 
@@ -13,14 +12,9 @@ export default function SignIn()
             <p className="text-sm max-w-xs mx-auto">
             By continuing, you are setting up a Redit account and agree to our User Agreement.    
             </p>    
-            {/* sign in here  */}
             <UserAuthForm />
-            <p className='px-8 text-center text-sm'>
-                New to Breadit?{' '}
-                <Link href ='/sign-up' className=' text-sm underline-offset-4'>Sign up</Link>
-            </p>
 
         </div>
 
     </div>
-}
+}   

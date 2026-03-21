@@ -4,6 +4,7 @@ import { db } from "@/lib/db"
 import { cache } from "react"
 import { notFound } from "next/navigation"
 import { ID } from "@/types/ID"
+import { toPostDto } from "@/types/toDTO"
 
 export const getSubredditMemberCount = cache(async (subId: ID) => {
   const count = await db.subscription.count({
@@ -46,26 +47,42 @@ export async function getSubredditWithMembership(slug: string, userId?: ID) {
   }
 }
 
-export async function getSubredditPosts(slug: string,orderBy: "asc" | "desc" = "desc",take: number = INFINITE_SCROLLING_PAGINATION_RESULTS) {   
-  
+export async function getSubredditPosts({
+  slug,
+  orderBy = "desc",
+  take = INFINITE_SCROLLING_PAGINATION_RESULTS,
+  cursor,
+  userId,
+}: {
+  slug: string
+  orderBy?: "asc" | "desc"
+  take?: number
+  cursor?: bigint | number 
+  userId?: ID
+}) {
   const subreddit = await getSubreddit(slug)
-  if(!subreddit)
-      return null
-  const _posts= await db.post.findMany({
+  if (!subreddit) return null
+  const _posts = await db.post.findMany({
     where: { subredditId: subreddit.id },
     include: {
       author: true,
       votes: true,
       comments: true,
     },
-    orderBy: { createdAt: orderBy },
-    take  : take
+    orderBy: { id: orderBy },
+    take :take,
+    ...(cursor && {
+      cursor: { id: cursor },
+      skip: 1,
+    }),
   })
+
   const posts = _posts.map(post => ({
     ...post,
     subreddit,
   }))
-  return posts
+
+  return posts.map(a => toPostDto(a, userId))
 }
   
   
