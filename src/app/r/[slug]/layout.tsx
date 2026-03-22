@@ -32,22 +32,22 @@ export default async function Layout({ children, params }: LayoutProps) {
   if (!subreddit) return notFound()
 
   return (
-    <div className="min-h-screen dark:bg-[#0B1416] grid grid-cols-[16rem_minmax(0,1fr)] gap-x-6">
+    <div className="min-h-screen dark:bg-[#0B1416] grid grid-cols-[16rem_minmax(0,1fr)] ">
       {/* LEFT TAB */}
-      <div className="hidden lg:block border-r border-zinc-200">
+      <div className="hidden lg:block border-r border-zinc-100">
         <LeftTab joinedSubreddits={[]} recentSubreddits={[]} />
       </div>
 
       {/* RIGHT COLUMN */}
-      <div className="py-6 w-full">
+      <div className="py-6 w-full pl-10">
         {/* HEADER */}
         <SubredditCombinedHeader subreddit={subreddit} />
 
         {/* CONTENT AREA */}
-        <div className="w-full max-w-6xl "> 
-          <div className="grid grid-cols-4 gap-4">
+        <div className="w-full max-w-6xl"> 
+          <div className="grid grid-cols-4 ">
             {/* MAIN */}
-            <div className="col-span-3 flex flex-col pr-2 gap-4">
+            <div className="col-span-3 flex flex-col pr-2 ">
               {children}
             </div>
 

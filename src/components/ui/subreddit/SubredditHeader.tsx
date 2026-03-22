@@ -18,7 +18,7 @@ export function SubredditHeader({ subreddit }: Props) {
   // }
   return (
     <div className="bg-white dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700 shadow-sm">
-      <div className="max-w-5xl mx-auto px-4 flex items-end gap-4 pb-3">
+      <div className="max-w-5xl  px-4 flex items-end gap-4 pb-3">
 
         {/* Community icon */}
         <div className="w-[72px] h-[72px] rounded-full border-4 border-white dark:border-zinc-800 bg-blue-500 flex items-center justify-center -mt-4 shrink-0 overflow-hidden">

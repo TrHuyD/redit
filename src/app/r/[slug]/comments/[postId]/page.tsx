@@ -29,7 +29,7 @@ interface PageProps {
     if (!post) return notFound()
   
     return (
-      <div>
+      <div className="pl-10">
          
            <CombinedTag user= {post.creator} subreddit={post.subreddit}/>
             <div className="ml-1">

@@ -26,16 +26,18 @@ export default async function RootLayout({
       lang="en"
       className={cn('text-slate-900 antialiased', inter.className)}
     >
-      <body className="min-h-screen antialiased">
+      <body className="data-[scroll-locked]:!overflow-visible">
+        <div className="min-h-screen antialiased">
         <AuthProvider isLoggedIn={!!session}>
         <Providers>
           <Navbar />
-          {popModal}
           <div className="w-full h-full pt-14">
             {children}
           </div>
+          
         </Providers>
         </AuthProvider>
+        </div>
       </body>
     </html>
   )

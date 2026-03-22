@@ -83,3 +83,4 @@
 html {
   @apply overflow-y-scroll;
 }
+body { @apply !min-w-full; }
