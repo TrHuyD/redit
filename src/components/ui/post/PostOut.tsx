@@ -18,7 +18,7 @@ type PartialVote = Pick<PostVote, 'type'>
 export default function PostOut({  post,displayType}: PostProps) {
     const pRef = useRef<HTMLParagraphElement>(null)
     return <div className="rounded-md shadow bg-white hover:bg-slate-100 dark:shadow-black/50 dark:bg-slate-900" >
-        <Link href={`/r/${post.subreddit.name}/comments/${post.id}`} prefetch={false} legacyBehavior={true} >
+        <Link href={`/r/${post.subreddit.name}/comments/${post.id}`} prefetch={false}  scroll={true}  >
         <div className='px-4' >
         <div className="py-1 flex items-center gap-2">
             
