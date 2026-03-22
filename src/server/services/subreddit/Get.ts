@@ -82,7 +82,7 @@ export async function getSubredditPosts({
     subreddit,
   }))
 
-  return posts.map(a => toPostDto(a))
+  return posts.map(a => toPostDto(a,userId))
 }
   
   

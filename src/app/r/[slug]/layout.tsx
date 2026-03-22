@@ -29,37 +29,36 @@ export default async function Layout({ children, params }: LayoutProps) {
     token ? getId(token) : undefined
   )
 
-  if (subreddit === null) return notFound()
+  if (!subreddit) return notFound()
 
   return (
-    <div className="min-h-screen dark:bg-[#0B1416] grid grid-cols-[16rem_1fr]">
-
+    <div className="min-h-screen dark:bg-[#0B1416] grid grid-cols-[16rem_minmax(0,1fr)] gap-x-6">
+      {/* LEFT TAB */}
       <div className="hidden lg:block border-r border-zinc-200">
         <LeftTab joinedSubreddits={[]} recentSubreddits={[]} />
       </div>
 
-      <div>
+      {/* RIGHT COLUMN */}
+      <div className="py-6 w-full">
         {/* HEADER */}
         <SubredditCombinedHeader subreddit={subreddit} />
 
         {/* CONTENT AREA */}
-        <div className="max-w-6xl mx-auto py-6">
-          <div className="grid grid-cols-4">
-
+        <div className="w-full max-w-6xl "> 
+          <div className="grid grid-cols-4 gap-4">
             {/* MAIN */}
             <div className="col-span-3 flex flex-col pr-2 gap-4">
               {children}
             </div>
 
             {/* RIGHT SIDEBAR */}
-            <div className="hidden lg:block col-1">
+            <div className="hidden lg:block col-span-1">
               <div className="sticky top-14 self-start flex flex-col gap-4">
                 <SubredditAbout subreddit={subreddit} />
                 <SubredditRules subreddit={subreddit} />
                 <SubredditModerators subreddit={subreddit} />
               </div>
             </div>
-
           </div>
         </div>
       </div>

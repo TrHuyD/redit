@@ -14,6 +14,7 @@ export  const GET =  withErrorHandler( async(req: NextRequest)  =>{
         const raw = Object.fromEntries(searchParams)
         const parsed = SubredditPostRetrieveValidator.parse(raw)
         const userId = getIdnull(await getAuthToken())
+
         const posts = await getSubredditPosts({slug:parsed.subredditName,take:parsed.limit,cursor:parsed.cursorId,userId:userId})
         return new Response(
             JSON.stringify(posts, (_, value) =>

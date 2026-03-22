@@ -72,7 +72,7 @@ export default function PostVoteClient({postId,initialVotesAmt,initialVote}:Post
               </Button>
             )
         }
-        return <div className='w-fit flex items-center gap-1  py-1 rounded-full bg-zinc-200 dark:bg-zinc-800 text-xs text-gray-600 dark:text-zinc-400'>
+        return <div className='w-fit flex items-center gap-1  rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs text-gray-600 dark:text-zinc-400'>
             <VoteButton type={VoteType.UPVOTE}/>
                 {votesAmt}
             <VoteButton type={VoteType.DOWNVOTE}/>

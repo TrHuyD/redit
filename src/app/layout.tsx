@@ -3,6 +3,8 @@ import '@/styles/globals.css'
 import { Inter } from 'next/font/google'
 import Navbar from '@/components/ui/Navbar'
 import { Providers } from '@/components/ui/provider'
+import { getAuthToken } from '@/lib/auth'
+import { AuthProvider } from '@/components/ui/providers/auth-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -11,19 +13,21 @@ export const metadata = {
   description: 'A Reddit clone built with Next.js and TypeScript.',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   popModal,
 }: {
   children: React.ReactNode
   popModal: React.ReactNode
 }) {
+  const session = await getAuthToken() 
   return (
     <html
       lang="en"
       className={cn('text-slate-900 antialiased', inter.className)}
     >
       <body className="min-h-screen antialiased">
+        <AuthProvider isLoggedIn={!!session}>
         <Providers>
           <Navbar />
           {popModal}
@@ -31,6 +35,7 @@ export default function RootLayout({
             {children}
           </div>
         </Providers>
+        </AuthProvider>
       </body>
     </html>
   )

@@ -80,3 +80,6 @@
   }
 }
 
+html {
+  @apply overflow-y-scroll;
+}

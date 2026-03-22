@@ -39,3 +39,19 @@ export const FeedRetrieveValidator = z.object(
 )
 
 export type FeedRetrievePayLoad = z.infer<typeof FeedRetrieveValidator>
+
+export const CreateCommentValidator = z.object({
+    postId: z.coerce.bigint(),
+    content: z.any().refine((val) => val !== null, {
+        message: 'Content is required',
+      }),
+    parentId:z.coerce.bigint().nullish(),
+  })
+export type CreateCommentPayLoad = z.infer<typeof CreateCommentValidator>
+
+
+export const CommentContentValidator = z.object({
+    text : z.string().min(1,"Invalid comment (Size==0)").max(250,"Invalid comment (Size>250)"),
+    media : z.string().max(250,"Invalid comment (Size>250)").optional()
+})
+export type CommentContentPayLoad = z.infer<typeof CommentContentValidator>

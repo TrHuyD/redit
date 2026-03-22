@@ -14,15 +14,12 @@ export function SubredditCombinedHeader({ subreddit }: Props) {
   
     const hideHeader = useMemo(() => {
       const segments = pathname.split('/')
-      return (
-        segments.length > 3 &&
-        (segments[3] === 'comments' || segments[3] === 'submit')
-      )
+      return (segments[1]=='r'&&!(segments[3]==="comments"||segments[3]==="submit")) 
     }, [pathname])
   
     return (
       <>
-        {!hideHeader && (
+        {hideHeader && (
           <>
             <SubredditBanner subreddit={subreddit} />
             <SubredditHeader subreddit={subreddit} />
