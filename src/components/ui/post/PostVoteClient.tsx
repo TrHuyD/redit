@@ -63,20 +63,16 @@ export default function PostVoteClient({postId,initialVotesAmt,initialVote}:Post
                 size="sm"
                 variant="ghost"
                 aria-label={isUp ? 'upvote' : 'downvote'}
-                className={cn({
-                  'text-emerald-500': active && !isUp,
-                })}
+                className="rounded-full w-8 h-8 items-center hover:bg-zinc-300"
               >
                 <Icon
                   className={cn('h-3.5 w-3.5 text-gray-600 dark:text-zinc-400', {
                     'text-emerald-500 fill-emerald-500': active && isUp,
-                    'text-red-500 fill-red-500': active && !isUp,
-                  })}
-                />
+                    'text-red-500 fill-red-500': active && !isUp,},)}/>
               </Button>
             )
         }
-        return <div className='w-fit flex items-center gap-1  py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs text-gray-600 dark:text-zinc-400'>
+        return <div className='w-fit flex items-center gap-1  py-1 rounded-full bg-zinc-200 dark:bg-zinc-800 text-xs text-gray-600 dark:text-zinc-400'>
             <VoteButton type={VoteType.UPVOTE}/>
                 {votesAmt}
             <VoteButton type={VoteType.DOWNVOTE}/>

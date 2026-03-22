@@ -14,9 +14,7 @@ export  const GET =  withErrorHandler( async(req: NextRequest)  =>{
         const raw = Object.fromEntries(searchParams)
         const parsed = SubredditPostRetrieveValidator.parse(raw)
         const userId = getIdnull(await getAuthToken())
-        console.log(parsed.cursorId)
         const posts = await getSubredditPosts({slug:parsed.subredditName,take:parsed.limit,cursor:parsed.cursorId,userId:userId})
-
         return new Response(
             JSON.stringify(posts, (_, value) =>
                 typeof value === 'bigint' ? value.toString() : value
@@ -28,7 +26,6 @@ export  const GET =  withErrorHandler( async(req: NextRequest)  =>{
         )
 
     } catch (error) {
-        console.error('[POST_GET]', error)
         return new Response('Internal Server Error', { status: 500 })
     }
 })

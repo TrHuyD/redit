@@ -3,6 +3,7 @@ import { VoteType } from '@prisma/client'
 import {z} from 'zod'
 import { UserValidator } from './user'
 import { ID } from '@/types/ID'
+import { SortBy } from '@/types/enum'
 export const subredditMentionValidator = z.object({
     subredditId: ID.zod(),
 })
@@ -28,3 +29,13 @@ export const SubredditPostRetrieveValidator =z.object(
 )
 
 export type SubredditPostRetrievePayload = z.infer<typeof SubredditPostRetrieveValidator>
+
+export const FeedRetrieveValidator = z.object(
+    {
+        cursorId: z.coerce.bigint().optional(),
+        limit: z.coerce.number().int().positive().max(50).optional(),
+        sortBy: z.nativeEnum(SortBy).default(SortBy.NEW)
+    }
+)
+
+export type FeedRetrievePayLoad = z.infer<typeof FeedRetrieveValidator>

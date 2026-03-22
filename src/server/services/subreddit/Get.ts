@@ -88,3 +88,40 @@ export async function getSubredditPosts({
   
   
   
+export async function getFeedPosts({
+  userId,
+  orderBy = "desc",
+  take = INFINITE_SCROLLING_PAGINATION_RESULTS,
+  cursor,
+}: {
+  userId: ID
+  orderBy?: "asc" | "desc"
+  take?: number
+  cursor?: bigint | number
+}) {
+  const subscriptions = await db.subscription.findMany({
+    where: { userId },
+    select: { subredditId: true },
+  })
+
+  const subredditIds = subscriptions.map(s => s.subredditId)
+  if (subredditIds.length === 0) return []
+  const _posts = await db.post.findMany({
+    where: {
+      subredditId: { in: subredditIds },
+    },
+    include: {
+      author: true,
+      votes: true,
+      comments: true,
+      subreddit: true,
+    },
+    orderBy: { id: orderBy },
+    take,
+    ...(cursor !== undefined && {
+      cursor: { id: cursor },
+      skip: 1,
+    }),
+  })
+  return _posts.map(post => toPostDto(post, userId))
+}
