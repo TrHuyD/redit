@@ -29,8 +29,9 @@ interface PageProps {
       <div>
          
            <CombinedTag user= {post.creator} subreddit={post.subreddit}/>
-  
+            <div className="ml-1">
             <EditorOutput content={post.content } />
+            </div>
                 <div className='flex gap-3 py-1'>  
                 <PostVoteClient postId={post.id} initialVote={post.currentVote} initialVotesAmt={post.votesAmt}/>
                 <CommentAmtDisplay amt={post.commentsAmt} ></CommentAmtDisplay>
