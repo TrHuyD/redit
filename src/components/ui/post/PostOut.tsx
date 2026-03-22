@@ -8,10 +8,10 @@ import { useRef } from 'react'
 import CommentAmtDisplay from './CommentAmtDisplay'
 import EditorOutput from './EditorOutput'
 import PostVoteClient from './PostVoteClient'
-import { PostDto } from '@/types/dto'
+import { PostUserDto } from '@/types/dto'
 import Link from 'next/link'
 interface PostProps {
-    post: PostDto,
+    post: PostUserDto,
     displayType : "both"|"user"|"subreddit"
   }
 type PartialVote = Pick<PostVote, 'type'>
@@ -40,7 +40,7 @@ export default function PostOut({  post,displayType}: PostProps) {
           <div
             className='relative text-sm max-h-40 w-full overflow-clip'
             ref={pRef}>
-            <EditorOutput content={post.content} />
+            <EditorOutput content={post.content}  />
             {pRef.current?.clientHeight === 160 ? (
                <div className='absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t'></div>
             ) : null}

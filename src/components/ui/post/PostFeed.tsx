@@ -1,13 +1,13 @@
 
 'use client'
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config"
-import { PostDto } from "@/types/dto"
+import { PostUserDto } from "@/types/dto"
 import InfiniteFeed from "./InfiniteFeed"
 import PostOut from "./PostOut"
 import axios from "axios"
 
 interface PostFeedProps {
-    initialPosts: PostDto[]
+    initialPosts: PostUserDto[]
     subredditName: string
 }
 
@@ -19,7 +19,7 @@ export default function PostFeed({ initialPosts, subredditName }: PostFeedProps)
             ...(subredditName && { subredditName }),
         })
         const res = await axios.get(`/api/posts?${params.toString()}`)
-        return res.data as PostDto[]
+        return res.data as PostUserDto[]
     }
 
     return (

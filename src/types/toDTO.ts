@@ -1,6 +1,6 @@
 import { VoteType } from "@prisma/client"
 import { ExtendedPost } from "./db"
-import { PostDto, SubRedditDto, UserDto } from "./dto"
+import { PostUserDto, SubRedditDto, UserDto } from "./dto"
 
 export function toUserDto(user: {
     id: bigint
@@ -26,7 +26,7 @@ export function toSubRedditDto(subreddit: {
     }
 }
 
-export function toPostDto(post: ExtendedPost, currentUserId?: bigint): PostDto {
+export function toPostDto(post: ExtendedPost, currentUserId?: bigint): PostUserDto {
     const votesAmt = post.votes.reduce((acc, vote) => {
         if (vote.type === VoteType.UPVOTE) return acc + 1
         if (vote.type === VoteType.DOWNVOTE) return acc - 1

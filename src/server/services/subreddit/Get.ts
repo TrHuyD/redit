@@ -82,46 +82,68 @@ export async function getSubredditPosts({
     subreddit,
   }))
 
-  return posts.map(a => toPostDto(a, userId))
+  return posts.map(a => toPostDto(a))
 }
   
   
   
   
-export async function getFeedPosts({
-  userId,
-  orderBy = "desc",
-  take = INFINITE_SCROLLING_PAGINATION_RESULTS,
-  cursor,
-}: {
-  userId: ID
-  orderBy?: "asc" | "desc"
-  take?: number
-  cursor?: bigint | number
-}) {
-  const subscriptions = await db.subscription.findMany({
-    where: { userId },
-    select: { subredditId: true },
-  })
+  export async function getFeedPosts({
+    userId,
+    orderBy = "desc",
+    take = INFINITE_SCROLLING_PAGINATION_RESULTS,
+    cursor,
+  }: {
+    userId: ID
+    orderBy?: "asc" | "desc"
+    take?: number
+    cursor?: bigint | number
+  }) {
+    const subscriptions = await db.subscription.findMany({
+      where: { userId },
+      select: { subredditId: true },
+    })
 
-  const subredditIds = subscriptions.map(s => s.subredditId)
-  if (subredditIds.length === 0) return []
-  const _posts = await db.post.findMany({
-    where: {
-      subredditId: { in: subredditIds },
-    },
+    const subredditIds = subscriptions.map(s => s.subredditId)
+    if (subredditIds.length === 0) return []
+    const _posts = await db.post.findMany({
+      where: {
+        subredditId: { in: subredditIds },
+      },
+      include: {
+        author: true,
+        votes: true,
+        comments: true,
+        subreddit: true,
+      },
+      orderBy: { id: orderBy },
+      take,
+      ...(cursor !== undefined && {
+        cursor: { id: cursor },
+        skip: 1,
+      }),
+    })
+    return _posts.map(post => toPostDto(post, userId))
+  }
+
+export async function getPost({
+  postId,
+  userId,
+}: {
+  postId: ID
+  userId?: ID
+}) {
+  const post = await db.post.findUnique({
+    where: { id: postId },
     include: {
       author: true,
       votes: true,
       comments: true,
       subreddit: true,
-    },
-    orderBy: { id: orderBy },
-    take,
-    ...(cursor !== undefined && {
-      cursor: { id: cursor },
-      skip: 1,
-    }),
+    },  
   })
-  return _posts.map(post => toPostDto(post, userId))
+
+  if (!post) return null
+
+  return toPostDto(post, userId)
 }

@@ -8,12 +8,12 @@ import { SortBy } from "@/types/enum"
 
 import { notFound } from "next/navigation"
 
-  interface PageProps {
-      params: Promise<{
-        slug: string,
-        sort: SortBy
-      }>
-    }
+interface PageProps {
+    params: Promise<{
+      slug: string,
+      sort: SortBy
+    }>
+  }
   
   export default async function Page({ params }: PageProps) {
     const { slug,sort } = await params

@@ -14,16 +14,18 @@ export type SubRedditDto = {
     name: string
     image: string         
 }
-
 export type PostDto = {
     id: ID            
     creator: UserDto
     subreddit: SubRedditDto 
     votesAmt: number
-    currentVote: VoteType | null  
     content: JsonValue
     title: string
     commentsAmt: number
     createdAt: Date      
     lastEdited: Date | null 
 }
+export type PostUserDto = PostDto& {
+    currentVote: VoteType | null  
+}
+
