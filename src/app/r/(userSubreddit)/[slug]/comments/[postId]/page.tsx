@@ -32,8 +32,12 @@ interface PageProps {
     return (
       <div className="pl-10">
          
+         <div className="flex items-center gap-2">
            <CombinedTag user= {post.creator} subreddit={post.subreddit}/>
-
+          <span className="text-xs text-gray-500">
+            {formatTimeToNow(new Date(post.createdAt))}
+          </span>
+          </div>
             <div className="ml-1">
             <h1 className="block relative before:content-[''] before:absolute before:inset-0 before:z-0 font-bold">
             {post.title}

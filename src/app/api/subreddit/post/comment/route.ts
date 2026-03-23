@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db' 
-import { getAuthToken} from '@/lib/auth' 
 import { CreateCommentValidator } from '@/lib/validators/post'
 import { withErrorHandler } from '@/server/lib/withErrorHandler'
 import { withAuth } from '@/server/lib/withAuth'
@@ -14,7 +13,6 @@ export const POST = withErrorHandler(withAuth(async (req: NextRequest,token) =>{
     const result = CreateCommentValidator.parse(body)
 
     const { postId, content, parentId } = result
-    console.log(postId, content, parentId)
     const comment = await db.comment.create({
       data: {
         id : generateCommentId(),
@@ -27,7 +25,6 @@ export const POST = withErrorHandler(withAuth(async (req: NextRequest,token) =>{
 
     return NextResponse.json(comment)
   } catch (err) {
-    console.error(err)
     return NextResponse.json(
       { error: 'Something went wrong' },
       { status: 500 }

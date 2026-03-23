@@ -10,10 +10,10 @@ interface Props {
 }
 
 export function SubredditCombinedHeader({ subreddit }: Props) {
-    const pathname = usePathname()
+  const pathname = usePathname()
   
-    const hideHeader = useMemo(() => {
-      const segments = pathname.split('/')
+  const hideHeader = useMemo(() => {
+    const segments = pathname.split('/')
       return (segments[1]=='r'&&!(segments[3]==="comments"||segments[3]==="submit")) 
     }, [pathname])
   
