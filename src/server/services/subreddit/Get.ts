@@ -5,6 +5,8 @@ import { cache } from "react"
 import { notFound } from "next/navigation"
 import { ID } from "@/types/ID"
 import { toPostDto, toPostPerDto } from "@/types/toDTO"
+import { Subreddit } from "@prisma/client"
+import { SubredditWithMembership } from "@/types/subreddit"
 
 export const getSubredditMemberCount = cache(async (subId: ID) => {
   const count = await db.subscription.count({
@@ -31,6 +33,7 @@ export const getSubredditManifestedMetadata = cache(async (slug: string) => {
     userCount: memberCount
   }
 })
+
 export async function getSubredditWithMembership(slug: string, userId?: ID) {
   var metadata = await getSubredditManifestedMetadata(slug)
   var membership =!userId?null: await db.subscription.findUnique({
@@ -44,7 +47,7 @@ export async function getSubredditWithMembership(slug: string, userId?: ID) {
     ...metadata,
     isMember: !!membership,
     isCreator: metadata.creatorId === userId,
-  }
+  } as  SubredditWithMembership
 }
 
 export async function getSubredditPosts({
@@ -125,6 +128,37 @@ export async function getSubredditPosts({
     })
     return _posts.map(post => toPostDto(post, userId))
   }
+
+  export async function getAllPosts({
+    userId,
+    orderBy = "desc",
+    take = INFINITE_SCROLLING_PAGINATION_RESULTS,
+    cursor,
+  }: {
+    userId?: ID
+    orderBy?: "asc" | "desc"
+    take?: number
+    cursor?: bigint | number
+  }) {
+  
+
+    const _posts = await db.post.findMany({
+      include: {
+        author: true,
+        votes: true,
+        comments: true,
+        subreddit: true,
+      },
+      orderBy: { id: orderBy },
+      take,
+      ...(cursor !== undefined && {
+        cursor: { id: cursor },
+        skip: 1,
+      }),
+    })
+    return _posts.map(post => toPostDto(post, userId))
+  }
+
 
 export async function getPost({
   postId,
