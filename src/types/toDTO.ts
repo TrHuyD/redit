@@ -1,6 +1,6 @@
-import { VoteType } from "@prisma/client"
+import { VoteType } from "@/types/enum"
 import { ExtendedPost } from "./db"
-import { PostUserDto, SubRedditDto, UserDto } from "./dto"
+import { CommentDto, PostUserDto, SubRedditDto, UserDto } from "./dto"
 
 export function toUserDto(user: {
     id: bigint
@@ -28,8 +28,7 @@ export function toSubRedditDto(subreddit: {
 
 export function toPostDto(post: ExtendedPost, currentUserId?: bigint): PostUserDto {
     const votesAmt = post.votes.reduce((acc, vote) => {
-        if (vote.type === VoteType.UPVOTE) return acc + 1
-        if (vote.type === VoteType.DOWNVOTE) return acc - 1
+        acc+=vote.type
         return acc
     }, 0)
 
@@ -48,5 +47,38 @@ export function toPostDto(post: ExtendedPost, currentUserId?: bigint): PostUserD
         commentsAmt: post.comments.length,
         createdAt: post.createdAt,
         lastEdited: post.latestUpdateAt ?? null,
+    }
+}
+function getVoteAmt(votes: { type: number }[]) {
+    return votes.reduce((acc, v) => acc + v.type, 0)
+  }
+function toCommentDto(comment: any): CommentDto {
+    return {
+      id: comment.id,
+      content: comment.content,
+      createdAt: comment.createdAt,
+      latestUpdateAt: comment.latestUpdateAt,
+      author: {
+        id: comment.author.id,
+        username: comment.author.username,
+        avatarUrl: comment.author.avatarUrl,
+      },
+      voteAmt: getVoteAmt(comment.votes ?? []),
+      replies: (comment.replies ?? []).map(toReplyDto), // only 1 level
+    }
+  }
+function toReplyDto(reply: any): CommentDto {
+    return {
+        id: reply.id,
+        content: reply.content,
+        createdAt: reply.createdAt,
+        latestUpdateAt: reply.latestUpdateAt,
+        author: {
+        id: reply.author.id,
+        username: reply.author.username,
+        avatarUrl: reply.author.avatarUrl,
+        },
+        voteAmt: getVoteAmt(reply.votes ?? []),
+        replies: [],
     }
 }

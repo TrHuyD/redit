@@ -147,3 +147,44 @@ export async function getPost({
 
   return toPostDto(post, userId)
 }
+function getVoteAmt(votes: { type: number }[]) {
+  return votes.reduce((acc, v) => acc + v.type, 0)
+}
+async function rawComments({postId} : {postId:ID})
+{
+  const comments = await db.comment.findMany({
+    where: {
+      postId: postId,
+      replyToId: null, 
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          username: true,
+          image: true,
+        },
+      },
+      votes: true,
+      replies: {
+        orderBy: {
+          createdAt: "asc",
+        },
+        include: {
+          author: {
+            select: {
+              id: true,
+              username: true,
+              image: true,
+            },
+          },
+          votes: true,
+        },
+      },
+    },
+  })
+  
+}

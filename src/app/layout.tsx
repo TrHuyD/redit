@@ -35,7 +35,7 @@ export default async function RootLayout({
           <div></div>  
             {children}
           </div>
-          
+          {popModal}
         </Providers>
         </AuthProvider>
         </div>

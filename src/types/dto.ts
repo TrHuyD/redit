@@ -1,6 +1,6 @@
 import { JsonValue } from "@prisma/client/runtime/client"
 import { ID } from "./ID"
-import { VoteType } from "@prisma/client"
+import { VoteType } from "@/types/enum"
 
 
 export type UserDto = {
@@ -29,3 +29,19 @@ export type PostUserDto = PostDto& {
     currentVote: VoteType | null  
 }
 
+export interface CommentDto {
+    id: bigint;
+    content: any; 
+    createdAt: Date;
+    latestUpdateAt: Date;
+    author: {
+      id: bigint;
+      username: string;
+      avatarUrl?: string;
+    };
+    voteAmt:number
+    replies: CommentDto[]; 
+  }
+export interface CommentPerDto extends CommentDto{
+    voteType?:VoteType
+}

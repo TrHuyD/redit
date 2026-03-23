@@ -3,7 +3,7 @@
 import { votePost } from "@/lib/api/Subreddit/PostVote"
 import { withToast } from "@/lib/withToast"
 import { usePrevious } from "@mantine/hooks"
-import { VoteType } from "@prisma/client"
+
 import { useMutation } from "@tanstack/react-query"
 import { ArrowBigDown, ArrowBigUp, Vote } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -11,6 +11,7 @@ import { Button } from "../Button"
 import { cn } from "@/lib/utils"
 import { useSession } from "next-auth/react"
 import { ID } from "@/types/ID"
+import { VoteType } from "@/types/enum"
 
 interface PostVoteClientProps {
     postId: ID

@@ -39,7 +39,7 @@ interface PageProps {
             </h1>
             <EditorOutput content={post.content } />
             </div>
-                <div className='flex gap-3 py-1'>  
+                <div className='flex gap-3 py-4'>  
                 <PostVoteClient postId={post.id} initialVote={post.currentVote} initialVotesAmt={post.votesAmt}/>
                 <CommentAmtDisplay amt={post.commentsAmt} ></CommentAmtDisplay>
                 </div> 

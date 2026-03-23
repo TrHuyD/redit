@@ -1,9 +1,8 @@
 
-import { VoteType } from '@prisma/client'
 import {z} from 'zod'
 import { UserValidator } from './user'
 import { ID } from '@/types/ID'
-import { SortBy } from '@/types/enum'
+import { SortBy, VoteType } from '@/types/enum'
 export const subredditMentionValidator = z.object({
     subredditId: ID.zod(),
 })

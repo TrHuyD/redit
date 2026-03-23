@@ -15,17 +15,13 @@ interface PageProps {
     if(!subreddit)
         return notFound()
     return (
-      <div className='flex flex-col items-start gap-6'>
-      {/* heading */}
-      <SubredditSelector slug={slug}/>
-      <div className='border-b  pb-5'>
-      </div>
-      <Editor id={subreddit.id}/>
-      <div className='w-full flex justify-end'>
-        <Button type='submit' className='w-full' form='subreddit-post-form'>
+      <div className="flex flex-col items-start gap-6 w-full max-w-3xl">
+        <SubredditSelector slug={slug} />
+        <div className="border-b pb-5" />
+        <Editor id={subreddit.id} />
+        <Button type="submit" className="w-full" form="subreddit-post-form">
           Post
         </Button>
-      </div>
       </div>
     )
   }

@@ -2,7 +2,7 @@ import PostVoteClient from "@/components/ui/post/PostVoteClient"
 import { getAuthToken } from "@/lib/auth"
 import { getId } from "@/lib/utils"
 import { ID } from "@/types/ID"
-import { Post, PostVote, VoteType } from "@prisma/client"
+import { Post, PostVote } from "@prisma/client"
 import { notFound } from "next/navigation"
 
 interface PostVoteServerProps {
@@ -27,12 +27,7 @@ const PostVoteServer = () => async ({
       const post = await getData()
       if (!post) return notFound()
   
-      _votesAmt = post.votes.reduce((acc, vote) => {
-        if (vote.type==VoteType.UPVOTE) return acc + 1
-        if (vote.type==VoteType.DOWNVOTE) return acc - 1
-        return acc
-      }, 0)
-  
+      _votesAmt = post.votes.reduce((acc, vote) => acc + vote.type, 0)
       _currentVote = id? post.votes.find(
         (vote) => vote.userId === id
       )?.type:null

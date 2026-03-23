@@ -118,12 +118,9 @@ model Comment {
 
 }
 
-enum VoteType {
-  UPVOTE
-  DOWNVOTE
-}
+
 model PostVote {
-  type VoteType
+  type Int
 
   postId BigInt
   post Post @relation(fields: [postId], references: [id])
@@ -134,7 +131,7 @@ model PostVote {
   @@id([postId, userId])
 }
 model CommentVote {
-  type VoteType
+  type Int
 
   commentId BigInt
   comment Comment @relation(fields: [commentId], references: [id])
