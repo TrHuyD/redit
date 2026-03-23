@@ -53,14 +53,15 @@ export const authOptions: NextAuthOptions = {
             })
           }
         }
+        var id =generateUserId()
         if (!dbUser) {
           dbUser = await db.user.create({
             data: {
-              id: generateUserId(),
+              id: id,
               email: googleProfile.email!,
               googleId,
-              name: googleProfile.name,
-              image: googleProfile.picture,
+              name: googleProfile.name??id.toString(),
+              image: googleProfile.picture??"",
               username: nanoid(10),
             },
           })
