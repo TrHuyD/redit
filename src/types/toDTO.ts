@@ -1,6 +1,8 @@
 import { VoteType } from "@/types/enum"
-import { ExtendedPost } from "./db"
-import { CommentDto, PostUserDto, SubRedditDto, UserDto } from "./dto"
+import { ExtendedComment, ExtendedPost } from "./db"
+import { CommentDto, CommentPerDto, PostUserDto, SubRedditDto, UserDto } from "./dto"
+import { ID } from "./ID"
+import { Comment } from "@prisma/client"
 
 export function toUserDto(user: {
     id: bigint
@@ -52,33 +54,53 @@ export function toPostDto(post: ExtendedPost, currentUserId?: bigint): PostUserD
 function getVoteAmt(votes: { type: number }[]) {
     return votes.reduce((acc, v) => acc + v.type, 0)
   }
-function toCommentDto(comment: any): CommentDto {
+function getVoteType(
+votes: { type: number; userId?: ID }[],
+userId?: ID
+): VoteType | undefined {
+if (!userId) return undefined
+
+const vote = votes.find((v) => v.userId === userId)
+return vote?.type as VoteType | undefined
+}
+
+export function toCommentDto(comment: ExtendedComment): CommentDto {
     return {
       id: comment.id,
       content: comment.content,
       createdAt: comment.createdAt,
       latestUpdateAt: comment.latestUpdateAt,
-      author: {
-        id: comment.author.id,
-        username: comment.author.username,
-        avatarUrl: comment.author.avatarUrl,
-      },
+      author: comment.author,
       voteAmt: getVoteAmt(comment.votes ?? []),
       replies: (comment.replies ?? []).map(toReplyDto), // only 1 level
     }
   }
-function toReplyDto(reply: any): CommentDto {
+function toReplyDto(reply: ExtendedComment): CommentDto {
     return {
         id: reply.id,
         content: reply.content,
         createdAt: reply.createdAt,
         latestUpdateAt: reply.latestUpdateAt,
-        author: {
-        id: reply.author.id,
-        username: reply.author.username,
-        avatarUrl: reply.author.avatarUrl,
-        },
+        author: reply.author,
         voteAmt: getVoteAmt(reply.votes ?? []),
         replies: [],
     }
 }
+export function toPostPerDto(comment: ExtendedComment, userId?: ID): CommentPerDto {
+    const dto = toCommentDto(comment)
+    let currentVote ;
+    if(userId)
+    { 
+        currentVote= comment.votes?.find((v) => v.userId === userId)?.type
+    }
+    return {
+      ...dto,
+      voteType:currentVote,
+      replies:  comment.replies?.map((r) => ({
+        ...toReplyDto(r),
+        voteType: userId
+          ? r.votes?.find((v) => v.userId === userId)?.type ?? null
+          : null,
+      })),
+    }
+  }

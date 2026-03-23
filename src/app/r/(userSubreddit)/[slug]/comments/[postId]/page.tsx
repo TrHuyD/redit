@@ -1,6 +1,7 @@
 
 import CombinedTag from "@/components/ui/post/CombinedTag"
 import CommentAmtDisplay from "@/components/ui/post/CommentAmtDisplay"
+import CommentsSection from "@/components/ui/post/CommentSection"
 import EditorOutput from "@/components/ui/post/EditorOutput"
 import { PostCommentButton } from "@/components/ui/post/PostCommentButton"
 import PostVoteClient from "@/components/ui/post/PostVoteClient"
@@ -44,6 +45,7 @@ interface PageProps {
                 <CommentAmtDisplay amt={post.commentsAmt} ></CommentAmtDisplay>
                 </div> 
             <PostCommentButton postId={postId}></PostCommentButton>
+            <CommentsSection postId={postId}/>
       </div>
     )
   }

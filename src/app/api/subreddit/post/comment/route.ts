@@ -14,6 +14,7 @@ export const POST = withErrorHandler(withAuth(async (req: NextRequest,token) =>{
     const result = CreateCommentValidator.parse(body)
 
     const { postId, content, parentId } = result
+    console.log(postId, content, parentId)
     const comment = await db.comment.create({
       data: {
         id : generateCommentId(),

@@ -9,6 +9,7 @@ import { loginToast } from '@/lib/customToast'
 import { withToast } from '@/lib/withToast'
 import axios from 'axios'
 import { CommentContentValidator, CreateCommentValidator } from '@/lib/validators/post'
+import { useRouter } from 'next/navigation'
 
 interface PostCommentButtonProps {
   postId: bigint
@@ -17,7 +18,7 @@ interface PostCommentButtonProps {
 export const PostCommentButton = ({ postId }: PostCommentButtonProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const { isLoggedIn } = useAuth()
-
+  const router = useRouter()
   if (!isOpen) {
     return (
       <Button
@@ -41,6 +42,7 @@ export const PostCommentButton = ({ postId }: PostCommentButtonProps) => {
         var content = CommentContentValidator.parse({text:text})
         var payload = CreateCommentValidator.parse({postId:postId, content:content,parentId:null})
         await withToast(async() =>{await axios.post(`/api/subreddit/post/comment`, payload)})()
+        router.refresh()
         setIsOpen(false)
       }}
     />

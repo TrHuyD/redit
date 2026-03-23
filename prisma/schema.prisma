@@ -39,12 +39,12 @@ model Session {
 
 model User {
   id            BigInt    @id 
-  name          String?
+  name          String
   username      String?
   email         String?   @unique
   emailVerified DateTime?
   googleId String? @unique
-  image    String?
+  image    String
   accounts Account[]
   sessions Session[]
 

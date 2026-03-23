@@ -31,17 +31,13 @@ export type PostUserDto = PostDto& {
 
 export interface CommentDto {
     id: bigint;
-    content: any; 
+    content: JsonValue; 
     createdAt: Date;
     latestUpdateAt: Date;
-    author: {
-      id: bigint;
-      username: string;
-      avatarUrl?: string;
-    };
+    author: UserDto
     voteAmt:number
-    replies: CommentDto[]; 
+    replies?: CommentDto[]; 
   }
 export interface CommentPerDto extends CommentDto{
-    voteType?:VoteType
+    voteType?:VoteType| null
 }

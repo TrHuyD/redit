@@ -46,11 +46,22 @@ export const CreateCommentValidator = z.object({
       }),
     parentId:z.coerce.bigint().nullish(),
   })
-export type CreateCommentPayLoad = z.infer<typeof CreateCommentValidator>
 
 
 export const CommentContentValidator = z.object({
     text : z.string().min(1,"Invalid comment (Size==0)").max(250,"Invalid comment (Size>250)"),
     media : z.string().max(250,"Invalid comment (Size>250)").optional()
 })
+
+export const CommentVoteValidator = z.object({
+    voteType : z.nativeEnum(VoteType),
+    commentId : z.coerce.bigint(),
+})
+export const CommentVoteRqValidator =CommentVoteValidator.merge(UserValidator)
+
+
+export type CommentVotePayLoad = z.infer<typeof CommentVoteValidator>
+export type CommentVoteRequest = z.infer<typeof CommentVoteRqValidator>
+export type CreateCommentPayLoad = z.infer<typeof CreateCommentValidator>
 export type CommentContentPayLoad = z.infer<typeof CommentContentValidator>
+

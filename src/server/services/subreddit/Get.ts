@@ -4,7 +4,7 @@ import { db } from "@/lib/db"
 import { cache } from "react"
 import { notFound } from "next/navigation"
 import { ID } from "@/types/ID"
-import { toPostDto } from "@/types/toDTO"
+import { toPostDto, toPostPerDto } from "@/types/toDTO"
 
 export const getSubredditMemberCount = cache(async (subId: ID) => {
   const count = await db.subscription.count({
@@ -164,7 +164,7 @@ async function rawComments({postId} : {postId:ID})
       author: {
         select: {
           id: true,
-          username: true,
+          name: true,
           image: true,
         },
       },
@@ -177,7 +177,7 @@ async function rawComments({postId} : {postId:ID})
           author: {
             select: {
               id: true,
-              username: true,
+              name: true,
               image: true,
             },
           },
@@ -186,5 +186,9 @@ async function rawComments({postId} : {postId:ID})
       },
     },
   })
-  
+  return comments
+}
+export async function getComments({postId,userId=undefined}:{postId:ID,userId?:ID}){
+  const comments = await rawComments({postId})
+  return comments.map((c) => toPostPerDto(c, userId))
 }
