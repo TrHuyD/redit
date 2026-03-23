@@ -5,7 +5,7 @@ import Navbar from '@/components/ui/Navbar'
 import { Providers } from '@/components/ui/provider'
 import { getAuthToken } from '@/lib/auth'
 import { AuthProvider } from '@/components/ui/providers/auth-provider'
-
+import { SpeedInsights } from '@vercel/speed-insights/next';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
@@ -36,6 +36,7 @@ export default async function RootLayout({
             {children}
           </div>
           {popModal}
+          <SpeedInsights />
         </Providers>
         </AuthProvider>
         </div>
