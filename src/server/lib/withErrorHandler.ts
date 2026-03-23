@@ -11,7 +11,7 @@ export function withErrorHandler<T extends (...args: any[]) => any>(handler: T) 
           { status: 400 }
         )
       }
-
+      console.log(err);
       return Response.json(
         { error: "Internal server error" },
         { status: 500 }

@@ -21,7 +21,7 @@ export const getSubreddit = cache(async (slug: string) => {
   })
 
   if (!subreddit) notFound()
-  return subreddit
+  return  subreddit
 })
 export const getSubredditManifestedMetadata = cache(async (slug: string) => {
   const subreddit = await getSubreddit(slug)

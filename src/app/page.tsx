@@ -12,20 +12,19 @@ const Home = async () => {
   return (
     <div className="min-h-screen dark:bg-[#0B1416] grid grid-cols-[16rem_minmax(0,1fr)]">
       {/* Left tab */}
-      <div className="hidden lg:block border-r border-zinc-200">
+      <div className="hidden lg:block border-r border-zinc-100">
         <LeftTab joinedSubreddits={[]} recentSubreddits={[]} />
       </div>
 
       {/* Right column */}
-      <div className="py-6 w-full">
-        {/* Center content wrapper instead of mx-auto on right column */}
+      <div className="py-6 w-full pl-14">
         <div className="max-w-6xl w-full">
           <div className="grid grid-cols-4 gap-4">
             <div className="col-span-3 flex flex-col gap-4">
               {token ? <CustomFeedServer /> : <div>Please log in</div>}
             </div>
-            {/* Optional: right sidebar */}
-            <div className="col-span-1">{/* sidebar content if any */}</div>
+            {/* Optional: right sidebar  <maybeeee ?*/}
+            <div className="col-span-1"></div>
           </div>
         </div>
       </div>

@@ -32,7 +32,11 @@ interface PageProps {
       <div className="pl-10">
          
            <CombinedTag user= {post.creator} subreddit={post.subreddit}/>
+
             <div className="ml-1">
+            <h1 className="block relative before:content-[''] before:absolute before:inset-0 before:z-0 font-bold">
+            {post.title}
+            </h1>
             <EditorOutput content={post.content } />
             </div>
                 <div className='flex gap-3 py-1'>  

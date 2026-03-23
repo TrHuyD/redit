@@ -23,7 +23,7 @@ export default function PostFeed({ initialPosts, subredditName }: PostFeedProps)
     }
 
     return (
-        <InfiniteFeed
+        <InfiniteFeed 
             queryKey={['posts', subredditName]}
             initialData={initialPosts}
             limit={INFINITE_SCROLLING_PAGINATION_RESULTS}

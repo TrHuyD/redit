@@ -11,19 +11,21 @@ import { z } from 'zod'
 import { toast } from 'sonner'
 import { useUploadThing } from '@/lib/uploadthing'
 import { PostCreationRequest, PostValidator } from '@/lib/validators/post'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 
 import '@/styles/editor.css'
+
 import { ID } from '@/types/ID'
+
 
 type FormData = z.infer<typeof PostValidator>
 
 interface EditorProps {
-  subredditId: ID
+  id: ID
 }
 
-export default function Editor({ subredditId }: EditorProps) {
+export default function Editor({ id }: EditorProps) {
   const {
     register,
     handleSubmit,
@@ -31,7 +33,7 @@ export default function Editor({ subredditId }: EditorProps) {
   } = useForm<FormData>({
     resolver: zodResolver(PostValidator),
     defaultValues: {
-      subredditId,
+      subredditId:id,
       title: '',
       content: null,
     },
@@ -42,7 +44,7 @@ export default function Editor({ subredditId }: EditorProps) {
   const router = useRouter()
   const pathname = usePathname()
   const [isMounted, setIsMounted] = useState<boolean>(false)
-
+  const queryClient = useQueryClient();
   const { startUpload } = useUploadThing('imageUploader')
 
   const { mutate: createPost, isPending } = useMutation({
@@ -59,10 +61,15 @@ export default function Editor({ subredditId }: EditorProps) {
 
       toast.error('Something went wrong.', { description: message })
     },
-    onSuccess: () => {
-      const newPathname = pathname.split('/').slice(0, -1).join('/')
-      router.push(newPathname)
+    onSuccess: (data) => {
+      
+      const newPathname = pathname.split('/')[2]
+      queryClient.invalidateQueries({
+        queryKey: ['posts', newPathname]
+      })
+      router.push(`/r/${newPathname}/comments/${data.postId}`)
       router.refresh()
+     
       toast.success('Your post has been published.')
     },
   })
@@ -157,7 +164,7 @@ export default function Editor({ subredditId }: EditorProps) {
     createPost({
       title: data.title,
       content: blocks,
-      subredditId,
+      subredditId:id,
     })
   }
 

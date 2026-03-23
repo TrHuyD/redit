@@ -32,6 +32,7 @@ export default async function RootLayout({
         <Providers>
           <Navbar />
           <div className="w-full h-full pt-14">
+          <div></div>  
             {children}
           </div>
           
