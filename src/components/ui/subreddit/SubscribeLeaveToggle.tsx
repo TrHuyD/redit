@@ -3,24 +3,25 @@
 import { Button } from "@/components/ui/Button"
 import { withToast } from "@/lib/withToast"
 import { SubscribeToSubredditPayload } from "@/lib/validators/subreddit"
-import { SubredditWithMembership } from "@/types/subreddit"
+
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { startTransition, useState } from "react"
 import { toast } from "sonner"
+import { UserSubredditBaseMd } from "@/types/dto"
 
 type SubredditToggleProps = Pick<
-  SubredditWithMembership,
-  "id" | "name" | "isMember" | "isCreator"
+  UserSubredditBaseMd,
+  "Id" | "name" | "isMember" | "isCreator"
 >
 export const SubscribeLeaveToggle = ({ subreddit }: { subreddit: SubredditToggleProps }) => {
-  const { id, name, isMember, isCreator } = subreddit
+  const { Id, name, isMember, isCreator } = subreddit
   const router = useRouter()
 
   const [member, setMember] = useState(isMember)
 
-  const payload: SubscribeToSubredditPayload = { subredditId: id }
+  const payload: SubscribeToSubredditPayload = { subredditId: Id }
 
   const { mutate: subscribe, isPending: isSubLoading } = useMutation({
     mutationFn: withToast(async () => {

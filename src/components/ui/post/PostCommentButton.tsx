@@ -33,7 +33,6 @@ export const PostCommentButton = ({ postId }: PostCommentButtonProps) => {
       </Button>
     )
   }
-  console.log(postId)
 
   return (
     <CommentEditor

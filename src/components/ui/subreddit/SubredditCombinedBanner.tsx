@@ -1,12 +1,14 @@
 'use client'
-import { SubredditWithMembership } from "@/types/subreddit"
+
+import { UserSubredditBaseMd } from "@/types/dto"
 import { SubredditBanner } from "./SubredditBanner"
 import { SubredditHeader } from "./SubredditHeader"
 import { usePathname } from "next/navigation"
 import { useMemo } from "react"
 
+
 interface Props {
-  subreddit: SubredditWithMembership
+  subreddit: UserSubredditBaseMd
 }
 
 export function SubredditCombinedHeader({ subreddit }: Props) {

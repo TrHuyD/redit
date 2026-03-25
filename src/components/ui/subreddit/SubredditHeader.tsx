@@ -2,13 +2,14 @@
 
 import CreatePostButton from "@/components/post/CreatePostButton"
 import { SubscribeLeaveToggle } from "@/components/ui/subreddit/SubscribeLeaveToggle"
-import { SubredditWithMembership } from "@/types/subreddit"
+
 import { SubredditAvatar } from "./SubredditAvatar"
 import { Button } from "../Button"
+import { UserSubredditBaseMd } from "@/types/dto"
 
 
 interface Props {
-  subreddit: SubredditWithMembership
+  subreddit: UserSubredditBaseMd
 }
 
 export function SubredditHeader({ subreddit }: Props) {

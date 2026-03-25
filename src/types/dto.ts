@@ -51,7 +51,12 @@ export interface SubredditMinimalMd{
 }
 export interface SubredditBaseMd extends Version,SubredditMinimalMd{
     image:string;
-    createdAt:Date;
-    latestUpdateAt:Date;
+    createdAt:bigint;
+    latestUpdateAt:bigint;
     creatorId: bigint;
+}
+export interface UserSubredditBaseMd extends SubredditBaseMd{
+    isCreator:boolean,
+    isMember:boolean,
+    userCount:number
 }

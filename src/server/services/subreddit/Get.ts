@@ -5,16 +5,13 @@ import { cache } from "react"
 import { notFound } from "next/navigation"
 import { ID } from "@/types/ID"
 import { toPostDto, toPostPerDto } from "@/types/toDTO"
-import { Subreddit } from "@prisma/client"
-import { SubredditWithMembership } from "@/types/subreddit"
 
-export const getSubredditMemberCount = cache(async (subId: ID) => {
-  const count = await db.subscription.count({
-    where: {
-      subredditId: subId,
-    },
-  })
-  return count
+
+export const isMember=cache(async (subredditId:bigint,userId?:bigint) =>{
+  if(!userId)
+    return false;
+  const sub = await db.subscription.findUnique({where: {userId_subredditId:{userId,subredditId}}})
+  return sub!=null
 })
 
 export const getSubreddit = cache(async (slug: string) => {
@@ -25,30 +22,8 @@ export const getSubreddit = cache(async (slug: string) => {
   if (!subreddit) notFound()
   return  subreddit
 })
-export const getSubredditManifestedMetadata = cache(async (slug: string) => {
-  const subreddit = await getSubreddit(slug)
-  var memberCount = await getSubredditMemberCount(subreddit.id)
-  return {
-    ...subreddit,
-    userCount: memberCount
-  }
-})
 
-export async function getSubredditWithMembership(slug: string, userId?: ID) {
-  var metadata = await getSubredditManifestedMetadata(slug)
-  var membership =!userId?null: await db.subscription.findUnique({
-    where: {userId_subredditId: {
-      subredditId: metadata.id,
-      userId,
-     } },
-  })
 
-  return {
-    ...metadata,
-    isMember: !!membership,
-    isCreator: metadata.creatorId === userId,
-  } as  SubredditWithMembership
-}
 
 export async function getSubredditPosts({
   slug,

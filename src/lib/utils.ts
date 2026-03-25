@@ -46,8 +46,15 @@ function formatDistance(token: string, count: number, options?: any): string {
   return result
 }
 
-export function formatTimeToNow(date: Date): string {
-  return formatDistanceToNowStrict(date, {
+export function formatTimeToNow(date: Date): string
+export function formatTimeToNow(date: bigint): string
+
+export function formatTimeToNow(date: Date | bigint): string {
+  const normalizedDate =
+    typeof date === "bigint"
+      ? new Date(Number(date)) 
+      : date
+  return formatDistanceToNowStrict(normalizedDate, {
     addSuffix: true,
     locale: {
       ...locale,

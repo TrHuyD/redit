@@ -154,6 +154,7 @@ export function cacheWriteAndUnlock<K, V>(
     nullTtl: number
   ): Strategy<K, V> {
     return async (ctx) => {
+
       if (ctx.fetched.size === 0) return
       const pipeline = redis.multi()
       for (const [k, v] of ctx.fetched) {

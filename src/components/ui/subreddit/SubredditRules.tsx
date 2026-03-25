@@ -1,6 +1,6 @@
-import { SubredditWithMembership } from "@/types/subreddit"
+import { UserSubredditBaseMd } from "@/types/dto"
 interface Props {
-  subreddit: SubredditWithMembership
+  subreddit: UserSubredditBaseMd
 }
 
 export function SubredditRules({ subreddit }: Props) {

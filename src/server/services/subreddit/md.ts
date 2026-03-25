@@ -1,10 +1,11 @@
 import { db } from "@/lib/db";
 import { SubredditBaseMd, SubredditMinimalMd } from "@/types/dto";
-import { createCachedBatchLoader } from "../cache/Pipeline";
+import { createCachedBatchLoader, createCachedBatchLoader2 } from "../cache/Pipeline";
 import { promises } from "node:dns";
 import { createSingleLoader } from "@/lib/utils";
 
 async function getSubreddits(ids: bigint[]): Promise<SubredditBaseMd[]> {
+
     const rows = await db.subreddit.findMany({
       where: {
         id: { in: ids },
@@ -19,8 +20,12 @@ async function getSubreddits(ids: bigint[]): Promise<SubredditBaseMd[]> {
 
       },
     });
+
+
     return rows.map(r => ({
       ...r ,
+      createdAt:BigInt(r.createdAt.getTime()),
+      latestUpdateAt:BigInt(r.latestUpdateAt.getTime()),
       Id:r.id,
       v: 0n,
     }));
@@ -51,7 +56,7 @@ async function getMemberCount(ids:bigint[]): Promise<subredditMemCount[]>{
   return rows.map(r => ({Id:r.subredditId,Count:r._count.subredditId}))
 }
 
-export const getSubredditsMetadata = createCachedBatchLoader<bigint, SubredditBaseMd>({
+export const getSubredditsMetadata = createCachedBatchLoader2<bigint, SubredditBaseMd>({
     keyFn: (id) => `subreddit:metadata:${id}`,
     fetch: getSubreddits,
     map: (post) => post.Id,
@@ -77,4 +82,4 @@ export const getSubredditsMemberCount = createCachedBatchLoader<bigint,subreddit
 
 export const getSubredditMetadata =createSingleLoader(getSubredditsMetadata)
 export const getSubredditId =createSingleLoader(getSubredditsId)
-export const getSubredditMemberCountSingle =createSingleLoader(getSubredditsMemberCount)
+export const getSubredditMemberCount =createSingleLoader(getSubredditsMemberCount)
