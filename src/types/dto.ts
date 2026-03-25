@@ -41,3 +41,13 @@ export interface CommentDto {
 export interface CommentPerDto extends CommentDto{
     voteType?:VoteType| null
 }
+export interface Version {
+    v:bigint;
+}
+
+
+export interface SubredditBaseMd extends Version{
+    Id:bigint;
+    name:string;
+    image:string;
+}
