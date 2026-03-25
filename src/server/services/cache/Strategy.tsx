@@ -1,11 +1,9 @@
+import {redis} from '@/server/lib/redis'
 export type BatchContext<K, V> = {
     keys: K[]
-  
     cached: Map<K, V | null>
     missing: Set<K>
-  
     fetched: Map<K, V | null>
-  
     result: Map<K, V | null>
   }
 export type Strategy<K, V> = (ctx: BatchContext<K, V>) => Promise<void>
@@ -24,12 +22,11 @@ export async function runBatch<K, V>(
 
 
 export function cacheRead<K, V>(
-    redis: any,
     keyFn: (k: K) => string
   ): Strategy<K, V> {
     return async (ctx) => {
       const redisKeys = ctx.keys.map(keyFn)
-      const values = await redis.mGet(redisKeys)
+      const values = await redis.mget(redisKeys)
   
       values.forEach((val: string | null, i: number) => {
         const k = ctx.keys[i]
@@ -66,7 +63,6 @@ export  function fetchMany<K, V>(
 
 
   export function lockStrategy<K, V>(
-    redis: any,
     keyFn: (k: K) => string,
     lockTTL = 3000
   ): Strategy<K, V> {
@@ -84,7 +80,7 @@ export  function fetchMany<K, V>(
       const results = await pipeline.exec()
       const lockedByMe = new Set<K>()
       const stillMissing = new Set<K>()
-      results.forEach((res: any, i: number) => {
+      results?.forEach((res: any, i: number) => {
         const k = keys[i]
         const result = Array.isArray(res) ? res[1] : res
         if (result === "OK") {
@@ -98,7 +94,6 @@ export  function fetchMany<K, V>(
     }
   }
 export function waitForCache<K, V>(
-    redis: any,
     keyFn: (k: K) => string,
     options?: {
       retries?: number
@@ -122,7 +117,7 @@ export function waitForCache<K, V>(
         const keys = Array.from(waiting)
         const redisKeys = keys.map(keyFn)
   
-        const values = await redis.mGet(redisKeys)
+        const values = await redis.mget(redisKeys)
   
         let allResolved = true
   
@@ -154,7 +149,6 @@ export function waitForCache<K, V>(
     return new Promise(res => setTimeout(res, ms))
   }
 export function cacheWriteAndUnlock<K, V>(
-    redis: any,
     keyFn: (k: K) => string,
     ttl: number,
     nullTtl: number
@@ -178,3 +172,16 @@ export function cacheWriteAndUnlock<K, V>(
       await pipeline.exec()
     }
 }
+export function mergeResult<K, V>(): Strategy<K, V> {
+    return async (ctx) => {
+      for (const k of ctx.keys) {
+        if (ctx.cached.has(k)) {
+          ctx.result.set(k, ctx.cached.get(k)!);
+        } else if (ctx.fetched.has(k)) {
+          ctx.result.set(k, ctx.fetched.get(k)!);
+        } else {
+          ctx.result.set(k, null);
+        }
+      }
+    };
+  }

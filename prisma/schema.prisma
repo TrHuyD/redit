@@ -75,11 +75,11 @@ model Subreddit{
   createdAt DateTime @default(now())
   latestUpdateAt DateTime @default(now())
   posts Post[]
-  image    String? @default("https://cdn.discordapp.com/embed/avatars/4.png")
+  image    String @default("https://cdn.discordapp.com/embed/avatars/4.png")
   subscribers Subscription[]
 
-  creatorId   BigInt?
-  Creator     User?          @relation("CreatedBy", fields: [creatorId], references: [id])
+  creatorId   BigInt
+  Creator     User         @relation("CreatedBy", fields: [creatorId], references: [id])
 }
 model Post{
   id  BigInt @id

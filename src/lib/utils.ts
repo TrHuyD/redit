@@ -62,3 +62,12 @@ export function getIdnull<T extends { id: string }>(obj: T | null | undefined): 
   if (!obj) return undefined
   return BigInt(obj.id)
 }
+
+export function createSingleLoader<K, V>(
+  batchLoader: (keys: K[]) => Promise<(V | null)[]>
+) {
+  return async (key: K): Promise<V | null> => {
+    const result = await batchLoader([key])
+    return result[0] ?? null
+  }
+}

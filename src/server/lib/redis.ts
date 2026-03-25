@@ -1,5 +1,9 @@
 import Redis from "ioredis";
 
-const redisUrl = `rediss://default:${process.env.REDIS_SECRET}@${process.env.REDIS_URL}:15551`;
+export const redis = new Redis({
+    host: process.env.REDIS_URL,
+    port: 15551,
+    username: "default",
+    password: process.env.REDIS_SECRET,
+  })
 
-export const redis = new Redis(redisUrl);

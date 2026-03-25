@@ -45,9 +45,13 @@ export interface Version {
     v:bigint;
 }
 
-
-export interface SubredditBaseMd extends Version{
-    Id:bigint;
-    name:string;
+export interface SubredditMinimalMd{
+    Id:bigint,
+    name:string,
+}
+export interface SubredditBaseMd extends Version,SubredditMinimalMd{
     image:string;
+    createdAt:Date;
+    latestUpdateAt:Date;
+    creatorId: bigint;
 }

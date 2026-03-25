@@ -2,6 +2,8 @@
 import CreatePostButton from "@/components/post/CreatePostButton"
 import { Users, Circle } from "lucide-react"
 import { SubredditWithMembership } from "@/types/subreddit"
+import { formatTimeToNow } from "@/lib/utils"
+
 
 interface Props {
   subreddit: SubredditWithMembership
@@ -41,7 +43,7 @@ export function SubredditAbout({ subreddit }: Props) {
 
         <div className="flex flex-col gap-2 pt-2 border-t border-zinc-200 dark:border-zinc-700">
           {/* TODO: subreddit.createdAt */}
-          <p className="text-xs text-zinc-500">Created {subreddit.createdAt.toDateString()}</p>
+          <p className="text-xs text-zinc-500">Created {formatTimeToNow(new Date(subreddit.createdAt))}</p>
           <CreatePostButton />
         </div>
       </div>
