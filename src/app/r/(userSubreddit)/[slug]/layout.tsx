@@ -4,7 +4,7 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { getId, getIdnull } from "@/lib/utils"
 import { SubredditLayout } from "../../../../components/ui/subreddit/SubredditLayout"
-import { getSubredditId, getSubredditMemberCount, getSubredditMetadata } from "@/server/services/subreddit/md"
+import { getSubredditId, getSubredditMemberCount, getSubredditMetadata } from "@/server/services/subreddit/loader"
 import { isMember } from "@/server/services/subreddit/Get"
 
 

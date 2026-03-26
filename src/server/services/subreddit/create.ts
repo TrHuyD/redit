@@ -5,6 +5,8 @@ import { Subreddit } from "@prisma/client"
 import {  generateSubredditId } from "../Snowflake"
 export async function createSubreddit(data: CreateSubredditRequestPayload): Promise<Result<Subreddit>> {
 
+  if(data.name=="metadata"||data.name=="membercount")
+    {return { ok: false, error: { code: "409", message: "SUBREDDIT_EXISTS" } }}
   const existing = await db.subreddit.findUnique({where: { name: data.name }})
   if (existing) {return { ok: false, error: { code: "409", message: "SUBREDDIT_EXISTS" } }}
   const id = generateSubredditId()

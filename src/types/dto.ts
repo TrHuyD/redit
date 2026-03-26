@@ -1,32 +1,13 @@
 import { JsonValue } from "@prisma/client/runtime/client"
 import { ID } from "./ID"
 import { VoteType } from "@/types/enum"
+import { UserDto } from "./Users/dto"
 
-
-export type UserDto = {
-    id: ID
-    name: string
-    image: string         
-}
 
 export type SubRedditDto = {
     id: ID
     name: string
     image: string         
-}
-export type PostDto = {
-    id: ID            
-    creator: UserDto
-    subreddit: SubRedditDto 
-    votesAmt: number
-    content: JsonValue
-    title: string
-    commentsAmt: number
-    createdAt: Date      
-    lastEdited: Date | null 
-}
-export type PostUserDto = PostDto& {
-    currentVote: VoteType | null  
 }
 
 export interface CommentDto {

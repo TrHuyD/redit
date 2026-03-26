@@ -3,7 +3,7 @@ import PostFeed from "@/components/ui/post/PostFeed"
 import { getAuthToken } from "@/lib/auth"
 import { getIdnull } from "@/lib/utils"
 
-import {  getSubredditPosts } from "@/server/services/subreddit/Get"
+import {  getSubredditPosts } from "@/server/services/subreddit/post/service"
 import { SortBy } from "@/types/enum"
 
 import { notFound } from "next/navigation"

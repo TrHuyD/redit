@@ -5,5 +5,5 @@ export enum SortBy {
   }
 export enum VoteType{
   UPVOTE = 1,
-  DOWNVOTE=-1
+  DOWNVOTE=-1,
 }

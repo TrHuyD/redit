@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/Button'
 import { loginToast } from '@/lib/customToast'
 import { cn } from '@/lib/utils'
-import { CommentVotePayLoad } from '@/lib/validators/post'
+import { CommentVotePayload } from '@/lib/validators/post'
 import { withToast } from '@/lib/withToast'
 
 import { VoteType } from '@/types/enum'
@@ -29,7 +29,7 @@ const CommentVotes = ({commentId,votesAmt: _votesAmt,currentVote:_currentVote}:C
 
   const { mutate: vote } = useMutation({
     mutationFn:  withToast(async (type: VoteType) => {
-      const payload: CommentVotePayLoad = {
+      const payload: CommentVotePayload = {
         voteType: type,
         commentId,
       }

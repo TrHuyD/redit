@@ -8,8 +8,9 @@ import { useRef } from 'react'
 import CommentAmtDisplay from './CommentAmtDisplay'
 import EditorOutput from './EditorOutput'
 import PostVoteClient from './PostVoteClient'
-import { PostUserDto } from '@/types/dto'
+
 import Link from 'next/link'
+import { PostUserDto } from '@/types/post'
 
 interface PostProps {
   post: PostUserDto

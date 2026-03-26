@@ -1,6 +1,6 @@
 'use client'
 
-import { votePost } from "@/lib/api/Subreddit/PostVote"
+import { unVotePost, votePost } from "@/lib/api/Subreddit/PostVote"
 import { withToast } from "@/lib/withToast"
 import { usePrevious } from "@mantine/hooks"
 
@@ -31,7 +31,9 @@ export default function PostVoteClient({postId,initialVotesAmt,initialVote}:Post
         useEffect(() => setCurrentVote(initialVote),[initialVote])
         const {mutate: vote } = useMutation({
             mutationFn : withToast(async (type: VoteType)=> {
+              if(type!=currentVote)
                 return votePost({type:type,postId:postId})
+              return unVotePost({postId})
             }),
             onMutate:(type:VoteType) =>
               {

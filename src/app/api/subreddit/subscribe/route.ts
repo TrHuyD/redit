@@ -2,7 +2,7 @@ import { withAuth } from "@/server/lib/withAuth"
 import { withErrorHandler } from "@/server/lib/withErrorHandler"
 import { SubscriptionValidator } from "@/lib/validators/subreddit"
 import { NextRequest } from "next/server"
-import { JoinSubreddit } from "@/server/services/subreddit/join"
+import { JoinSubreddit } from "@/server/services/subreddit/action"
 import { getId } from "@/lib/utils"
 
 export const POST = withErrorHandler(withAuth(async (req: NextRequest, token) => {

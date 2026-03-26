@@ -3,7 +3,8 @@ import { getId } from "@/lib/utils";
 import { PostVoteValidator } from "@/lib/validators/post";
 import { withAuth } from "@/server/lib/withAuth";
 import { withErrorHandler } from "@/server/lib/withErrorHandler";
-import { VotePost } from "@/server/services/subreddit/vote";
+import { VotePost } from "@/server/services/subreddit/action";
+
 
 export const  PATCH = withErrorHandler(withAuth( async (req:Request,token) =>
 {

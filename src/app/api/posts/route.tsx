@@ -3,7 +3,7 @@ import { getAuthToken } from "@/lib/auth";
 import { getIdnull } from "@/lib/utils";
 import { SubredditPostRetrieveValidator } from "@/lib/validators/post";
 import { withErrorHandler } from "@/server/lib/withErrorHandler";
-import { getSubredditPosts } from "@/server/services/subreddit/Get";
+import { getSubredditPosts } from "@/server/services/subreddit/post/service";
 import { NextRequest } from "next/server";
 
 

@@ -156,6 +156,7 @@ export function cacheWriteAndUnlock<K, V>(
     return async (ctx) => {
 
       if (ctx.fetched.size === 0) return
+      console.log("caching",ctx.fetched)
       const pipeline = redis.multi()
       for (const [k, v] of ctx.fetched) {
         const cacheKey = keyFn(k)

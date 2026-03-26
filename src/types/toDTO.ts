@@ -1,8 +1,10 @@
 import { VoteType } from "@/types/enum"
 import { ExtendedComment, ExtendedPost } from "./db"
-import { CommentDto, CommentPerDto, PostUserDto, SubRedditDto, UserDto } from "./dto"
+import { CommentDto, CommentPerDto, SubRedditDto,  } from "./dto"
 import { ID } from "./ID"
 import { Comment } from "@prisma/client"
+import { UserDto } from "./Users/dto"
+import { PostUserDto } from "./post"
 
 export function toUserDto(user: {
     id: bigint

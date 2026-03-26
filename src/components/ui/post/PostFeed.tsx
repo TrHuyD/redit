@@ -1,10 +1,11 @@
 
 'use client'
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config"
-import { PostUserDto } from "@/types/dto"
+
 import InfiniteFeed from "./InfiniteFeed"
 import PostOut from "./PostOut"
 import axios from "axios"
+import { PostUserDto } from "@/types/post"
 
 interface PostFeedProps {
     initialPosts: PostUserDto[]

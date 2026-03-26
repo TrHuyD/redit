@@ -12,13 +12,20 @@ export const PostValidator = z.object({
 }).merge(subredditMentionValidator)
 export type PostCreationRequest = z.infer<typeof PostValidator>
 export const PostVoteValidator = z.object({
-    type : z.nativeEnum(VoteType),
-    postId : ID.zod()
+    type: z.nativeEnum(VoteType),
+    postId : z.coerce.bigint()
+})
+export const PostUnVoteValidator = z.object({
+    postId :z.coerce.bigint()
 })
 export const PostVoteRequestValidator =PostVoteValidator.merge(UserValidator)
+export const PostUnVoteRequestValidator =PostUnVoteValidator.merge(UserValidator)
+
 export type PostVotePayload = z.infer<typeof PostVoteValidator>
 export type PostVoteRequestPayload = z.infer<typeof PostVoteRequestValidator>
 
+export type PostUnVotePayload = z.infer<typeof PostUnVoteValidator>
+export type PostUnVoteRequestPayload = z.infer<typeof PostUnVoteRequestValidator>
 export const SubredditPostRetrieveValidator =z.object(
     {
         limit: z.coerce.number().int().positive().max(50).optional(),
@@ -53,15 +60,23 @@ export const CommentContentValidator = z.object({
     media : z.string().max(250,"Invalid comment (Size>250)").optional()
 })
 
+
 export const CommentVoteValidator = z.object({
-    voteType : z.nativeEnum(VoteType),
-    commentId : z.coerce.bigint(),
+    voteType: z.nativeEnum(VoteType),
+    commentId: ID.zod()
 })
-export const CommentVoteRqValidator =CommentVoteValidator.merge(UserValidator)
+export const CommentUnVoteValidator = z.object({
+    commentId: ID.zod()
+})
+export const CommentVoteRequestValidator = CommentVoteValidator.merge(UserValidator)
+export const CommentUnVoteRequestValidator = CommentUnVoteValidator.merge(UserValidator)
+export type CommentVotePayload = z.infer<typeof CommentVoteValidator>
+export type CommentUnVotePayload = z.infer<typeof CommentUnVoteValidator>
+export type CommentUnVoteRequestPayload = z.infer<typeof CommentUnVoteRequestValidator>
+export type CommentVoteRequestPayload = z.infer<typeof CommentVoteRequestValidator>
 
 
-export type CommentVotePayLoad = z.infer<typeof CommentVoteValidator>
-export type CommentVoteRequest = z.infer<typeof CommentVoteRqValidator>
+
 export type CreateCommentPayLoad = z.infer<typeof CreateCommentValidator>
 export type CommentContentPayLoad = z.infer<typeof CommentContentValidator>
 
