@@ -5,7 +5,8 @@ import { SubscribeLeaveToggle } from "@/components/ui/subreddit/SubscribeLeaveTo
 
 import { SubredditAvatar } from "./SubredditAvatar"
 import { Button } from "../Button"
-import { UserSubredditBaseMd } from "@/types/dto"
+import { UserSubredditBaseMd } from "@/types/subreddit"
+
 
 
 interface Props {

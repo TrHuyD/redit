@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
-import { SubredditBaseMd, SubredditMinimalMd } from "@/types/dto";
-import { subredditMemCount, VoteScore } from "./type";
+import { SubredditBaseMd, SubredditMinimalMd ,subredditMemCount} from "@/types/subreddit";
+
 
 export async function getSubreddits(ids: bigint[]): Promise<SubredditBaseMd[]> {
 

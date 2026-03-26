@@ -3,8 +3,8 @@ import { SubredditAbout } from "@/components/ui/subreddit/SubredditAbout"
 import { SubredditRules } from "@/components/ui/subreddit/SubredditRules"
 import { SubredditModerators } from "@/components/ui/subreddit/SubredditModerators"
 import { SubredditCombinedHeader } from "@/components/ui/subreddit/SubredditCombinedBanner"
+import { UserSubredditBaseMd } from "@/types/subreddit"
 
-import {  UserSubredditBaseMd } from "@/types/dto"
 
 interface SubredditLayoutProps {
   children: React.ReactNode

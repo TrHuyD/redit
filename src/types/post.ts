@@ -1,22 +1,28 @@
 import { JsonValue } from "@prisma/client/runtime/client"
-import { SubRedditDto } from "./dto"
+
 import { ID } from "./ID"
 import { UserDto } from "./Users/dto"
 import { VoteType } from "./enum"
-
-export type PostDto = {
+import { SubRedditDto } from "./subreddit"
+export interface PostStat{
+    votesAmt: number
+    commentsAmt: number
+}
+export interface PostStatMapped extends PostStat{
+    id:bigint
+}
+export interface PostDto{
     id: ID            
     creator: UserDto
     subreddit: SubRedditDto 
-    votesAmt: number
     content: JsonValue
     title: string
-    commentsAmt: number
     createdAt: Date      
     lastEdited: Date | null 
+    stat:PostStat
 }
 
-export type PostUserDto = PostDto& {
+export interface PostUserDto extends PostDto {
     currentVote: VoteType | null  
 }
 

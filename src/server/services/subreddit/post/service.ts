@@ -1,10 +1,12 @@
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config"
-import * as cache from "./repo"
+import * as cache from "./loader"
 import { PostUserDto } from "@/types/post"
 import { getUsersById } from "../../user/loader"
 import { getSubredditId, getSubredditMetadata } from "../loader"
-import { id } from "date-fns/locale"
-import { UserDto } from "@/types/Users/dto"
+
+import { getUserPostVotes } from "./repo"
+import { filterNull, toMap, zipToMap } from "@/lib/utils"
+
 
 
 export async function getSubredditPosts({
@@ -22,28 +24,28 @@ export async function getSubredditPosts({
 }): Promise<PostUserDto[]> {
     const Id = await getSubredditId(slug);
     if (!Id) return [];
-    const posts = await cache.getSubredditPosts({ Id, orderBy, take, cursor });
-    if (!posts.length) return [];
+    const posts = filterNull( await cache.getSubredditPosts({ Id, orderBy, take, cursor }));
+    const postIds = posts.map(p =>(p.id));
+    if (!posts.length||!posts) return [];
     const uniqueUserIds = [...new Set(posts.map(p => p.creatorId))];
-    const [users, subreddit] = await Promise.all([
+    const [users, subreddit,userVotes,postStats] = await Promise.all([
         getUsersById(uniqueUserIds),
-        getSubredditMetadata(Id)
-    ]);
+        getSubredditMetadata(Id),
+        userId?getUserPostVotes(userId, postIds):[],
+        cache.getPostsStatByIds(postIds)]);
     if (!subreddit) return [];
-    const userMap = new Map<string, UserDto>();
-    for (const u of users) {
-        if(u)
-            userMap.set(u.id.toString(), u);
-    }
+    const userMap = toMap(users, u=>u.id.toString());
+    const userVoteMap = toMap(userVotes, v=>v.Id.toString());
+    const postStatMap = zipToMap(postIds, postStats)
     return posts.map<PostUserDto>((p) => ({
         id: p.id,
         title: p.title,
         content: p.content,
         createdAt: new Date(Number(p.createdAt)),
         lastEdited: p.lastEdited ? new Date(Number(p.lastEdited)) : null,
-        votesAmt: 0,
-        commentsAmt: 0,
-        currentVote: null,
+        votesAmt: postStatMap.get(p.id.toString())??0,
+        stat: postStatMap.get(p.id.toString())!,
+        currentVote: userVoteMap.get(p.id.toString())?.type??null,
         creator: userMap.get(p.creatorId.toString())!,
         subreddit: {
             id: subreddit.Id,

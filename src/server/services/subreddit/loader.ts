@@ -1,10 +1,10 @@
 
-import { SubredditBaseMd, SubredditMinimalMd } from "@/types/dto";
 import { createCachedBatchLoader, createCachedBatchLoader2 } from "../cache/Pipeline";
 
 import { createSingleLoader } from "@/lib/utils";
 import * as db from "./repo";
-import { subredditMemCount } from "./type";
+import { SubredditBaseMd, subredditMemCount, SubredditMinimalMd } from "@/types/subreddit";
+
 
 
 export const getSubredditsMetadata = createCachedBatchLoader2<bigint, SubredditBaseMd>({

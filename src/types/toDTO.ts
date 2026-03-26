@@ -1,10 +1,11 @@
 import { VoteType } from "@/types/enum"
 import { ExtendedComment, ExtendedPost } from "./db"
-import { CommentDto, CommentPerDto, SubRedditDto,  } from "./dto"
+import { CommentDto, CommentPerDto, } from "./dto"
 import { ID } from "./ID"
-import { Comment } from "@prisma/client"
+
 import { UserDto } from "./Users/dto"
 import { PostUserDto } from "./post"
+import { SubRedditDto } from "./subreddit"
 
 export function toUserDto(user: {
     id: bigint
@@ -44,11 +45,10 @@ export function toPostDto(post: ExtendedPost, currentUserId?: bigint): PostUserD
         id: post.id,
         creator: toUserDto(post.author),
         subreddit: toSubRedditDto(post.subreddit),
-        votesAmt,
+        stat:{commentsAmt: post.comments.length,votesAmt},
         currentVote,
         content: post.content,
         title: post.title,
-        commentsAmt: post.comments.length,
         createdAt: post.createdAt,
         lastEdited: post.latestUpdateAt ?? null,
     }

@@ -9,7 +9,8 @@ import axios from "axios"
 import { useRouter } from "next/navigation"
 import { startTransition, useState } from "react"
 import { toast } from "sonner"
-import { UserSubredditBaseMd } from "@/types/dto"
+import { UserSubredditBaseMd } from "@/types/subreddit"
+
 
 type SubredditToggleProps = Pick<
   UserSubredditBaseMd,

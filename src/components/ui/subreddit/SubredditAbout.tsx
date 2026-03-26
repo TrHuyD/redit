@@ -3,7 +3,8 @@ import CreatePostButton from "@/components/post/CreatePostButton"
 import { Users, Circle } from "lucide-react"
 
 import { formatTimeToNow } from "@/lib/utils"
-import { UserSubredditBaseMd } from "@/types/dto"
+import { UserSubredditBaseMd } from "@/types/subreddit"
+
 
 
 interface Props {

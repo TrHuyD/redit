@@ -1,27 +1,21 @@
-import { createSingleLoader } from "@/lib/utils"
-import { createCachedBatchLoader, createCachedBatchLoader2 } from "../../cache/Pipeline"
-import { VoteScore } from "../type"
+
+import {  createCachedBatchLoader2, createCachedHashLoader } from "../../cache/Pipeline"
+
 import * as db from "./repo";
-import { CachedPost } from "@/types/post";
+import { CachedPost, PostStat, PostStatMapped } from "@/types/post";
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
-export const getPostsVoteScore = createCachedBatchLoader<bigint,VoteScore,number>({
-    keyFn: (id) => `post:${id}:vote`,
-    fetch: db.getPostVoteScore,
-    map: (md) => md.Id,
-    select: (md) => md?.Count ?? null,
-    ttl: 1200000,
-    nullTtl: 30,
-  })
-export const getCommentsVoteScore = createCachedBatchLoader<bigint,VoteScore,number>({
-    keyFn: (id) => `comment:${id}:vote`,
-    fetch: db.getCommentVoteScore,
-    map: (md) => md.Id,
-    select: (md) => md?.Count ?? null,
-    ttl: 1200000,
-    nullTtl: 30,
-    })
-export const getPostVoteScore =createSingleLoader(getPostsVoteScore)
-export const getCommentVoteScore =createSingleLoader(getCommentsVoteScore)
+import { createSingleLoader } from "@/lib/utils";
+
+
+export const getPostsStatByIds = createCachedHashLoader<bigint, PostStatMapped, PostStat>({
+    keyFn: (id) => `post:${id}:stats`,
+    fetch: db.getPostsStatByIds,    
+    map: (v) => v.id,
+    select: (md) => md,
+    ttl: 36000,
+    nullTtl: 60,
+})
+export const getPostStatById= createSingleLoader(getPostsStatByIds)
 export const getPostsByIds= createCachedBatchLoader2<bigint,CachedPost>({
     keyFn: (id) => `post:${id}`,
     fetch: db.getPostsByIds,
@@ -29,6 +23,8 @@ export const getPostsByIds= createCachedBatchLoader2<bigint,CachedPost>({
     ttl: 120,
     nullTtl: 30,
 })
+export const getPostById =createSingleLoader(getPostsByIds)
+
 export async function getSubredditPosts({
     Id,
     orderBy = "desc",

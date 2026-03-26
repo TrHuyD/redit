@@ -156,7 +156,6 @@ export function cacheWriteAndUnlock<K, V>(
     return async (ctx) => {
 
       if (ctx.fetched.size === 0) return
-      console.log("caching",ctx.fetched)
       const pipeline = redis.multi()
       for (const [k, v] of ctx.fetched) {
         const cacheKey = keyFn(k)
@@ -187,3 +186,67 @@ export function mergeResult<K, V>(): Strategy<K, V> {
       }
     };
   }
+
+export function hincrbyStrategy<K>(
+    keyFn: (k: K) => string,
+    field: string,
+    delta: number
+): Strategy<K, never> {
+    return async (ctx) => {
+        const pipeline = redis.multi()
+        for (const k of ctx.keys) {
+            pipeline.hincrby(keyFn(k), field, delta)
+        }
+        await pipeline.exec()
+    }
+}
+
+export function cacheReadHash<K, V>(
+  keyFn: (k: K) => string
+): Strategy<K, V> {
+  return async (ctx) => {
+      const pipeline = redis.multi()
+      for (const k of ctx.keys) {
+          pipeline.hgetall(keyFn(k))
+      }
+      const results = await pipeline.exec()
+
+      results?.forEach((res: any, i: number) => {
+          const k = ctx.keys[i]
+          const val = Array.isArray(res) ? res[1] : res
+
+          if (val && Object.keys(val).length > 0) {
+              ctx.cached.set(k, val as V)
+          } else {
+              ctx.missing.add(k)
+          }
+      })
+  }
+}
+
+export function cacheWriteHashAndUnlock<K, V extends Record<string, any>>(
+  keyFn: (k: K) => string,
+  ttl: number,
+  nullTtl: number
+): Strategy<K, V> {
+  return async (ctx) => {
+      if (ctx.fetched.size === 0) return
+
+      const pipeline = redis.multi()
+      for (const [k, v] of ctx.fetched) {
+          const cacheKey = keyFn(k)
+          const lockKey = `lock:${cacheKey}`
+          const finalTtl = v === null ? nullTtl : ttl
+          const jitter = Math.floor(Math.random() * 10)
+
+          if (v === null) {
+              pipeline.hset(cacheKey, { __null__: "1" })
+          } else {
+              pipeline.hset(cacheKey, v)
+          }
+          pipeline.expire(cacheKey, finalTtl + jitter)
+          pipeline.del(lockKey)
+      }
+      await pipeline.exec()
+  }
+}

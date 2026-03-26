@@ -75,12 +75,12 @@ export default function PostOut({ post, displayType }: PostProps) {
               <PostVoteClient
                 postId={post.id}
                 initialVote={post.currentVote}
-                initialVotesAmt={post.votesAmt}
+                initialVotesAmt={post.stat.votesAmt}
               />
             </div>
 
             <div className=" relative z-20">
-              <CommentAmtDisplay amt={post.commentsAmt} />
+              <CommentAmtDisplay amt={post.stat.commentsAmt} />
             </div>
 
           </div>

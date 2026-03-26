@@ -1,6 +1,7 @@
 'use client'
 
-import { UserSubredditBaseMd } from "@/types/dto"
+import { UserSubredditBaseMd } from "@/types/subreddit"
+
 import { SubredditBanner } from "./SubredditBanner"
 import { SubredditHeader } from "./SubredditHeader"
 import { usePathname } from "next/navigation"

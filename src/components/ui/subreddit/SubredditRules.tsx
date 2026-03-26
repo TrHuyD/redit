@@ -1,4 +1,5 @@
-import { UserSubredditBaseMd } from "@/types/dto"
+import { UserSubredditBaseMd } from "@/types/subreddit"
+
 interface Props {
   subreddit: UserSubredditBaseMd
 }

@@ -78,3 +78,24 @@ export function createSingleLoader<K, V>(
     return result[0] ?? null
   }
 }
+
+export const filterNull = <T>(arr: (T | null | undefined)[]): T[] => 
+  arr.filter((x): x is T => x != null)
+
+export function toMap<V>(items: (V | null | undefined)[], key: (v: V) => string): Map<string, V> {
+  const map = new Map<string, V>()
+  for (const item of items) {
+      if (item != null)
+          map.set(key(item), item)
+  }
+  return map
+}
+export function zipToMap<K extends string | bigint, V>(keys: K[], values: (V | null | undefined)[]): Map<string, V> {
+  const map = new Map<string, V>()
+  for (let i = 0; i < keys.length; i++) {
+      const v = values[i]
+      if (v != null)
+          map.set(keys[i].toString(), v)
+  }
+  return map
+}
