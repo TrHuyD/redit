@@ -121,7 +121,7 @@ export function createCachedHashLoader
           ctx.fetched.set(k, finalVal)
         }
       },
-      cacheWriteHashAndUnlock(options.keyFn, options.ttl, options.nullTtl),
+       cacheWriteHashAndUnlock(options.keyFn, options.ttl, options.nullTtl),
       mergeResult(),
     ])
   }

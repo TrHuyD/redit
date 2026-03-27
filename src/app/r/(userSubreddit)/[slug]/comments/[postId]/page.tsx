@@ -9,7 +9,8 @@ import PostVoteClient from "@/components/ui/post/PostVoteClient"
 import { getAuthToken } from "@/lib/auth"
 import { formatTimeToNow, getIdnull } from "@/lib/utils"
 
-import { getPost } from "@/server/services/subreddit/Get"
+
+import { getPostById } from "@/server/services/subreddit/post/service"
 
 import { notFound } from "next/navigation"
 
@@ -26,7 +27,7 @@ interface PageProps {
     const {postId} = await params;
     
     const userId= getIdnull( await getAuthToken())
-    const post = await getPost({postId,userId})  
+    const post = await getPostById({postId,userId})  
     if (!post) return notFound()
   
     return (

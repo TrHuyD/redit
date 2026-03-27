@@ -43,7 +43,6 @@ export async function getSubredditPosts({
         content: p.content,
         createdAt: new Date(Number(p.createdAt)),
         lastEdited: p.lastEdited ? new Date(Number(p.lastEdited)) : null,
-        votesAmt: postStatMap.get(p.id.toString())??0,
         stat: postStatMap.get(p.id.toString())!,
         currentVote: userVoteMap.get(p.id.toString())?.type??null,
         creator: userMap.get(p.creatorId.toString())!,
@@ -53,4 +52,44 @@ export async function getSubredditPosts({
             image: subreddit.image,
         }
     }));
+}
+
+export async function getPostById({
+    postId,
+    userId,
+}: {
+    postId: bigint
+    userId?: bigint
+}): Promise<PostUserDto | null> {
+    const post = await cache.getPostById(postId)
+    if (!post) return null
+
+    const [user, subreddit, userVotes, postStats] = await Promise.all([
+        getUsersById([post.creatorId]),
+        getSubredditMetadata(post.subredditId),
+        userId ? getUserPostVotes(userId, [postId]) : [],
+        cache.getPostsStatByIds([postId]),
+    ])
+
+    if (!subreddit) return null
+
+    const userMap = toMap(user, u => u.id.toString())
+    const userVoteMap = toMap(userVotes, v => v.Id.toString())
+    const postStatMap = zipToMap([postId], postStats)
+
+    return {
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        createdAt: new Date(Number(post.createdAt)),
+        lastEdited: post.lastEdited ? new Date(Number(post.lastEdited)) : null,
+        stat: postStatMap.get(postId.toString())!,
+        currentVote: userVoteMap.get(postId.toString())?.type ?? null,
+        creator: userMap.get(post.creatorId.toString())!,
+        subreddit: {
+            id: subreddit.Id,
+            name: subreddit.name,
+            image: subreddit.image,
+        },
+    }
 }

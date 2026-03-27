@@ -31,8 +31,9 @@ export default function PostVoteClient({postId,initialVotesAmt,initialVote}:Post
         useEffect(() => setCurrentVote(initialVote),[initialVote])
         const {mutate: vote } = useMutation({
             mutationFn : withToast(async (type: VoteType)=> {
-              if(type!=currentVote)
+              if(type==currentVote)
                 return votePost({type:type,postId:postId})
+              else    
               return unVotePost({postId})
             }),
             onMutate:(type:VoteType) =>

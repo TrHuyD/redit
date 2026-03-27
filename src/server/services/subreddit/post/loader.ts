@@ -20,7 +20,7 @@ export const getPostsByIds= createCachedBatchLoader2<bigint,CachedPost>({
     keyFn: (id) => `post:${id}`,
     fetch: db.getPostsByIds,
     map: (md) => md.id,
-    ttl: 120,
+    ttl: 1200,
     nullTtl: 30,
 })
 export const getPostById =createSingleLoader(getPostsByIds)

@@ -175,6 +175,7 @@ export function cacheWriteAndUnlock<K, V>(
 }
 export function mergeResult<K, V>(): Strategy<K, V> {
     return async (ctx) => {
+
       for (const k of ctx.keys) {
         if (ctx.cached.has(k)) {
           ctx.result.set(k, ctx.cached.get(k)!);

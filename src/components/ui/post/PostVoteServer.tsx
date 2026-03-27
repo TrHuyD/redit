@@ -23,7 +23,6 @@ const PostVoteServer = () => async ({
     let _currentVote: PostVote['type'] | null | undefined = undefined
   
     if (getData) {
-      // fetch data in component
       const post = await getData()
       if (!post) return notFound()
   
