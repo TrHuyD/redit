@@ -95,6 +95,7 @@ export function createCachedHashLoader
   ttl: number
   nullTtl: number
 }): (keys: K[]) => Promise<(Cached | null)[]> {
+
   return async function load(keys: K[]): Promise<(Cached | null)[]> {
     const ctx: BatchContext<K, Cached> = {
       keys,

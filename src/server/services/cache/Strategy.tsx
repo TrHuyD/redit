@@ -211,7 +211,6 @@ export function cacheReadHash<K, V>(
           pipeline.hgetall(keyFn(k))
       }
       const results = await pipeline.exec()
-
       results?.forEach((res: any, i: number) => {
           const k = ctx.keys[i]
           const val = Array.isArray(res) ? res[1] : res

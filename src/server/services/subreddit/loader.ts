@@ -3,7 +3,9 @@ import { createCachedBatchLoader, createCachedBatchLoader2 } from "../cache/Pipe
 
 import { createSingleLoader } from "@/lib/utils";
 import * as db from "./repo";
-import { SubredditBaseMd, subredditMemCount, SubredditMinimalMd } from "@/types/subreddit";
+import { SubredditBaseMd, subredditMemCount, SubredditMinimalMd, UserSubredditBaseMd } from "@/types/subreddit";
+import { isMember } from "@/server/services/subreddit/Get"
+import { cache } from "react";
 
 
 
@@ -35,3 +37,14 @@ export const getSubredditMetadata =createSingleLoader(getSubredditsMetadata)
 export const getSubredditId =createSingleLoader(getSubredditsId)
 export const getSubredditMemberCount =createSingleLoader(getSubredditsMemberCount)
 
+export const getSubredditUserMD = cache(async (slug: string, userId?: bigint) => {
+    const id = await getSubredditId(slug)
+    if (!id) return null
+    const [subredditMd, memberCount, isMem] = await Promise.all([
+        getSubredditMetadata(id),
+        getSubredditMemberCount(id),
+        isMember(id, userId),
+    ])
+    const subreddit= {...subredditMd!,userCount:memberCount!,isCreator:subredditMd?.creatorId==userId,isMember:isMem} as UserSubredditBaseMd
+    return subreddit
+})

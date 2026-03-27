@@ -5,49 +5,44 @@ import * as db from "./action-db";
 import { Delta as VoteDelta } from "./type";
 import { incrCache } from "../cache/util";
 import { UserSubredditRequestPayload } from "@/lib/validators/subreddit";
-
+import { incrHashField } from "../cache/Pipeline";
 
 
 export async function VotePost({ type, postId, userId }: PostVoteRequestPayload): Promise<Result<VoteDelta>> {
-  const result = await db.VotePost({ type, postId, userId });
-    if(result.ok)
-    {
-        const key = `post:${postId}:vote`;
-        incrCache(key, result.data.delta).catch(err => {console.error("Failed to update cache:", err);});
-    }
-    return result;
+  const result = await db.VotePost({ type, postId, userId })
+  if (result.ok) {
+    incrHashField([`post:${postId}:stats`], "votesAmt", result.data.delta)
+      .catch(err => console.error("Failed to update post vote cache:", err))
+  }
+  return result
 }
+
 export async function UnVotePost({ postId, userId }: PostUnVoteRequestPayload): Promise<Result<VoteDelta>> {
-  const result = await db.UnVotePost({ postId, userId });
-  if(result.ok)
-    {
-        const key = `post:${postId}:vote`;
-        incrCache(key, result.data.delta).catch(err => {console.error("Failed to update cache:", err);});
-    }
-  return result;
+  const result = await db.UnVotePost({ postId, userId })
+  if (result.ok) {
+    incrHashField([`post:${postId}:stats`], "votesAmt", result.data.delta)
+      .catch(err => console.error("Failed to update post vote cache:", err))
+  }
+  return result
 }
 
 export async function VoteComment({ voteType: type, commentId, userId }: CommentVoteRequestPayload): Promise<Result<VoteDelta>> {
-    const result = await db.VoteComment({ voteType: type, commentId, userId });
-    if (result.ok) {
-      const key = `comment:${commentId}:vote`;
-      incrCache(key, result.data.delta).catch(err => {
-        console.error("Failed to update comment cache:", err);
-      });
-    }
-    return result;
+  const result = await db.VoteComment({ voteType: type, commentId, userId })
+  if (result.ok) {
+    incrHashField([`comment:${commentId}:stats`], "votesAmt", result.data.delta)
+      .catch(err => console.error("Failed to update comment vote cache:", err))
   }
-  
-  export async function UnVoteComment({ commentId, userId }: CommentUnVoteRequestPayload): Promise<Result<VoteDelta>> {
-    const result = await db.UnVoteComment({ commentId, userId });
-    if (result.ok) {
-      const key = `comment:${commentId}:vote`;
-      incrCache(key, result.data.delta).catch(err => {
-        console.error("Failed to update comment cache:", err);
-      });
-    }
-    return result;
+  return result
+}
+
+export async function UnVoteComment({ commentId, userId }: CommentUnVoteRequestPayload): Promise<Result<VoteDelta>> {
+  const result = await db.UnVoteComment({ commentId, userId })
+  if (result.ok) {
+    incrHashField([`comment:${commentId}:stats`], "votesAmt", result.data.delta)
+      .catch(err => console.error("Failed to update comment vote cache:", err))
   }
+  return result
+}
 
   export async function JoinSubreddit(data: UserSubredditRequestPayload): Promise<Result<null>> {
     const result = await db.JoinSubreddit(data);

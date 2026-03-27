@@ -2,10 +2,11 @@
 import { getAuthToken } from "@/lib/auth"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { getId, getIdnull } from "@/lib/utils"
+
 import { SubredditLayout } from "../../../../components/ui/subreddit/SubredditLayout"
-import { getSubredditId, getSubredditMemberCount, getSubredditMetadata } from "@/server/services/subreddit/loader"
-import { isMember } from "@/server/services/subreddit/Get"
+import { getSubredditUserMD } from "@/server/services/subreddit/loader"
+import { getIdnull } from "@/lib/utils"
+
 
 
 export const metadata: Metadata = {
@@ -26,14 +27,8 @@ export default async function Layout({ children, params }: LayoutProps) {
 
   if(!isAll)
   {
-    const id = await getSubredditId(slug)
-    if(!id) return notFound()
-    const [subredditMd, memberCount,isMem] = await Promise.all([
-      getSubredditMetadata(id),
-      getSubredditMemberCount(id),
-      isMember(id,userId),
-    ])
-    const subreddit= {...subredditMd!,userCount:memberCount!,isCreator:subredditMd?.creatorId==userId,isMember:isMem}
+    const subreddit=await getSubredditUserMD(slug,userId)
+    if(!subreddit) return notFound()
     return (
     <div className="min-h-screen dark:bg-[#0B1416] ">
       <SubredditLayout subreddit={subreddit}>
