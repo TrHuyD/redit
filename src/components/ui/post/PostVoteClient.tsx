@@ -15,7 +15,7 @@ import { VoteType } from "@/types/enum"
 
 interface PostVoteClientProps {
     postId: ID
-    initialVotesAmt: number
+    initialVotesAmt: number| string
     initialVote?: VoteType | null
   }
 interface VoteButtonProps
@@ -24,8 +24,9 @@ interface VoteButtonProps
 }
 export default function PostVoteClient({postId,initialVotesAmt,initialVote}:PostVoteClientProps)
 {
+        
         const [currentVote, setCurrentVote] = useState(initialVote)
-        const [votesAmt, setVotesAmt] = useState<number>(initialVotesAmt)
+        const [votesAmt, setVotesAmt] = useState<number>(Number(initialVotesAmt))
         const prevVote = usePrevious(currentVote)
         const { data: session } = useSession()
         useEffect(() => setCurrentVote(initialVote),[initialVote])
