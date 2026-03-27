@@ -60,12 +60,14 @@ export function createCachedBatchLoader<K extends string | number | bigint, Raw,
 export async function incrHashField(
   keys: string[],
   field: string,
-  delta: number
+  delta: number,
+  ttl?:number
 ): Promise<void> {
   if (keys.length === 0) return
   const pipeline = redis.multi()
   for (const key of keys) {
       pipeline.hincrby(key, field, delta)
+      if(ttl) pipeline.expire(key,ttl)
   }
   await pipeline.exec()
 }

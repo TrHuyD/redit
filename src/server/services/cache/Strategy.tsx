@@ -1,4 +1,5 @@
 import {redis} from '@/server/lib/redis'
+
 export type BatchContext<K, V> = {
     keys: K[]
     cached: Map<K, V | null>

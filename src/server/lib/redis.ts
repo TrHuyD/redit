@@ -1,7 +1,10 @@
 import Redis from "ioredis"
-
+import "@/lib/bigint";
 declare global {
   var _redis: Redis | undefined
+  interface BigInt {
+    toJSON(): string;
+  }
 }
 
 export const redis =
