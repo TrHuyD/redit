@@ -22,3 +22,7 @@ export const UserSubredditVisistRequestValidator = z.object({
     userId:z.coerce.bigint(),
 })
 export type UserSubredditVisitRequestPayLoad = z.infer<typeof UserSubredditRequestValidator>
+export const SearchSubreditACValidator = z.object({
+    name:z.string().max(30)
+})
+export type SearchSubredditACPayload =z.infer<typeof SearchSubreditACValidator>

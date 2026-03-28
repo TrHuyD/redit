@@ -51,3 +51,8 @@ export async function getMemberCount(ids:bigint[]): Promise<subredditMemCount[]>
   return rows.map(r => ({Id:r.subredditId,Count:r._count.subredditId}))
 }
 
+export async function getAllSubreddits(): Promise<{ id: bigint; name: string }[]> {
+  return db.subreddit.findMany({
+      select: { id: true, name: true },
+  })
+}

@@ -6,6 +6,8 @@ import * as db from "./repo";
 import { SubredditBaseMd, subredditMemCount, SubredditMinimalMd, UserSubredditBaseMd } from "@/types/subreddit";
 import { isMember } from "@/server/services/subreddit/Get"
 import { cache } from "react";
+import { redis } from "@/server/lib/redis";
+import { key } from "@/types/rediskey";
 
 
 
@@ -49,3 +51,27 @@ export const getSubredditUserMD = cache(async (slug: string, userId?: bigint) =>
     return subreddit
 })
 
+
+
+export async function seedSubredditAutocomplete(): Promise<void> {
+    const subreddits = await db.getAllSubreddits();
+    if (!subreddits.length) return;
+    const pipeline = redis.pipeline();
+    for (const s of subreddits) {
+      pipeline.call("FT.SUGADD", key.subreddit.autocomplete, s.name,"1","PAYLOAD",s.id.toString());}
+    await pipeline.exec();
+    console.log("Subreddit autocomplete seeded!");
+  }
+  
+export async function searchSubredditAutocomplete(query: string, maxResults = 10, fuzzy = false): Promise<{ name: string; id: bigint }[]> {
+    const args: string[] = [ key.subreddit.autocomplete, query, "MAX", maxResults.toString(), "WITHPAYLOADS",];
+    if (fuzzy) args.push("FUZZY");
+    const result = (await redis.call("FT.SUGGET", ...args)) as string[];
+    const suggestions: { name: string; id: bigint }[] = [];
+    for (let i = 0; i < result.length; i += 2) {
+      suggestions.push({
+        name: result[i],
+        id: BigInt(result[i + 1]),});
+    }
+    return suggestions;
+  }
