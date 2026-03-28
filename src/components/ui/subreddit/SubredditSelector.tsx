@@ -19,6 +19,7 @@ import Link from 'next/link'
 type SubredditSelectorProps = {
   slug?: string
   initialImage?: string
+  onBeforeChange?: () => Promise<void>
 }
 
 const SubredditAvatar = ({ image, name }: { image?: string; name?: string }) => (
@@ -30,7 +31,7 @@ const SubredditAvatar = ({ image, name }: { image?: string; name?: string }) => 
   </Avatar>
 )
 
-export function SubredditSelector({ slug, initialImage }: SubredditSelectorProps) {
+export function SubredditSelector({ slug, initialImage,onBeforeChange }: SubredditSelectorProps) {
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState<string | undefined>(slug)
@@ -146,15 +147,16 @@ export function SubredditSelector({ slug, initialImage }: SubredditSelectorProps
               )}
               <CommandGroup>
                 {subreddits.map(s => (
-                  <Link href={`/r/${s.name}/submit`}>
                   <CommandItem
                     key={s.Id.toString()}
                     value={s.name}
-                    onSelect={() => {
+                    onSelect={async() => {
+                      await onBeforeChange?.()
                       setValue(s.name)
                       setSelectedImage(s.image)
                       setSearch('')
                       setOpen(false)
+                      router.push(`/r/${s.name}/submit`)
                     }}
                     className="flex items-center gap-3 px-4 py-3 text-base cursor-pointer"
                   >
@@ -165,7 +167,6 @@ export function SubredditSelector({ slug, initialImage }: SubredditSelectorProps
                       value === s.name ? 'opacity-100' : 'opacity-0'
                     )} />
                   </CommandItem>
-                  </Link>
                 ))}
               </CommandGroup>
             </CommandList>
