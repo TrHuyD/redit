@@ -48,3 +48,4 @@ export const getSubredditUserMD = cache(async (slug: string, userId?: bigint) =>
     const subreddit= {...subredditMd!,userCount:memberCount!,isCreator:subredditMd?.creatorId==userId,isMember:isMem} as UserSubredditBaseMd
     return subreddit
 })
+

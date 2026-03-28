@@ -1,4 +1,4 @@
-import {z} from "zod"
+import {bigint, z} from "zod"
 import { UserValidator } from "./user"
 import { ID } from "@/types/ID"
 export const SubredditValidator = z.object({
@@ -16,3 +16,9 @@ export const CreateSubredditRequestValidator = SubredditValidator.merge(UserVali
 export const UserSubredditRequestValidator = SubscriptionValidator.merge(UserValidator)
 export type CreateSubredditRequestPayload = z.infer<typeof CreateSubredditRequestValidator>
 export type UserSubredditRequestPayload = z.infer<typeof UserSubredditRequestValidator>
+
+export const UserSubredditVisistRequestValidator = z.object({
+    subredditId : z.coerce.bigint(),
+    userId:z.coerce.bigint(),
+})
+export type UserSubredditVisitRequestPayLoad = z.infer<typeof UserSubredditRequestValidator>

@@ -5,10 +5,11 @@ import * as db from "./repo";
 import { CachedPost, PostStat, PostStatMapped } from "@/types/post";
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
 import { createSingleLoader } from "@/lib/utils";
+import { key } from "@/types/rediskey";
 
 
 export const getPostsStatByIds = createCachedHashLoader<bigint, PostStatMapped, PostStat>({
-    keyFn: (id) => `post:${id}:stats`,
+    keyFn: k=>key.post.stats(k),
     fetch: db.getPostsStatByIds,    
     map: (v) => v.id,
     select: (md) => md,
@@ -17,7 +18,7 @@ export const getPostsStatByIds = createCachedHashLoader<bigint, PostStatMapped, 
 })
 export const getPostStatById= createSingleLoader(getPostsStatByIds)
 export const getPostsByIds= createCachedBatchLoader2<bigint,CachedPost>({
-    keyFn: (id) => `post:${id}`,
+    keyFn: (id) => key.post.content(id),
     fetch: db.getPostsByIds,
     map: (md) => md.id,
     ttl: 1200,

@@ -1,7 +1,8 @@
 import { UserDto } from "@/types/Users/dto";
 import * as db from "./repo";
-import { createCachedBatchLoader2 } from "../cache/Pipeline";
+import { createCachedBatchLoader2, getBigInts, getSortedUnique } from "../cache/Pipeline";
 import { createSingleLoader } from "@/lib/utils";
+import { key } from "@/types/rediskey";
 
 export const getUsersById= createCachedBatchLoader2<bigint,UserDto>({
     keyFn: (id) => `user:${id}:metadata`,
@@ -11,3 +12,7 @@ export const getUsersById= createCachedBatchLoader2<bigint,UserDto>({
     nullTtl: 30,
 })
 export const getUserById =createSingleLoader(getUsersById)
+
+export async function getUserSubredditHistory(userId:bigint){
+    return await getSortedUnique(key.user.subHistory(userId),key.user.subHistoryLimit)
+} 

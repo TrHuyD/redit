@@ -129,3 +129,28 @@ export function createCachedHashLoader
     ])
   }
 }
+
+export async function pushBigInt(key: string,value: bigint,maxSize: number): Promise<void> {
+  const val = value.toString()
+  const pipeline = redis.pipeline()
+  pipeline.lpush(key, val)
+  pipeline.ltrim(key, 0, maxSize - 1)
+  await pipeline.exec()
+}
+
+export async function getBigInts(key: string,size: number): Promise<bigint[]> {
+  const res = await redis.lrange(key, 0, size - 1)
+  return res.map(v => BigInt(v))
+}
+
+export async function pushSortedUnique(key: string, value: bigint, maxSize: number): Promise<void> {
+  const pipeline = redis.pipeline()
+  pipeline.zadd(key,  Date.now(), value.toString())
+  pipeline.zremrangebyrank(key, 0, -(maxSize + 1))
+  await pipeline.exec()
+}
+
+export async function getSortedUnique(key: string, size: number): Promise<bigint[]> {
+  const res = await redis.zrevrange(key, 0, size - 1)
+  return res.map(v => BigInt(v))
+}

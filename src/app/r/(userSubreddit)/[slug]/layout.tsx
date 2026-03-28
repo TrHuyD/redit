@@ -6,6 +6,7 @@ import { notFound } from "next/navigation"
 import { SubredditLayout } from "../../../../components/ui/subreddit/SubredditLayout"
 import { getSubredditUserMD } from "@/server/services/subreddit/loader"
 import { getIdnull } from "@/lib/utils"
+import { MarkVisit } from "@/server/services/subreddit/action"
 
 
 
@@ -28,7 +29,10 @@ export default async function Layout({ children, params }: LayoutProps) {
   if(!isAll)
   {
     const subreddit=await getSubredditUserMD(slug,userId)
+
     if(!subreddit) return notFound()
+    if(userId)
+        MarkVisit({subredditId:subreddit.Id,userId:userId}).catch(err =>{ console.error("Failed to register visit:", err);})
     return (
     <div className="min-h-screen dark:bg-[#0B1416] ">
       <SubredditLayout subreddit={subreddit}>

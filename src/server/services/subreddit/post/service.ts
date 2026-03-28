@@ -2,7 +2,7 @@ import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config"
 import * as cache from "./loader"
 import { PostUserDto } from "@/types/post"
 import { getUsersById } from "../../user/loader"
-import { getSubredditId, getSubredditMetadata } from "../loader"
+import { getSubredditId, getSubredditsMetadata } from "../loader"
 
 import { getAllPostIds, getFeedPostIds, getSubredditPostIds, getUserPostVotes } from "./repo"
 import { filterNull, toMap, zipToMap } from "@/lib/utils"
@@ -22,7 +22,7 @@ export async function getPostsWithMeta(
 
     const [users, subreddits, userVotes, postStats] = await Promise.all([
         getUsersById(uniqueUserIds),
-        Promise.all(uniqueSubredditIds.map(getSubredditMetadata)),
+        getSubredditsMetadata(uniqueSubredditIds),
         userId ? getUserPostVotes(userId, postIds) : [],
         cache.getPostsStatByIds(postIds),
     ])

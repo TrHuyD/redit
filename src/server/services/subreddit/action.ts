@@ -4,8 +4,9 @@ import { Result } from "@/lib/Result";
 import * as db from "./action-db";
 import { Delta as VoteDelta } from "./type";
 import { incrCache } from "../cache/util";
-import { UserSubredditRequestPayload } from "@/lib/validators/subreddit";
-import { incrHashField } from "../cache/Pipeline";
+import { UserSubredditRequestPayload, UserSubredditVisitRequestPayLoad } from "@/lib/validators/subreddit";
+import { incrHashField, pushSortedUnique } from "../cache/Pipeline";
+import { key } from "@/types/rediskey";
 
 
 export async function VotePost({ type, postId, userId }: PostVoteRequestPayload): Promise<Result<VoteDelta>> {
@@ -47,7 +48,7 @@ export async function UnVoteComment({ commentId, userId }: CommentUnVoteRequestP
   export async function JoinSubreddit(data: UserSubredditRequestPayload): Promise<Result<null>> {
     const result = await db.JoinSubreddit(data);
     if (result.ok) {
-        const key = `subreddit:${data.subredditId}:members`;
+        const key = `subreddit:${data.subredditId}:membercount`;
         incrCache(key, 1).catch(err => {
             console.error("Failed to update subreddit member cache:", err);
         });
@@ -58,10 +59,14 @@ export async function UnVoteComment({ commentId, userId }: CommentUnVoteRequestP
 export async function LeaveSubreddit(data: UserSubredditRequestPayload): Promise<Result<null>> {
     const result = await db.LeaveSubreddit(data);
     if (result.ok) {
-        const key = `subreddit:${data.subredditId}:members`;
+        const key = `subreddit:${data.subredditId}:membercount`;
         incrCache(key, -1).catch(err => {
             console.error("Failed to update subreddit member cache:", err);
         });
     }
     return result;
+}
+export async function MarkVisit(data :UserSubredditVisitRequestPayLoad) :Promise<Result<null>>{
+    await pushSortedUnique(key.user.subHistory(data.userId),data.subredditId,key.user.subHistoryLimit) 
+    return {ok:true,data: null}
 }

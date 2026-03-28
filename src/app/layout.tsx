@@ -37,7 +37,7 @@ export default async function RootLayout({
               <div className="pt-14 grid grid-cols-[16rem_minmax(0,1fr)] min-h-screen">
                 {/* LEFT TAB */}
                 <div className="hidden lg:block border-r border-zinc-100">
-                  <LeftTab joinedSubreddits={[]} recentSubreddits={[]} />
+                  <LeftTab  />
                 </div>
                 {/* RIGHT CONTENT */}
                 <div className="w-full">
