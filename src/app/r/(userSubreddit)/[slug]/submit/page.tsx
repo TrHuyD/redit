@@ -16,7 +16,7 @@ interface PageProps {
         return notFound()
     return (
       <div className="flex flex-col items-start gap-6 w-full max-w-3xl">
-        <SubredditSelector slug={slug} />
+        <SubredditSelector slug={slug} initialImage={subreddit.image} />
         <div className="border-b pb-5" />
         <Editor id={subreddit.id} />
         <Button type="submit" className="w-full" form="subreddit-post-form">

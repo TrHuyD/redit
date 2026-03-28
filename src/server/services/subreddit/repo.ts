@@ -48,6 +48,7 @@ export async function getMemberCount(ids:bigint[]): Promise<subredditMemCount[]>
     where:{subredditId:{in:ids}},
     _count:{subredditId:true}
   })
+  console.log(rows)
   return rows.map(r => ({Id:r.subredditId,Count:r._count.subredditId}))
 }
 

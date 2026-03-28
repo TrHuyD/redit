@@ -4,7 +4,7 @@ import { getIdnull } from "@/lib/utils";
 import { SubredditPostRetrieveValidator } from "@/lib/validators/post";
 import { withErrorHandler } from "@/server/lib/withErrorHandler";
 import { getSubredditPosts } from "@/server/services/subreddit/post/service";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 
 
@@ -14,18 +14,8 @@ export  const GET =  withErrorHandler( async(req: NextRequest)  =>{
         const raw = Object.fromEntries(searchParams)
         const parsed = SubredditPostRetrieveValidator.parse(raw)
         const userId = getIdnull(await getAuthToken())
-
         const posts = await getSubredditPosts({slug:parsed.subredditName,take:parsed.limit,cursor:parsed.cursorId,userId:userId})
-        return new Response(
-            JSON.stringify(posts, (_, value) =>
-                typeof value === 'bigint' ? value.toString() : value
-            ),
-            {
-                status: 200,
-                headers: { 'Content-Type': 'application/json' }
-            }
-        )
-
+        return new NextResponse(JSON.stringify(posts?.posts) )
     } catch (error) {
         return new Response('Internal Server Error', { status: 500 })
     }

@@ -45,7 +45,7 @@ export async function getPostsWithMeta(
             currentVote: userVoteMap.get(p.id.toString())?.type ?? null,
             creator: userMap.get(p.creatorId.toString())!,
             subreddit: {
-                id: subreddit.Id,
+                Id: subreddit.Id,
                 name: subreddit.name,
                 image: subreddit.image,
             },
@@ -65,11 +65,12 @@ export async function getSubredditPosts({
     take?: number
     cursor?: bigint
     userId?: bigint
-}): Promise<PostUserDto[]> {
+}) {
     const Id = await getSubredditId(slug)
-    if (!Id) return []
+    if (!Id) return null
     const postIds = await getSubredditPostIds({ Id, orderBy, take, cursor })
-    return getPostsWithMeta(postIds, userId)
+    const posts= await getPostsWithMeta(postIds, userId)
+    return  {subId:Id, posts:posts }
 }
 
 export async function getPostById({

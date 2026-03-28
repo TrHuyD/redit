@@ -19,11 +19,14 @@ interface PageProps {
     const { slug,sort } = await params
     const token = await getAuthToken()
     const userId = getIdnull(token)
+
     const posts =await getSubredditPosts({slug, userId:userId})
+
     if(!posts)
         return notFound()
+ 
     return (
-      <PostFeed initialPosts={posts} subredditName={slug} />
+      <PostFeed initialPosts={posts.posts} subredditName={slug} />
     )
     
   }

@@ -60,7 +60,7 @@ export async function getSubredditPosts({
     subreddit,
   }))
 
-  return posts.map(a => toPostDto(a,userId))
+  return { subId:subreddit.id,posts:posts.map(a => toPostDto(a,userId))}
 }
   
   

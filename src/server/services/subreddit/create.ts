@@ -3,6 +3,7 @@ import {db} from "@/lib/db"
 import { Result } from "@/lib/Result"
 import { Subreddit } from "@prisma/client"
 import {  generateSubredditId } from "../Snowflake"
+import { addSubredditsAutocomplete } from "./loader"
 export async function createSubreddit(data: CreateSubredditRequestPayload): Promise<Result<Subreddit>> {
 
   if(data.name=="metadata"||data.name=="membercount")
@@ -19,12 +20,12 @@ export async function createSubreddit(data: CreateSubredditRequestPayload): Prom
       }
     })
     await tx.subscription.create({
-      data: {
+      data: { 
         userId: data.userId,
         subredditId: id
       }
     })
-
+    await addSubredditsAutocomplete([{id:id,name:data.name}])
     return { ok: true, data: subreddit }
   })
 }

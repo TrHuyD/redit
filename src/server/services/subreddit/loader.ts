@@ -1,9 +1,9 @@
 
 import { createCachedBatchLoader, createCachedBatchLoader2 } from "../cache/Pipeline";
 
-import { createSingleLoader } from "@/lib/utils";
+import { createSingleLoader, filterNull } from "@/lib/utils";
 import * as db from "./repo";
-import { SubredditBaseMd, subredditMemCount, SubredditMinimalMd, UserSubredditBaseMd } from "@/types/subreddit";
+import { SubredditBaseMd, SubRedditDto, subredditMemCount, SubredditMinimalMd, UserSubredditBaseMd } from "@/types/subreddit";
 import { isMember } from "@/server/services/subreddit/Get"
 import { cache } from "react";
 import { redis } from "@/server/lib/redis";
@@ -30,7 +30,7 @@ export const getSubredditsMemberCount = createCachedBatchLoader<bigint,subreddit
     keyFn: (id) => `subreddit:${id}:membercount`,
     fetch: db.getMemberCount,
     map: (md) => md.Id,
-    select: (md) => md?.Count ?? null,
+    select: (md) => md?.Count ?? 1,
     ttl: 1200000,
     nullTtl: 30,
 })
@@ -55,23 +55,25 @@ export const getSubredditUserMD = cache(async (slug: string, userId?: bigint) =>
 
 export async function seedSubredditAutocomplete(): Promise<void> {
     const subreddits = await db.getAllSubreddits();
+    await addSubredditsAutocomplete(subreddits)    
+    console.log("Subreddit autocomplete seeded!");
+  }
+export async function addSubredditsAutocomplete(subreddits:{ id: bigint; name: string }[]){
     if (!subreddits.length) return;
     const pipeline = redis.pipeline();
     for (const s of subreddits) {
-      pipeline.call("FT.SUGADD", key.subreddit.autocomplete, s.name,"1","PAYLOAD",s.id.toString());}
+        pipeline.call("FT.SUGADD", key.subreddit.autocomplete, s.name,"1","PAYLOAD",s.id.toString());}
     await pipeline.exec();
-    console.log("Subreddit autocomplete seeded!");
-  }
-  
-export async function searchSubredditAutocomplete(query: string, maxResults = 10, fuzzy = false): Promise<{ name: string; id: bigint }[]> {
+}
+
+export async function searchSubredditAutocomplete(query: string, maxResults = 10, fuzzy = false): Promise<SubRedditDto[]> {
     const args: string[] = [ key.subreddit.autocomplete, query, "MAX", maxResults.toString(), "WITHPAYLOADS",];
     if (fuzzy) args.push("FUZZY");
     const result = (await redis.call("FT.SUGGET", ...args)) as string[];
-    const suggestions: { name: string; id: bigint }[] = [];
-    for (let i = 0; i < result.length; i += 2) {
-      suggestions.push({
-        name: result[i],
-        id: BigInt(result[i + 1]),});
+    let ids:bigint[]=[];
+    for(let i =0;i<result.length;i+=2){
+        ids.push(BigInt(result[i+1]))
     }
-    return suggestions;
+    let subs=filterNull(await getSubredditsMetadata(ids))
+    return subs.map(s=>({...s} as SubRedditDto));
   }

@@ -2,7 +2,7 @@ import { Version } from "./dto";
 import { ID } from "./ID";
 
 export type SubRedditDto = {
-    id: ID
+    Id: ID
     name: string
     image: string         
 }

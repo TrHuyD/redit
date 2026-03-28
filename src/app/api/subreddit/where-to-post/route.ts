@@ -11,10 +11,8 @@ export  const GET =  withErrorHandler( withAuth(async (req: NextRequest,token)  
         const { searchParams } = req.nextUrl
         const raw = Object.fromEntries(searchParams)
         const parsed = SearchSubreditACValidator.parse(raw)
-        console.log(parsed)
         const subreddits = await searchSubredditAutocomplete(parsed.name)
         return new NextResponse(JSON.stringify(subreddits))
-
     } catch (error) {
         return new Response('Internal Server Error', { status: 500 })
     }

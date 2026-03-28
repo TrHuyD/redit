@@ -51,7 +51,7 @@ export function RecentSubreddits() {
 
         {recent.map(sub => (
             <Link
-            key={sub.id}
+            key={sub.Id}
             href={`/r/${sub.name}`}
             className="px-3 py-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800"
             >

@@ -31,8 +31,6 @@ export default async function Layout({ children, params }: LayoutProps) {
     const subreddit=await getSubredditUserMD(slug,userId)
 
     if(!subreddit) return notFound()
-    if(userId)
-        MarkVisit({subredditId:subreddit.Id,userId:userId}).catch(err =>{ console.error("Failed to register visit:", err);})
     return (
     <div className="min-h-screen dark:bg-[#0B1416] ">
       <SubredditLayout subreddit={subreddit}>
