@@ -14,6 +14,6 @@ export  const GET =  withErrorHandler( withAuth(async (req: NextRequest,token)  
         const subreddits = await searchSubredditAutocomplete(parsed.name)
         return new NextResponse(JSON.stringify(subreddits))
     } catch (error) {
-        return new Response('Internal Server Error', { status: 500 })
+        return new Response(`Internal Server Error ${error}`, { status: 500 })
     }
 }))

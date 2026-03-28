@@ -71,7 +71,7 @@ export async function searchSubredditAutocomplete(query: string, maxResults = 10
     if (fuzzy) args.push("FUZZY");
     const result = (await redis.call("FT.SUGGET", ...args)) as string[];
     let ids:bigint[]=[];
-    for(let i =0;i<result.length;i+=2){
+    for(let i =0;i+1<result.length;i+=2){
         ids.push(BigInt(result[i+1]))
     }
     let subs=filterNull(await getSubredditsMetadata(ids))

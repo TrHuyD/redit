@@ -22,6 +22,7 @@ export function createCachedBatchLoader<K extends string | number | bigint, Raw,
   nullTtl: number
 }): (keys: K[]) => Promise<(Cached | null)[]> {
   return async function load(keys: K[]): Promise<(Cached | null)[]> {
+    if (!keys.length) return [] 
     const ctx: BatchContext<K, Cached> = {
       keys,
       cached: new Map(),
@@ -99,6 +100,7 @@ export function createCachedHashLoader
 }): (keys: K[]) => Promise<(Cached | null)[]> {
 
   return async function load(keys: K[]): Promise<(Cached | null)[]> {
+    if (!keys.length) return [] 
     const ctx: BatchContext<K, Cached> = {
       keys,
       cached: new Map(),
