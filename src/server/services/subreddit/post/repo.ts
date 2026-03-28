@@ -128,6 +128,61 @@ export async function getSubredditPostIds({
     })
     return posts.map(p => p.id)
 }
+
+export async function getFeedPostIds({
+    userId,
+    orderBy = "desc",
+    take = INFINITE_SCROLLING_PAGINATION_RESULTS,
+    cursor,
+}: {
+    userId: bigint
+    orderBy?: "asc" | "desc"
+    take?: number
+    cursor?: bigint | number
+}): Promise<bigint[]> {
+    const subscriptions = await db.subscription.findMany({
+        where: { userId },
+        select: { subredditId: true },
+    })
+
+    const subredditIds = subscriptions.map(s => s.subredditId)
+    if (subredditIds.length === 0) return []
+
+    const posts = await db.post.findMany({
+        where: { subredditId: { in: subredditIds } },
+        select: { id: true },
+        orderBy: { id: orderBy },
+        take,
+        ...(cursor !== undefined && {
+            cursor: { id: cursor },
+            skip: 1,
+        }),
+    })
+    return posts.map(p => p.id)
+}
+
+export async function getAllPostIds({
+    orderBy = "desc",
+    take = INFINITE_SCROLLING_PAGINATION_RESULTS,
+    cursor,
+}: {
+    orderBy?: "asc" | "desc"
+    take?: number
+    cursor?: bigint | number
+}): Promise<bigint[]> {
+    const posts = await db.post.findMany({
+        select: { id: true },
+        orderBy: { id: orderBy },
+        take,
+        ...(cursor !== undefined && {
+            cursor: { id: cursor },
+            skip: 1,
+        }),
+    })
+    return posts.map(p => p.id)
+}
+
+
 export async function getUserPostVotes(userId: bigint, postIds: bigint[]): Promise<UserVote[]> {
     const rows = await db.postVote.findMany({
         where: { userId, postId: { in: postIds } },

@@ -4,10 +4,54 @@ import { PostUserDto } from "@/types/post"
 import { getUsersById } from "../../user/loader"
 import { getSubredditId, getSubredditMetadata } from "../loader"
 
-import { getUserPostVotes } from "./repo"
+import { getAllPostIds, getFeedPostIds, getSubredditPostIds, getUserPostVotes } from "./repo"
 import { filterNull, toMap, zipToMap } from "@/lib/utils"
 
 
+export async function getPostsWithMeta(
+    postIds: bigint[],
+    userId?: bigint
+): Promise<PostUserDto[]> {
+    if (!postIds.length) return []
+
+    const posts = filterNull(await cache.getPostsByIds(postIds))
+    if (!posts.length) return []
+
+    const uniqueUserIds = [...new Set(posts.map(p => p.creatorId))]
+    const uniqueSubredditIds = [...new Set(posts.map(p => p.subredditId))]
+
+    const [users, subreddits, userVotes, postStats] = await Promise.all([
+        getUsersById(uniqueUserIds),
+        Promise.all(uniqueSubredditIds.map(getSubredditMetadata)),
+        userId ? getUserPostVotes(userId, postIds) : [],
+        cache.getPostsStatByIds(postIds),
+    ])
+
+    const userMap = toMap(users, u => u.id.toString())
+    const subredditMap = toMap(filterNull(subreddits), s => s.Id.toString())
+    const userVoteMap = toMap(userVotes, v => v.Id.toString())
+    const postStatMap = zipToMap(postIds, postStats)
+
+    return filterNull(posts.map<PostUserDto | null>(p => {
+        const subreddit = subredditMap.get(p.subredditId.toString())
+        if (!subreddit) return null
+        return {
+            id: p.id,
+            title: p.title,
+            content: p.content,
+            createdAt: new Date(Number(p.createdAt)),
+            lastEdited: p.lastEdited ? new Date(Number(p.lastEdited)) : null,
+            stat: postStatMap.get(p.id.toString())!,
+            currentVote: userVoteMap.get(p.id.toString())?.type ?? null,
+            creator: userMap.get(p.creatorId.toString())!,
+            subreddit: {
+                id: subreddit.Id,
+                name: subreddit.name,
+                image: subreddit.image,
+            },
+        }
+    }))
+}
 
 export async function getSubredditPosts({
     slug,
@@ -16,42 +60,16 @@ export async function getSubredditPosts({
     cursor,
     userId,
 }: {
-    slug: string,
+    slug: string
     orderBy?: "asc" | "desc"
     take?: number
-    cursor?: bigint ,
-    userId?:bigint
+    cursor?: bigint
+    userId?: bigint
 }): Promise<PostUserDto[]> {
-    const Id = await getSubredditId(slug);
-    if (!Id) return [];
-    const posts = filterNull( await cache.getSubredditPosts({ Id, orderBy, take, cursor }));
-    const postIds = posts.map(p =>(p.id));
-    if (!posts.length||!posts) return [];
-    const uniqueUserIds = [...new Set(posts.map(p => p.creatorId))];
-    const [users, subreddit,userVotes,postStats] = await Promise.all([
-        getUsersById(uniqueUserIds),
-        getSubredditMetadata(Id),
-        userId?getUserPostVotes(userId, postIds):[],
-        cache.getPostsStatByIds(postIds)]);
-    if (!subreddit) return [];
-    const userMap = toMap(users, u=>u.id.toString());
-    const userVoteMap = toMap(userVotes, v=>v.Id.toString());
-    const postStatMap = zipToMap(postIds, postStats)
-    return posts.map<PostUserDto>((p) => ({
-        id: p.id,
-        title: p.title,
-        content: p.content,
-        createdAt: new Date(Number(p.createdAt)),
-        lastEdited: p.lastEdited ? new Date(Number(p.lastEdited)) : null,
-        stat: postStatMap.get(p.id.toString())!,
-        currentVote: userVoteMap.get(p.id.toString())?.type??null,
-        creator: userMap.get(p.creatorId.toString())!,
-        subreddit: {
-            id: subreddit.Id,
-            name: subreddit.name,
-            image: subreddit.image,
-        }
-    }));
+    const Id = await getSubredditId(slug)
+    if (!Id) return []
+    const postIds = await getSubredditPostIds({ Id, orderBy, take, cursor })
+    return getPostsWithMeta(postIds, userId)
 }
 
 export async function getPostById({
@@ -61,35 +79,36 @@ export async function getPostById({
     postId: bigint
     userId?: bigint
 }): Promise<PostUserDto | null> {
-    const post = await cache.getPostById(postId)
-    if (!post) return null
+    const results = await getPostsWithMeta([postId], userId)
+    return results[0] ?? null
+}
 
-    const [user, subreddit, userVotes, postStats] = await Promise.all([
-        getUsersById([post.creatorId]),
-        getSubredditMetadata(post.subredditId),
-        userId ? getUserPostVotes(userId, [postId]) : [],
-        cache.getPostsStatByIds([postId]),
-    ])
+export async function getFeedPosts({
+    userId,
+    orderBy = "desc",
+    take = INFINITE_SCROLLING_PAGINATION_RESULTS,
+    cursor,
+}: {
+    userId: bigint
+    orderBy?: "asc" | "desc"
+    take?: number
+    cursor?: bigint
+}): Promise<PostUserDto[]> {
+    const postIds = await getFeedPostIds({ userId, orderBy, take, cursor })
+    return getPostsWithMeta(postIds, userId)
+}
 
-    if (!subreddit) return null
-
-    const userMap = toMap(user, u => u.id.toString())
-    const userVoteMap = toMap(userVotes, v => v.Id.toString())
-    const postStatMap = zipToMap([postId], postStats)
-
-    return {
-        id: post.id,
-        title: post.title,
-        content: post.content,
-        createdAt: new Date(Number(post.createdAt)),
-        lastEdited: post.lastEdited ? new Date(Number(post.lastEdited)) : null,
-        stat: postStatMap.get(postId.toString())!,
-        currentVote: userVoteMap.get(postId.toString())?.type ?? null,
-        creator: userMap.get(post.creatorId.toString())!,
-        subreddit: {
-            id: subreddit.Id,
-            name: subreddit.name,
-            image: subreddit.image,
-        },
-    }
+export async function getAllPosts({
+    userId,
+    orderBy = "desc",
+    take = INFINITE_SCROLLING_PAGINATION_RESULTS,
+    cursor,
+}: {
+    userId?: bigint
+    orderBy?: "asc" | "desc"
+    take?: number
+    cursor?: bigint
+}): Promise<PostUserDto[]> {
+    const postIds = await getAllPostIds({ orderBy, take, cursor })
+    return getPostsWithMeta(postIds, userId)
 }

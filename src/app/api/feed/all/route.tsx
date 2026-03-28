@@ -2,7 +2,7 @@ import { getId } from "@/lib/utils"
 import { FeedRetrieveValidator } from "@/lib/validators/post"
 import { withAuth } from "@/server/lib/withAuth"
 import { withErrorHandler } from "@/server/lib/withErrorHandler"
-import { getAllPosts } from "@/server/services/subreddit/Get"
+import { getAllPosts } from "@/server/services/subreddit/post/service"
 import { NextRequest } from "next/server"
 
 export  const GET =  withErrorHandler( withAuth(async (req: NextRequest,token)  =>{

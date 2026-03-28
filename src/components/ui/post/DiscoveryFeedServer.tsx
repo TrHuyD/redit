@@ -1,6 +1,6 @@
 import { getAuthToken } from "@/lib/auth"
 import DiscoveryFeed from "./DiscoveryFeed"
-import { getAllPosts } from "@/server/services/subreddit/Get"
+import { getAllPosts } from "@/server/services/subreddit/post/service"
 import { getIdnull } from "@/lib/utils"
 
 const DiscoveryFeedServer = async() =>{

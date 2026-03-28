@@ -39,3 +39,33 @@ export async function getSubredditPosts({
     if (!list?.length) return [];
     return (await getPostsByIds(list)) ;
 }
+
+export async function getFeedPosts({
+    userId,
+    orderBy = "desc",
+    take = INFINITE_SCROLLING_PAGINATION_RESULTS,
+    cursor,
+}: {
+    userId: bigint
+    orderBy?: "asc" | "desc"
+    take?: number
+    cursor?: bigint | number
+}): Promise<(CachedPost | null)[]> {
+    const list = await db.getFeedPostIds({ userId, orderBy, take, cursor })
+    if (!list?.length) return []
+    return getPostsByIds(list)
+}
+
+export async function getAllPosts({
+    orderBy = "desc",
+    take = INFINITE_SCROLLING_PAGINATION_RESULTS,
+    cursor,
+}: {
+    orderBy?: "asc" | "desc"
+    take?: number
+    cursor?: bigint | number
+}): Promise<(CachedPost | null)[]> {
+    const list = await db.getAllPostIds({ orderBy, take, cursor })
+    if (!list?.length) return []
+    return getPostsByIds(list)
+}
