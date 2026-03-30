@@ -58,7 +58,7 @@ export async function tryAcquire(
   const release = async () => {
     if (released) return;
     released = true;
-    await redis.eval(RELEASE_SCRIPT, 1, k, token);
+    redis.eval(RELEASE_SCRIPT, 1, k, token).catch(error => console.log(error));
   };
   return {token, key: k,release,};
 }
