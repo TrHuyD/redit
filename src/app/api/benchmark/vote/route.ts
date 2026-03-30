@@ -9,8 +9,7 @@ import { getId } from '@/lib/utils';
 function getRandomVoteType(){
   const rand = Math.random()
   if (rand < 0.33) return VoteType.DOWNVOTE
-  if (rand < 0.66) return VoteType.UPVOTE
-  return "NONE"
+     return VoteType.UPVOTE
 }
 
 // simulate random user ids
@@ -33,13 +32,6 @@ export const GET =withErrorHandler(withAuth (async(req: NextRequest,token) => {
   const tasks = Array.from({ length: clientCount }).map((_, i) => {
     const type = getRandomVoteType()
 
-    if (type === "NONE") {
-      return UnVotePost({
-        postId,
-        userId,
-      })
-    }
-
     return VotePost({
       type,
       postId,
@@ -47,7 +39,6 @@ export const GET =withErrorHandler(withAuth (async(req: NextRequest,token) => {
     })
   })
 
-  // run all concurrently
   const results = await Promise.allSettled(tasks)
 
   const end = Date.now()

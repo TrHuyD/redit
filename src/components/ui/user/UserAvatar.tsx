@@ -20,7 +20,7 @@ export const UserAvatar = ({ user, status="hidden", ...props }: UserAvatarProps)
               fill
               src={user.image}
               alt="profile picture"
-              className="object-cover"
+              className="object-cover" {...props}
               referrerPolicy="no-referrer"
             />
           </div>
