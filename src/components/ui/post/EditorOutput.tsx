@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import CustomImageRenderer from '../renderers/CustomImageRenderer';
+import { el } from 'date-fns/locale';
 
 const Output = dynamic (async () => (await import('editorjs-react-renderer')).default, 
 {
@@ -21,7 +22,21 @@ const renderers = {
     image : CustomImageRenderer,
     code : CustomImageRenderer,
 }
-export default function EditorOutput({content}:EditorOutputProps)
-{
-    return <Output className='text-sm' style={style} data={content} renderers={renderers} />
+export default function EditorOutput({ content }: EditorOutputProps) {
+    if (content.text||!content?.blocks?.text) {
+    content = {
+        time: Date.now(),
+        blocks: [
+        {
+            id: "ec3b65e84f",
+            type: 'paragraph',
+            data: {
+            text:  content?.text?.replace(/`/g, '')??"empty",
+            },
+        },
+        ],
+        version: '2.27.0',
+    };
+    }
+  return <Output className="text-sm" style={{}} data={content} renderers={{}} />;
 }

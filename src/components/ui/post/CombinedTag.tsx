@@ -16,7 +16,6 @@ export default function CombinedTag({ subreddit, user }: CombinedTagProps) {
       ring-1 ring-transparent hover:ring-white/10
       transition-all duration-200">
 
-      {/* relative + z-index ensures these links sit above the card's ::before overlay */}
       <Link href={`/r/${subreddit.name}`} className="relative z-20">
         <SubredditAvatar subreddit={subreddit} className="h-8 w-8" />
       </Link>

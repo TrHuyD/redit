@@ -1968,6 +1968,11 @@ autoprefixer@10.4.14:
     picocolors "^1.0.0"
     postcss-value-parser "^4.2.0"
 
+autosize-textarea@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/autosize-textarea/-/autosize-textarea-1.0.1.tgz"
+  integrity sha512-y02sBre7nSHu7rO2zU/bCQTzM9Vv3n63XDdzbxxEEX836dp0KBemzA5gkUKfGGU9zy3zx6Z4CwWgBqrcegHwdw==
+
 available-typed-arrays@^1.0.7:
   version "1.0.7"
   resolved "https://registry.npmjs.org/available-typed-arrays/-/available-typed-arrays-1.0.7.tgz"
@@ -6112,10 +6117,10 @@ setprototypeof@~1.2.0:
   resolved "https://registry.npmjs.org/setprototypeof/-/setprototypeof-1.2.0.tgz"
   integrity sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==
 
-shadcn@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.npmjs.org/shadcn/-/shadcn-4.0.8.tgz"
-  integrity sha512-DVAyeo95TQ/OvaHugLm5V0Dqz3al+dnoP3mZdWWxKJ33IYG1jN5B3sGZyNaYsfzm7JsWokfksSzDl83LnmMing==
+shadcn@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.npmjs.org/shadcn/-/shadcn-4.1.1.tgz"
+  integrity sha512-nBj+7LYC9kzV9v9QmRPpoOhfW4KctJVQejywdAt/K+K+z4RYlJOcO2a4AaF7elrRWkfCbgXeGK02liV0KB9HvQ==
   dependencies:
     "@babel/core" "^7.28.0"
     "@babel/parser" "^7.28.0"
