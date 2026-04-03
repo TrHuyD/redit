@@ -10,7 +10,8 @@ interface PostFeedProps {
     initialPosts: PostUserDto[]
 }
 
-export default function DiscoveryFeed({ initialPosts }: PostFeedProps) {
+export default function 
+DiscoveryFeed({ initialPosts }: PostFeedProps) {
     const fetcher = async (cursor: string | null) => {
         const params = new URLSearchParams({
             limit: INFINITE_SCROLLING_PAGINATION_RESULTS.toString(),

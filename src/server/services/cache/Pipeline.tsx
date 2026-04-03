@@ -41,7 +41,7 @@ export function createCachedBatchLoader<K extends string | number | bigint, Raw,
 
         const missingKeys = Array.from(ctx.missing)
         const raw = await options.fetch(missingKeys)
-        const rawMap = new Map<string, Raw>()
+        const rawMap = new Map<string, Raw>() 
         for (const item of raw) {
           rawMap.set(options.map(item).toString(), item)
         }
@@ -52,7 +52,6 @@ export function createCachedBatchLoader<K extends string | number | bigint, Raw,
           ctx.fetched.set(k, finalVal)
         }
       },
-
       cacheWriteAndUnlock(options.keyFn, options.ttl, options.nullTtl),
       mergeResult(),
     ])
