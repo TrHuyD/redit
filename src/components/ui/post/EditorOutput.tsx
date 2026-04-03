@@ -23,5 +23,19 @@ const renderers = {
 }
 export default function EditorOutput({content}:EditorOutputProps)
 {
+    if(content?.text||!content.data?.text)
+      content ={
+        time: Date.now(), 
+        blocks: [
+          {
+            id: "aaaa",
+            type: "paragraph",
+            data: {
+              text: content?.text??"empty",
+            },
+          },
+        ],
+        version: "2.27.0",
+      };
     return <Output className='text-sm' style={style} data={content} renderers={renderers} />
 }
