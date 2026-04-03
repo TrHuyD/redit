@@ -57,7 +57,7 @@ export function createCachedBatchLoader<K extends string | number | bigint, Raw,
     ])
   }
 }
-export async function incrHashField(
+export async function incrHashFields(
   keys: string[],
   field: string,
   delta: number,
@@ -70,6 +70,21 @@ export async function incrHashField(
       if(ttl) pipeline.expire(key,ttl)
   }
   await pipeline.exec()
+}
+export async function incrHashField(
+  key: string,
+  field: string,
+  delta: number,
+  ttl?: number
+): Promise<number> {
+  const pipeline = redis.multi()
+  pipeline.hincrby(key, field, delta)
+  if (ttl) pipeline.expire(key, ttl)
+  const results = await pipeline.exec()
+   if (!results) throw new Error("Redis transaction failed (exec returned null)")
+  const [err, value] = results[0]
+  if (err) throw err
+  return value as number
 }
 
 export function createCachedHashLoader2<K extends string | number | bigint, V extends Record<string, any>>(options: {
