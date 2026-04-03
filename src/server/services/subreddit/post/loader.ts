@@ -13,7 +13,7 @@ export const getPostsStatByIds = createCachedHashLoader<bigint, PostStatMapped, 
     fetch: db.getPostsStatByIds,    
     map: (v) => v.id,
     select: (md) => md,
-    ttl: 36000,
+    ttl: 3600000,
     nullTtl: 60,
 })
 export const getPostStatById= createSingleLoader(getPostsStatByIds)
@@ -21,7 +21,7 @@ export const getPostsByIds= createCachedBatchLoader2<bigint,CachedPost>({
     keyFn: (id) => rediskey.post.content(id),
     fetch: db.getPostsByIds,
     map: (md) => md.id,
-    ttl: 1200,
+    ttl: 120000,
     nullTtl: 30,
 })
 export const getPostById =createSingleLoader(getPostsByIds)

@@ -15,7 +15,7 @@ export const getSubredditsMetadata = createCachedBatchLoader2<bigint, SubredditB
     keyFn: (id) => `subreddit:${id}:metadata`,
     fetch: db.getSubreddits,
     map: (post) => post.Id,
-    ttl: 1200,nullTtl:30})
+    ttl: 120000,nullTtl:30})
 
 export const getSubredditsId = createCachedBatchLoader<string,SubredditMinimalMd,bigint>({
     keyFn: (str) => `idParse:subreddit:${str}`,

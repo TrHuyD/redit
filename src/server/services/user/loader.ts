@@ -8,7 +8,7 @@ export const getUsersById= createCachedBatchLoader2<bigint,UserDto>({
     keyFn: (id) => `user:${id}:metadata`,
     fetch: db.getUsersById,
     map: (md) => md.id,
-    ttl: 1200,
+    ttl: 120000,
     nullTtl: 30,
 })
 export const getUserById =createSingleLoader(getUsersById)
