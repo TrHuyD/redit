@@ -38,6 +38,7 @@ export default function PostOut({ post, displayType }: PostProps) {
           before:content-[''] before:absolute before:inset-0 before:z-0
         "
         aria-label={post.title}
+        prefetch={false}
       />
 
       {/* All card content sits on top of the invisible overlay */}

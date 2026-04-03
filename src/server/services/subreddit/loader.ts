@@ -7,7 +7,7 @@ import { SubredditBaseMd, SubRedditDto, subredditMemCount, SubredditMinimalMd, U
 import { isMember } from "@/server/services/subreddit/Get"
 import { cache } from "react";
 import { redis } from "@/server/lib/redis";
-import { key } from "@/types/rediskey";
+import { rediskey } from "@/types/rediskey";
 
 
 
@@ -62,12 +62,12 @@ export async function addSubredditsAutocomplete(subreddits:{ id: bigint; name: s
     if (!subreddits.length) return;
     const pipeline = redis.pipeline();
     for (const s of subreddits) {
-        pipeline.call("FT.SUGADD", key.subreddit.autocomplete, s.name,"1","PAYLOAD",s.id.toString());}
+        pipeline.call("FT.SUGADD", rediskey.subreddit.autocomplete, s.name,"1","PAYLOAD",s.id.toString());}
     await pipeline.exec();
 }
 
 export async function searchSubredditAutocomplete(query: string, maxResults = 10, fuzzy = false): Promise<SubRedditDto[]> {
-    const args: string[] = [ key.subreddit.autocomplete, query, "MAX", maxResults.toString(), "WITHPAYLOADS",];
+    const args: string[] = [ rediskey.subreddit.autocomplete, query, "MAX", maxResults.toString(), "WITHPAYLOADS",];
     if (fuzzy) args.push("FUZZY");
     const result = (await redis.call("FT.SUGGET", ...args)) as string[];
     let ids:bigint[]=[];

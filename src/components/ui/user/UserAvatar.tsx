@@ -6,22 +6,23 @@ import { AvatarProps } from "@radix-ui/react-avatar"
 import { UserStatusIndicator, UserStatus } from "./UserStatusIndicator"
 
 interface UserAvatarProps extends AvatarProps {
-  user: Pick<User, "image" | "name">
+  user: Pick<User, "image" | "name">,
   status?: UserStatus
 }
 
-export const UserAvatar = ({ user, status="hidden", ...props }: UserAvatarProps) => {
+export const UserAvatar = ({ user, status="hidden" }: UserAvatarProps) => {
   return (
-    <div className="relative inline-block">
-      <Avatar className="h-8 w-8 rounded-full" {...props}>
+    <div className={`relative inline-block `} >
+      <Avatar className="h-8 w-8 rounded-full" >
         {user.image ? (
           <div className="relative h-full w-full overflow-hidden rounded-full">
             <Image
               fill
-              src={user.image}
+              src={user.image.split('?')[0]}
               alt="profile picture"
-              className="object-cover"
+              className="object-cover" 
               referrerPolicy="no-referrer"
+              sizes="32px"
             />
           </div>
         ) : (

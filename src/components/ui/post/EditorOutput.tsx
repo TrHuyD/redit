@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import CustomImageRenderer from '../renderers/CustomImageRenderer';
+import { el } from 'date-fns/locale';
 
 const Output = dynamic (async () => (await import('editorjs-react-renderer')).default, 
 {

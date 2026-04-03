@@ -7,6 +7,7 @@ import { useAuth } from '../providers/auth-provider'
 import axios from 'axios'
 import { UserSubredditHistory } from '@/lib/validators/user'
 import { SubRedditDto } from '@/types/subreddit'
+import { SubredditAvatar } from '../subreddit/SubredditAvatar'
 
 export function RecentSubreddits() {
     const { isLoggedIn } = useAuth()
@@ -55,7 +56,10 @@ export function RecentSubreddits() {
             href={`/r/${sub.name}`}
             className="px-3 py-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800"
             >
+            <div className='flex gap-1'>
+            <SubredditAvatar subreddit={sub} className='h-5 w-5'/>
             r/{sub.name}
+            </div>
             </Link>
         ))}
         </div>
