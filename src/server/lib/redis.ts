@@ -6,10 +6,10 @@ declare global {
     toJSON(): string;
   }
 }
-
-export const redis =
-  global._redis ??
-  new Redis({
+function createRedisInstance(){
+  if(process.env.REDIS_TYPE=="UPSTASH")
+    return new Redis(process.env.REDIS_UPSTASH!)
+  return  new Redis({
     host: process.env.REDIS_URL,
     port: 15551,
     username: "default",
@@ -17,8 +17,13 @@ export const redis =
     maxRetriesPerRequest: 2,
     enableReadyCheck: true,
   })
-  // new Redis(process.env.REDIS_UPSTASH!)
 
+
+
+}
+
+export const redis =
+  global._redis ??createRedisInstance()
 if (process.env.NODE_ENV !== "production") {
   global._redis = redis
 }
