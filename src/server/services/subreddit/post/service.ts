@@ -53,25 +53,25 @@ export async function getPostsWithMeta(
     }))
 }
 
-export async function getSubredditPosts({
-    slug,
-    orderBy = "desc",
-    take = INFINITE_SCROLLING_PAGINATION_RESULTS,
-    cursor,
-    userId,
-}: {
-    slug: string
-    orderBy?: "asc" | "desc"
-    take?: number
-    cursor?: bigint
-    userId?: bigint
-}) {
+export async function getSubredditPosts(
+    {slug,orderBy = "desc",take = INFINITE_SCROLLING_PAGINATION_RESULTS,cursor,userId,}: 
+    {slug: string,orderBy?: "asc" | "desc",take?: number, cursor?: bigint,userId?: bigint}) {
     const Id = await getSubredditId(slug)
     if (!Id) return null
     const postIds = await getSubredditPostIds({ Id, orderBy, take, cursor })
     const posts= await getPostsWithMeta(postIds, userId)
     return  {subId:Id, posts:posts }
 }
+export async function getSubredditHotPosts(
+    {slug,take = INFINITE_SCROLLING_PAGINATION_RESULTS,cursor,userId,}: 
+    {slug: string,orderBy?: "asc" | "desc",take?: number, cursor?: bigint,userId?: bigint}) {
+    const Id = await getSubredditId(slug)
+    if (!Id) return null
+    const postIds = await cache.getHotPostIds( Id, take, cursor )
+    const posts= await getPostsWithMeta(postIds, userId)
+    return  {subId:Id, posts:posts }
+}
+
 
 export async function getPostById({
     postId,

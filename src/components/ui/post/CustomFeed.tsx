@@ -27,6 +27,7 @@ export default function CustomFeed({ initialPosts }: PostFeedProps) {
             initialData={initialPosts}
             limit={INFINITE_SCROLLING_PAGINATION_RESULTS}
             fetcher={fetcher}
+            getKey={(p) => p.id.toString()}
             getCursor={post => post.id.toString()}
             renderItem={post => (
                 <PostOut post={post} displayType="both" />

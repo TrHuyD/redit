@@ -5,7 +5,7 @@ import { createSingleLoader } from "@/lib/utils";
 import { rediskey } from "@/types/rediskey";
 
 export const getUsersById= createCachedBatchLoader2<bigint,UserDto>({
-    keyFn: (id) => `user:${id}:metadata`,
+    keyFn: (id) => rediskey.user.info(id),
     fetch: db.getUsersById,
     map: (md) => md.id,
     ttl: 120000,

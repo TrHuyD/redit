@@ -12,7 +12,7 @@ import { rediskey } from "@/types/rediskey";
 
 
 export const getSubredditsMetadata = createCachedBatchLoader2<bigint, SubredditBaseMd>({
-    keyFn: (id) => `subreddit:${id}:metadata`,
+    keyFn: (id) =>rediskey.subreddit.metadata(id),
     fetch: db.getSubreddits,
     map: (post) => post.Id,
     ttl: 120000,nullTtl:30})
@@ -27,7 +27,7 @@ export const getSubredditsId = createCachedBatchLoader<string,SubredditMinimalMd
   })
 
 export const getSubredditsMemberCount = createCachedBatchLoader<bigint,subredditMemCount,number>({
-    keyFn: (id) => `subreddit:${id}:membercount`,
+    keyFn: (id) => rediskey.subreddit.membercount(id),
     fetch: db.getMemberCount,
     map: (md) => md.Id,
     select: (md) => md?.Count ?? 1,

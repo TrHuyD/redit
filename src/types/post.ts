@@ -7,6 +7,7 @@ import { SubRedditDto } from "./subreddit"
 export interface PostStat{
     votesAmt: number
     commentsAmt: number
+    date:number
 }
 export interface PostStatMapped extends PostStat{
     id:bigint

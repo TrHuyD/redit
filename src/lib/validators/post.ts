@@ -63,7 +63,7 @@ export const CommentContentValidator = z.object({
 
 export const CommentVoteValidator = z.object({
     voteType: z.nativeEnum(VoteType),
-    commentId: ID.zod()
+    commentId: ID.zod(),
 })
 export const CommentUnVoteValidator = z.object({
     commentId: ID.zod()

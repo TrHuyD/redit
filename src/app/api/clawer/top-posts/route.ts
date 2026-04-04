@@ -2,6 +2,7 @@
 import { db } from "@/lib/db";
 import { generatePostId, generateUserId, generateSubredditId } from "@/server/services/Snowflake";
 import { createSubreddit } from "@/server/services/subreddit/create";
+import { generateDumbRankPosts, recomputeHotRankForSubreddit } from "@/server/services/subreddit/post/hotscore";
 import { NextRequest, NextResponse } from "next/server";
 
 interface RedditPost {
@@ -33,7 +34,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const subredditName = searchParams.get("subreddit") || "javascript";
-    const limit = Math.max(parseInt(searchParams.get("limit") || "5"),20);
+    const limit = Math.min(parseInt(searchParams.get("limit") || "5"),20);
     const password = searchParams.get("password")|| "";
     if(password!=process.env.NEXTAUTH_SECRET) return NextResponse.json({ error: "wrong password" }, { status: 500 });
     const redditRes = await fetch(
@@ -80,19 +81,20 @@ export async function GET(req: NextRequest) {
     const MAX_VOTES = 20000;
     const voteBaseId = BigInt("100000000000000");
     for (let i = 0; i < postsToInsert.length; i++) {
-    const post = postsToInsert[i];
-    const voteCount = Math.min(Math.random()*10000, MAX_VOTES);
-    const allVotes = Array.from({ length: voteCount }, (_, j) => ({
-        type: 1, 
-        postId: post.id,
-        userId: voteBaseId + BigInt(j), 
-    }));
-    for (let b = 0; b < allVotes.length; b += VOTE_BATCH_SIZE) {
-        const batch = allVotes.slice(b, b + VOTE_BATCH_SIZE);
-        await db.postVote.createMany({ data: batch, skipDuplicates: true });
+      const post = postsToInsert[i];
+      const voteCount = Math.min(Math.random()*10000, MAX_VOTES);
+      const allVotes = Array.from({ length: voteCount }, (_, j) => ({
+          type: 1, 
+          postId: post.id,
+          userId: voteBaseId + BigInt(j), 
+      }));
+      for (let b = 0; b < allVotes.length; b += VOTE_BATCH_SIZE) {
+          const batch = allVotes.slice(b, b + VOTE_BATCH_SIZE);
+          await db.postVote.createMany({ data: batch, skipDuplicates: true });
+      }
     }
-    }
-
+    await generateDumbRankPosts(postsToInsert.map(p =>p.id),subreddit.id)
+    await recomputeHotRankForSubreddit(subreddit.id)
     return NextResponse.json({ message: `Inserted ${postsToInsert.length} posts into DB.` });
   } catch (error: any) {
     console.error(error);

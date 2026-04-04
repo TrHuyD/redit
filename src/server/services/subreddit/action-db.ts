@@ -4,7 +4,7 @@ import { Result } from "@/lib/Result"
 import { Prisma } from "@prisma/client";
 import {  CommentUnVoteRequestPayload, CommentVoteRequestPayload, PostUnVoteRequestPayload, PostVoteRequestPayload } from "@/lib/validators/post";
 import { error } from "node:console";
-import { VoteType } from "@/types/enum";
+import { VoteTarget, VoteType } from "@/types/enum";
 import { Delta as VoteDelta } from "./type";
 
 
@@ -53,55 +53,130 @@ export async function JoinSubreddit(data: UserSubredditRequestPayload) : Promise
       throw err
     }
 }
-  
-
-export async function VotePost({ type, postId, userId }: PostVoteRequestPayload): Promise<Result<VoteDelta>> {
-  const rows = await db.$queryRaw<{ old_type: VoteType | null }[]>`
-    WITH old AS (
-      SELECT "type" FROM "PostVote"
-      WHERE "postId" = ${postId} AND "userId" = ${userId}
-    )
-    INSERT INTO "PostVote" ("userId", "postId", "type")
-    VALUES (${userId}, ${postId}, ${type})
-    ON CONFLICT ("postId", "userId")
-    DO UPDATE SET "type" = ${type}
-    RETURNING (SELECT "type" FROM old) AS old_type`
-  const old_type = rows[0]?.old_type ?? 0
-  const delta = type - old_type
-  return { ok: true, data: { delta } }
+async function upsertVote(
+  target: VoteTarget,
+  id: bigint,
+  userId: bigint,
+  type: VoteType
+): Promise<VoteDelta > {
+  if (target === "post") {
+    const rows = await db.$queryRaw<{
+      old_type: VoteType | null
+      subredditId: bigint
+      createdAt: Date
+    }[]>`
+      WITH old AS (
+        SELECT "type" 
+        FROM "PostVote"
+        WHERE "postId" = ${id} AND "userId" = ${userId}
+      ),
+      post_info AS (
+        SELECT "subredditId", "createdAt"
+        FROM "Post"
+        WHERE "id" = ${id}
+      )
+      INSERT INTO "PostVote" ("userId", "postId", "type")
+      VALUES (${userId}, ${id}, ${type})
+      ON CONFLICT ("postId", "userId")
+      DO UPDATE SET "type" = ${type}
+      RETURNING 
+        "postId",
+        (SELECT "type" FROM old) AS old_type,
+        (SELECT "subredditId" FROM post_info) AS "subredditId",
+        (SELECT "createdAt" FROM post_info) AS "createdAt"
+    `
+    const row = rows[0]
+    const old_type = row?.old_type ?? 0
+    return { delta: type - old_type, Id: row.subredditId, date: row.createdAt }
+  } else {
+    const rows = await db.$queryRaw<{
+      old_type: VoteType | null
+      postId: bigint
+      createdAt: Date
+    }[]>`
+      WITH comment_info AS (
+        SELECT "postId", "createdAt"
+        FROM "Comment"
+        WHERE "id" = ${id}
+      )
+      INSERT INTO "CommentVote" ("userId", "commentId", "type")
+      VALUES (${userId}, ${id}, ${type})
+      ON CONFLICT ("commentId", "userId")
+      DO UPDATE SET "type" = ${type}
+      RETURNING 
+        (SELECT "type" FROM "CommentVote" WHERE "commentId" = ${id} AND "userId" = ${userId}) AS old_type,
+        (SELECT "postId" FROM comment_info) AS postId,
+        (SELECT "createdAt" FROM comment_info) AS createdAt
+    `
+    const row = rows[0]
+    const old_type = row?.old_type ?? 0
+    return { delta: type - old_type, Id: row.postId, date: row.createdAt }
+  }
 }
 
-export async function VoteComment({ voteType: type, commentId, userId }: CommentVoteRequestPayload): Promise<Result<VoteDelta>> {
-  const rows = await db.$queryRaw<{ old_type: VoteType | null }[]>`
-    INSERT INTO "CommentVote" ("userId", "commentId", "type")
-    VALUES (${userId}, ${commentId}, ${type})
-    ON CONFLICT ("commentId", "userId")
-    DO UPDATE SET "type" = ${type}
-    RETURNING (SELECT "type" FROM "CommentVote" 
-               WHERE "commentId" = ${commentId} 
-               AND "userId" = ${userId}) AS old_type`
-  const old_type = rows[0]?.old_type ?? 0
-  const delta = type - old_type
-  return { ok: true, data: { delta } }
+async function removeVote(
+  target: VoteTarget,
+  id: bigint,
+  userId: bigint
+): Promise<VoteDelta> {
+  if (target === "post") {
+    const rows = await db.$queryRaw<{
+      old_type: VoteType | null
+      subredditId: bigint
+      createdAt: Date
+    }[]>`
+      WITH post_info AS (
+        SELECT "subredditId", "createdAt"
+        FROM "Post"
+        WHERE "id" = ${id}
+      )
+      DELETE FROM "PostVote"
+      WHERE "postId" = ${id} AND "userId" = ${userId}
+      RETURNING "type" AS old_type,
+                (SELECT "subredditId" FROM post_info) AS "subredditId",
+                (SELECT "createdAt" FROM post_info) AS "createdAt"
+    `
+    const row = rows[0]
+    const old_type = row?.old_type ?? 0
+    return { delta: 0 - old_type, Id: row.subredditId, date: row.createdAt }
+  } else {
+    const rows = await db.$queryRaw<{
+      old_type: VoteType | null
+      postId: bigint
+      createdAt: Date
+    }[]>`
+      WITH comment_info AS (
+        SELECT "postId", "createdAt"
+        FROM "Comment"
+        WHERE "id" = ${id}
+      )
+      DELETE FROM "CommentVote"
+      WHERE "commentId" = ${id} AND "userId" = ${userId}
+      RETURNING "type" AS old_type,
+                (SELECT "postId" FROM comment_info) AS postId,
+                (SELECT "createdAt" FROM comment_info) AS createdAt
+    `
+    const row = rows[0]
+    const old_type = row?.old_type ?? 0
+    return { delta: 0 - old_type, Id: row.postId, date: row.createdAt }
+  }
+}
+export async function VotePost(payload: PostVoteRequestPayload): Promise<Result<VoteDelta>>  {
+  const result = await upsertVote("post", payload.postId, payload.userId, payload.type)
+  return { ok: true, data: result }
 }
 
-export async function UnVotePost({ postId, userId }: PostUnVoteRequestPayload): Promise<Result<VoteDelta>> {
-  const rows = await db.$queryRaw<{ old_type: VoteType | null }[]>`
-    DELETE FROM "PostVote"
-    WHERE "postId" = ${postId} AND "userId" = ${userId}
-    RETURNING "type" AS old_type`
-  const old_type = rows[0]?.old_type ?? 0
-  const delta = 0 - old_type
-  return { ok: true, data: { delta } }
+export async function VoteComment(payload: CommentVoteRequestPayload): Promise<Result<VoteDelta>>  {
+  const result = await upsertVote("comment", payload.commentId, payload.userId, payload.voteType)
+  return { ok: true, data: result }
 }
 
-export async function UnVoteComment({ commentId, userId }: CommentUnVoteRequestPayload): Promise<Result<VoteDelta>> {
-  const rows = await db.$queryRaw<{ old_type: VoteType | null }[]>`
-    DELETE FROM "CommentVote"
-    WHERE "commentId" = ${commentId} AND "userId" = ${userId}
-    RETURNING "type" AS old_type`
-  const old_type = rows[0]?.old_type ?? 0
-  const delta = 0 - old_type
-  return { ok: true, data: { delta } }
+export async function UnVotePost(payload: PostUnVoteRequestPayload): Promise<Result<VoteDelta>>  {
+  const result = await removeVote("post", payload.postId, payload.userId)
+  return { ok: true, data: result }
 }
 
+export async function UnVoteComment(payload: CommentUnVoteRequestPayload): Promise<Result<VoteDelta>>  {
+  const result = await removeVote("comment", payload.commentId, payload.userId)
+  return { ok: true, data: result }
+}

@@ -5,16 +5,17 @@ import * as db from "./action-db";
 import { Delta as VoteDelta } from "./type";
 import { incrCache } from "../cache/util";
 import { UserSubredditRequestPayload, UserSubredditVisitRequestPayLoad } from "@/lib/validators/subreddit";
-import { incrHashFields, pushSortedUnique } from "../cache/Pipeline";
+import { incrHashField, incrHashFields, pushSortedUnique } from "../cache/Pipeline";
 import { rediskey } from "@/types/rediskey";
 import { withLockOrSkip } from "../cache/Lock";
+import { redis } from "@/server/lib/redis";
+import { hotScore } from "./post/hotscore";
 
 
 export async function VotePost({ type, postId, userId }: PostVoteRequestPayload): Promise<Result<VoteDelta>> {
   const result = await db.VotePost({ type, postId, userId })
   if (result.ok) {
-    incrHashFields([`post:${postId}:stats`], "votesAmt", result.data.delta)
-      .catch(err => console.error("Failed to update post vote cache:", err))
+   await ReCalculatePostRank({postId,delta:result.data})
   }
   return result
 }
@@ -24,7 +25,7 @@ export async function UnVotePost({ postId, userId }: PostUnVoteRequestPayload): 
     async () => {
       const result = await db.UnVotePost({ postId, userId })
       if (result.ok) {
-        incrHashFields([`post:${postId}:stats`], "votesAmt", result.data.delta).catch(err => console.error("Failed to update post vote cache:", err))
+        await ReCalculatePostRank({postId,delta:result.data})
       }
       return result
     }
@@ -33,6 +34,13 @@ export async function UnVotePost({ postId, userId }: PostUnVoteRequestPayload): 
     return { ok: false, error: { code: "LOCKED", message: "Another vote operation is in progress. Please try again." } }
   }
   return lock.data
+}
+async function ReCalculatePostRank( {postId,delta}:{delta:VoteDelta,postId:bigint}){
+  if(delta.delta==0)
+      return;
+    var newScore =await incrHashField(rediskey.post.stats(postId), "votesAmt", delta.delta)
+    var newHot= hotScore(newScore,delta.date.getTime())
+    await redis.zadd(rediskey.subreddit.hotrank(delta.Id),newHot,postId.toString())
 }
 
 export async function VoteComment({ voteType: type, commentId, userId }: CommentVoteRequestPayload): Promise<Result<VoteDelta>> {
@@ -58,7 +66,7 @@ export async function UnVoteComment({ commentId, userId }: CommentUnVoteRequestP
     async () => {
       const result = await db.UnVoteComment({ commentId, userId })
       if (result.ok) {
-        incrHashFields([rediskey.comment.stats(commentId)], "votesAmt", result.data.delta).catch(err => console.error("Failed to update comment vote cache:", err))
+        incrHashField(rediskey.comment.stats(commentId), "votesAmt", result.data.delta).catch(err => console.error("Failed to update comment vote cache:", err))
       }
       return result
     }

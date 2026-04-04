@@ -8,6 +8,7 @@ import axios from 'axios'
 import { UserSubredditHistory } from '@/lib/validators/user'
 import { SubRedditDto } from '@/types/subreddit'
 import { SubredditAvatar } from '../subreddit/SubredditAvatar'
+import { delay } from '@/lib/utils'
 
 export function RecentSubreddits() {
     const { isLoggedIn } = useAuth()
@@ -17,6 +18,7 @@ export function RecentSubreddits() {
 
     async function load() {
         try {
+        await delay(1000);
         const res = await axios.get('/api/subreddit/recent')
         const data = res.data as UserSubredditHistory
         setRecent(data.subreddits )

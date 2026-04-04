@@ -159,43 +159,30 @@ export async function getPost({
 function getVoteAmt(votes: { type: number }[]) {
   return votes.reduce((acc, v) => acc + v.type, 0)
 }
-async function rawComments({postId} : {postId:ID})
-{
+async function rawComments({ postId }: { postId: ID }) {
   const comments = await db.comment.findMany({
     where: {
-      postId: postId,
-      replyToId: null, 
+      postId,
+      replyToId: null,
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: { createdAt: "desc" },
+  })
+
+  if (comments.length === 0) return [] 
+  return db.comment.findMany({
+    where: { id: { in: comments.map(c => c.id) } }, 
     include: {
-      author: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
+      author: { select: { id: true, name: true, image: true } },
       votes: true,
       replies: {
-        orderBy: {
-          createdAt: "asc",
-        },
+        orderBy: { createdAt: "asc" },
         include: {
-          author: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-            },
-          },
+          author: { select: { id: true, name: true, image: true } },
           votes: true,
         },
       },
     },
   })
-  return comments
 }
 export async function getComments({postId,userId=undefined}:{postId:ID,userId?:ID}){
   const comments = await rawComments({postId})

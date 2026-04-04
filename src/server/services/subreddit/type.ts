@@ -1,5 +1,7 @@
 export interface Delta{
-  delta:number
+  delta:number,
+  Id:bigint,
+  date:Date
 }
 
 export interface VoteScore{

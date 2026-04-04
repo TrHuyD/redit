@@ -31,7 +31,8 @@ export async function getCommentVoteScore(ids: bigint[]): Promise<number[]> {
 //         return rows.map(r => (  r._sum.type ?? 0))
 //     }
 export async function getPostsStatByIds(ids: bigint[]): Promise<PostStatMapped[]> {
-        const [commentCounts, voteScores] = await Promise.all([
+    if(ids.length==0||ids[0]==null) return []
+        const [commentCounts, voteScores,posts] = await Promise.all([
           db.comment.groupBy({
             by: ['postId'],
             where: { postId: { in: ids } },
@@ -41,6 +42,14 @@ export async function getPostsStatByIds(ids: bigint[]): Promise<PostStatMapped[]
             by: ['postId'],
             where: { postId: { in: ids } },
             _sum: { type: true }
+          }),
+          db.post.findMany({
+            where :{
+                id:{
+                    in:ids
+                }
+            },
+            select:{id:true,createdAt:true}
           })
         ]);
         const commentMap = new Map<bigint, number>();
@@ -51,10 +60,15 @@ export async function getPostsStatByIds(ids: bigint[]): Promise<PostStatMapped[]
         for (const r of voteScores) {
           voteMap.set(r.postId, r._sum.type ?? 0);
         }
+        const postMap =  new Map<bigint, number>();
+        for(const r of posts){
+            postMap.set(r.id,r.createdAt.getTime())
+        }
         return ids.map(id => ({
           id,
           commentsAmt: commentMap.get(id) ?? 0,
-          votesAmt: voteMap.get(id) ?? 0
+          votesAmt: voteMap.get(id) ?? 0,
+          date:postMap.get(id)??0
         }));
 }
 

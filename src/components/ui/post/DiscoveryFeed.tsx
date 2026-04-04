@@ -28,6 +28,7 @@ DiscoveryFeed({ initialPosts }: PostFeedProps) {
             limit={INFINITE_SCROLLING_PAGINATION_RESULTS}
             fetcher={fetcher}
             getCursor={post => post.id.toString()}
+            getKey={(p) => p.id.toString()}
             renderItem={post => (
                 <PostOut post={post} displayType="both" />
             )}

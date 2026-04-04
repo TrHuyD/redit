@@ -7,6 +7,7 @@ import {  getSubredditPosts } from "@/server/services/subreddit/Get"
 import { SortBy } from "@/types/enum"
 
 import { notFound } from "next/navigation"
+import { SubredditPageInitier } from "../../page"
 
 interface PageProps {
     params: Promise<{
@@ -17,16 +18,8 @@ interface PageProps {
   
   export default async function Page({ params }: PageProps) {
     const { slug,sort } = await params
-    const token = await getAuthToken()
-    const userId = getIdnull(token)
-
-    const posts =await getSubredditPosts({slug, userId:userId})
-
-    if(!posts)
-        return notFound()
- 
-    return (
-      <PostFeed initialPosts={posts.posts} subredditName={slug} />
-    )
-    
+    if (!Object.values(SortBy).includes(sort as SortBy)) {
+      notFound();
+    }
+    return await SubredditPageInitier({slug,sort})
   }

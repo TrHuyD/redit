@@ -57,3 +57,4 @@ export async function getAllSubreddits(): Promise<{ id: bigint; name: string }[]
       select: { id: true, name: true },
   })
 }
+

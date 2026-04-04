@@ -12,7 +12,6 @@ export function createCachedBatchLoader2<K extends string | number | bigint, V>(
     select: (v) => v,
   })
 }
-
 export function createCachedBatchLoader<K extends string | number | bigint, Raw, Cached = Raw>(options: {
   keyFn: (k: K) => string
   fetch: (keys: K[]) => Promise<Raw[]>
@@ -20,9 +19,13 @@ export function createCachedBatchLoader<K extends string | number | bigint, Raw,
   select: (v: Raw | null) => Cached | null
   ttl: number
   nullTtl: number
+  defaultValue?: (keys: K[]) => (Cached | null)[]
 }): (keys: K[]) => Promise<(Cached | null)[]> {
   return async function load(keys: K[]): Promise<(Cached | null)[]> {
-    if (!keys.length) return [] 
+    if (!keys || keys.length === 0) {
+      return options.defaultValue?.(keys ?? []) ?? []
+    }
+
     const ctx: BatchContext<K, Cached> = {
       keys,
       cached: new Map(),
@@ -41,17 +44,19 @@ export function createCachedBatchLoader<K extends string | number | bigint, Raw,
 
         const missingKeys = Array.from(ctx.missing)
         const raw = await options.fetch(missingKeys)
-        const rawMap = new Map<string, Raw>() 
+
+        const rawMap = new Map<string, Raw>()
         for (const item of raw) {
           rawMap.set(options.map(item).toString(), item)
         }
-        
+
         for (const k of missingKeys) {
           const rawVal = rawMap.get(k.toString()) ?? null
           const finalVal = options.select(rawVal)
           ctx.fetched.set(k, finalVal)
         }
       },
+
       cacheWriteAndUnlock(options.keyFn, options.ttl, options.nullTtl),
       mergeResult(),
     ])
@@ -111,10 +116,14 @@ export function createCachedHashLoader
   select: (v: Raw | null) => Cached | null
   ttl: number
   nullTtl: number
+  defaultValue?: (keys: K[]) => (Cached | null)[]
 }): (keys: K[]) => Promise<(Cached | null)[]> {
 
+  
   return async function load(keys: K[]): Promise<(Cached | null)[]> {
-    if (!keys.length) return [] 
+    if (!keys || keys.length === 0) {
+      return options.defaultValue?.(keys ?? []) ?? []
+    }
     const ctx: BatchContext<K, Cached> = {
       keys,
       cached: new Map(),
