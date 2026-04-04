@@ -45,7 +45,7 @@ export function toPostDto(post: ExtendedPost, currentUserId?: bigint): PostUserD
         id: post.id,
         creator: toUserDto(post.author),
         subreddit: toSubRedditDto(post.subreddit),
-        stat:{commentsAmt: post.comments.length,votesAmt},
+        stat:{commentsAmt: post.comments.length,votesAmt,date:post.createdAt.getTime()},
         currentVote,
         content: post.content,
         title: post.title,

@@ -24,12 +24,11 @@ export default function InfiniteFeed<T>({
     getCursor,
     getKey
 }: InfiniteFeedProps<T>) {
-    let mode: SortBy = SortBy.NEW
     const lastItemRef = useRef<HTMLDivElement>(null)
 
     const { ref, entry } = useIntersection({
         root: lastItemRef.current,
-        threshold: 1
+        threshold: 0
     })
 
     const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({

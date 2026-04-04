@@ -16,18 +16,20 @@ export default function CombinedTag({ subreddit, user }: CombinedTagProps) {
       ring-1 ring-transparent hover:ring-white/10
       transition-all duration-200">
 
-      <Link href={`/r/${subreddit.name}`} className="relative z-20">
+      <Link href={`/r/${subreddit.name}`} className="relative z-20" prefetch={false}>
         <SubredditAvatar subreddit={subreddit} className="h-8 w-8" />
       </Link>
 
       <div className="flex flex-col">
         <Link
+          prefetch={false}
           href={`/r/${subreddit.name}`}
           className="relative z-20 text-zinc-800 hover:text-zinc-500 dark:text-zinc-400 dark:hover:text-zinc-600 text-xs font-medium leading-tight"
         >
           r/{subreddit.name}
         </Link>
         <Link
+          prefetch={false}
           href={`/u/${user.id}`}
           className="relative z-20 text-xs text-muted-foreground leading-tight"
         >
