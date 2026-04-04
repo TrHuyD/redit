@@ -24,7 +24,7 @@ const renderers = {
 }
 export default function EditorOutput({content}:EditorOutputProps)
 {
-    if(content?.text||!content.data?.text)
+    if(content?.text||!content?.blocks)
       content ={
         time: Date.now(), 
         blocks: [

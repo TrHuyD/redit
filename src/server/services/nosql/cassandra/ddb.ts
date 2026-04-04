@@ -30,7 +30,6 @@ declare global {
 
 async function createCassandraInstance(): Promise<Client> {
     const bundlePath = await getBundlePath();
-    console.log("PAAAA ",bundlePath)
     const client = new Client({
         cloud: {
         secureConnectBundle: bundlePath,

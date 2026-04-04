@@ -25,7 +25,6 @@ interface PageProps {
   
   const SubRedditPostPage = async ({ params }: PageProps) => {
     const {postId} = await params;
-    
     const userId= getIdnull( await getAuthToken())
     const post = await getPostById({postId,userId})  
     if (!post) return notFound()
