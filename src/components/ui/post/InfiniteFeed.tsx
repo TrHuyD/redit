@@ -44,7 +44,7 @@ export default function InfiniteFeed<T>({
             pages: [initialData],
             pageParams: [null],
         },
-        staleTime: 60 * 10,
+        staleTime: 60 * 10*1000,
     })
 
     useEffect(() => {
