@@ -5,16 +5,18 @@ import Navbar from '@/components/ui/Navbar'
 import { Providers } from '@/components/ui/provider'
 import { getAuthToken } from '@/lib/auth'
 import { AuthProvider } from '@/components/ui/providers/auth-provider'
-import { SpeedInsights } from '@vercel/speed-insights/next';
-import { LeftTab } from '@/components/ui/subreddit/LeftTab'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import TopLoader from '@/components/ui/TopLoader'
+
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { LeftTab } from '@/components/ui/subreddit/LeftTab'
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Redit',
   description: 'A Reddit clone built with Next.js and TypeScript.',
 }
-
 export default async function RootLayout({
   children,
   popModal,
@@ -30,18 +32,16 @@ export default async function RootLayout({
         <div className="min-h-screen antialiased">
           <AuthProvider isLoggedIn={!!session}>
             <Providers>
-              <TopLoader/>
+              <TopLoader />
               <Navbar />
-              {/* MAIN LAYOUT  */}
-              <div className="pt-14 grid lg:grid-cols-[16rem_minmax(0,1fr)] grid-cols-1 min-h-screen">
-                {/* LEFT TAB */}
-                <div className="hidden lg:block border-r border-zinc-100">
-                  <LeftTab  />
-                </div>
-                {/* RIGHT CONTENT */}
-                <div className="w-full">
-                  {children}
-                </div>
+              <div className='pt-14'>
+              <SidebarProvider>
+                <LeftTab />
+                  <main className=" px-10">
+                    <SidebarTrigger className='pl-80'/>
+                    {children}
+                  </main>
+              </SidebarProvider>
               </div>
               {popModal}
               <SpeedInsights />

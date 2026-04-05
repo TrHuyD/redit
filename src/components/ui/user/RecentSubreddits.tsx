@@ -47,7 +47,6 @@ export function RecentSubreddits() {
       }, [isLoggedIn, pathname]);
     return (
         <div className="flex flex-col gap-1">
-        <p className="text-xs text-zinc-500 px-2">RECENT</p>
 
         {recent.length === 0 && (
             <p className="px-3 text-zinc-400">No recent</p>

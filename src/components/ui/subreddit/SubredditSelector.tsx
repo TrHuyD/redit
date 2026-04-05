@@ -2,19 +2,11 @@
 import * as React from 'react'
 import { Check, ChevronDown, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from '@/components/ui/command'
 import { Button } from '@/components/ui/Button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { SubRedditDto } from '@/types/subreddit'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useRouterWithLoader } from '@/lib/utilui'
 
 type SubredditSelectorProps = {
   slug?: string
@@ -32,7 +24,6 @@ const SubredditAvatar = ({ image, name }: { image?: string; name?: string }) => 
 )
 
 export function SubredditSelector({ slug, initialImage,onBeforeChange }: SubredditSelectorProps) {
-  const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState<string | undefined>(slug)
   const [selectedImage, setSelectedImage] = React.useState<string | undefined>(initialImage)
@@ -87,7 +78,7 @@ export function SubredditSelector({ slug, initialImage,onBeforeChange }: Subredd
       if (abortRef.current) abortRef.current.abort()
     }
   }, [search, open])
-
+  const {push} = useRouterWithLoader()
   return (
     <div ref={containerRef} className="relative w-full max-w-xl">
       <div className="h-[48px] w-full">
@@ -156,7 +147,7 @@ export function SubredditSelector({ slug, initialImage,onBeforeChange }: Subredd
                       setSelectedImage(s.image)
                       setSearch('')
                       setOpen(false)
-                      router.push(`/r/${s.name}/submit`)
+                      push(`/r/${s.name}/submit`)
                     }}
                     className="flex items-center gap-3 px-4 py-3 text-base cursor-pointer"
                   >
