@@ -11,6 +11,7 @@ import PostVoteClient from './PostVoteClient'
 
 import Link from 'next/link'
 import { PostUserDto } from '@/types/post'
+import ShareButton from '../ShareButton'
 
 interface PostProps {
   post: PostUserDto
@@ -80,10 +81,12 @@ export default function PostOut({ post, displayType }: PostProps) {
               />
             </div>
 
-            <div className=" relative z-20">
+            <div className=" relative z-20 flex gap-3">
               <CommentAmtDisplay amt={post.stat.commentsAmt} />
             </div>
-
+            <div className="pointer-events-auto relative z-20 inline-block">
+              <ShareButton link={`${postHref}`}/>
+            </div>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import CommentsSection from "@/components/ui/post/CommentSection"
 import EditorOutput from "@/components/ui/post/EditorOutput"
 import { PostCommentButton } from "@/components/ui/post/PostCommentButton"
 import PostVoteClient from "@/components/ui/post/PostVoteClient"
+import ShareButton from "@/components/ui/ShareButton"
 
 import { getAuthToken } from "@/lib/auth"
 import { formatTimeToNow, getIdnull } from "@/lib/utils"
@@ -47,6 +48,7 @@ interface PageProps {
                 <div className='flex gap-3 py-4'>  
                 <PostVoteClient postId={post.id} initialVote={post.currentVote} initialVotesAmt={post.stat.votesAmt}/>
                 <CommentAmtDisplay amt={post.stat.commentsAmt} ></CommentAmtDisplay>
+                <ShareButton link= {`/r/${post.subreddit.name}/comments/${postId}`}/>
                 </div> 
             <PostCommentButton postId={postId}></PostCommentButton>
             <CommentsSection postId={postId}/>
