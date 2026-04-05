@@ -7,6 +7,7 @@ import { getAuthToken } from '@/lib/auth'
 import { AuthProvider } from '@/components/ui/providers/auth-provider'
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { LeftTab } from '@/components/ui/subreddit/LeftTab'
+import TopLoader from '@/components/ui/TopLoader'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
@@ -24,14 +25,12 @@ export default async function RootLayout({
   const session = await getAuthToken()
 
   return (
-    <html
-      lang="en"
-      className={cn('text-slate-900 antialiased', inter.className)}
-    >
+    <html lang="en" className={cn('text-slate-900 antialiased', inter.className)}>
       <body className="data-[scroll-locked]:!overflow-visible">
         <div className="min-h-screen antialiased">
           <AuthProvider isLoggedIn={!!session}>
             <Providers>
+              <TopLoader/>
               <Navbar />
               {/* MAIN LAYOUT  */}
               <div className="pt-14 grid lg:grid-cols-[16rem_minmax(0,1fr)] grid-cols-1 min-h-screen">
