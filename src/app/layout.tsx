@@ -34,7 +34,7 @@ export default async function RootLayout({
             <Providers>
               <Navbar />
               {/* MAIN LAYOUT  */}
-              <div className="pt-14 grid grid-cols-[16rem_minmax(0,1fr)] min-h-screen">
+              <div className="pt-14 grid lg:grid-cols-[16rem_minmax(0,1fr)] grid-cols-1 min-h-screen">
                 {/* LEFT TAB */}
                 <div className="hidden lg:block border-r border-zinc-100">
                   <LeftTab  />
