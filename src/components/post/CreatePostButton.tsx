@@ -6,15 +6,15 @@ import { UserAvatar } from "../ui/user/UserAvatar"
 import { Input } from "../ui/input"
 import { Button } from "../ui/Button"
 import {Plus} from "lucide-react"
+import { useRouterWithLoader } from "@/lib/utilui"
 
 export default function CreatePostButton (){
-    const router = useRouter()
     const pathname = usePathname()
     const segments = pathname.split("/").filter(Boolean)
     const base = segments.slice(0, 2).join("/")
-   
+    const {push} =useRouterWithLoader()
     const submit = () => {
-      router.push(`/${base}/submit`, undefined)
+      push(`/${base}/submit`)
     }
     return <Button onClick={submit} variant="secondary" >
       <Plus />

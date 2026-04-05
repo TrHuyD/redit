@@ -2,7 +2,8 @@
 import { db } from "@/lib/db";
 import { generatePostId, generateUserId, generateSubredditId } from "@/server/services/Snowflake";
 import { createSubreddit } from "@/server/services/subreddit/create";
-import { generateDumbRankPosts, recomputeHotRankForSubreddit } from "@/server/services/subreddit/post/hotscore";
+import { generateDumbRankPosts } from "@/server/services/subreddit/post/hotscore";
+import { recomputeRankForSubreddit } from "@/server/services/subreddit/post/rankhelper";
 import { NextRequest, NextResponse } from "next/server";
 
 interface RedditPost {
@@ -94,7 +95,7 @@ export async function GET(req: NextRequest) {
       }
     }
     await generateDumbRankPosts(postsToInsert.map(p =>p.id),subreddit.id)
-    await recomputeHotRankForSubreddit(subreddit.id)
+    await recomputeRankForSubreddit(subreddit.id)
     return NextResponse.json({ message: `Inserted ${postsToInsert.length} posts into DB.` });
   } catch (error: any) {
     console.error(error);

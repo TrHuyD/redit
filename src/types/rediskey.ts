@@ -14,7 +14,8 @@ export const rediskey = {
         membercount:(id:bigint)=> `subreddit:membercount:${id}`,
         hotrank:(id:bigint)=>`subreddit:hotrank:${id}`,
         hotrankall:'subreddit:hotrank:*',
-        metadata:(id:bigint)=>`subreddit:metadata:${id}`
+        metadata:(id:bigint)=>`subreddit:metadata:${id}`,
+        toprank:(id:bigint)=>`subreddit:toprank:${id}`
     },
     comment:{
       stats: (id: bigint) => `comment:${id}:stats`

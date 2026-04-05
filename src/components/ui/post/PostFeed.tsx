@@ -27,7 +27,7 @@ export default function PostFeed({ initialPosts, subredditName,sortBy }: PostFee
 
     return (
         <InfiniteFeed 
-            queryKey={['posts', subredditName]}
+            queryKey={['posts', subredditName,sortBy]}
             initialData={initialPosts}
             limit={INFINITE_SCROLLING_PAGINATION_RESULTS}
             fetcher={fetcher}
