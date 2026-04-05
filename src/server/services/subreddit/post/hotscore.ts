@@ -7,7 +7,7 @@ export function hotScore(score: number, createdAt: number): number {
     const order = Math.log10(Math.max(Math.abs(s), 1));
     const sign = s > 0 ? 1 : s < 0 ? -1 : 0;
     const seconds = createdAt / 1000 - 1134028003; 
-    const cal =order+ sign* seconds / 45000;
+    const cal =order*sign+ seconds / 45000;
     return Math.round(cal*100000)/100000;
 }
   export async function generateDumbRankPosts(ids:bigint[],subredditId:bigint){

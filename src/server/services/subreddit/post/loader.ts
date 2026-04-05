@@ -75,13 +75,12 @@ export async function getAllPosts({
     return getPostsByIds(list)
 }
 
-const GET_NEXT_IDS_LUA = `
-local rank = redis.call("ZRANK", KEYS[1], ARGV[1])
+    const GET_NEXT_IDS_LUA = `
+local rank = redis.call("ZREVRANK", KEYS[1], ARGV[1])
 if not rank then
     return {}
 end
-
-return redis.call("ZRANGE", KEYS[1], rank + 1, rank + tonumber(ARGV[2]))
+return redis.call("ZREVRANGE", KEYS[1], rank + 1, rank + tonumber(ARGV[2]))
 `
 export async function getHotPostIds(subredditId: bigint,limit: number,cursor?: bigint,): Promise<bigint[]> {
     const key =rediskey.subreddit.hotrank(subredditId)
