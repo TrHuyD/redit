@@ -53,7 +53,7 @@ export function RecentSubreddits() {
         )}
         {recent.map(sub => (
             <SidebarMenuItem key={sub.Id}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild  className='hover:bg-accent'>
                 <Link href={`/r/${sub.name}`}>
                 <SubredditAvatar subreddit={sub} className='h-5 w-5' />
                 <span>r/{sub.name}</span>

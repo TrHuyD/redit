@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useModal } from '../providers/modal-provider'
 import CreateSubReddit from '@/app/r/create/components/createSubReddit'
 import { RecentSubreddits } from '../user/RecentSubreddits'
-import { Home, Plus, Sparkle } from 'lucide-react'
+import { Expand, Home, Plus, Sparkle } from 'lucide-react'
 
 import {
   Sidebar,
@@ -15,7 +15,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarHeader,
   SidebarRail,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
@@ -29,21 +28,18 @@ export function LeftTab() {
   const { openModal } = useModal()
 
   return (
-
-    <Sidebar collapsible='icon' className='pt-12'>
-      <SidebarHeader>
-      <SidebarTrigger className='pl-2' ></SidebarTrigger>
-      </SidebarHeader>
-      <SidebarContent>
+    <Sidebar collapsible="icon" className="pt-12">
       
+      <SidebarContent>
 
+        {/* FEEDS */}
         <SidebarGroup>
           <SidebarGroupLabel>FEEDS</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {feeds.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className='hover:bg-accent'>
                     <Link href={item.url}>
                       <item.icon className="w-5 h-5" />
                       <span>{item.title}</span>
@@ -51,8 +47,9 @@ export function LeftTab() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => openModal(<CreateSubReddit />)}>
+                <SidebarMenuButton onClick={() => openModal(<CreateSubReddit />)} className='hover:bg-accent'>
                   <Plus className="w-5 h-5" />
                   <span>Create a new community</span>
                 </SidebarMenuButton>
@@ -60,18 +57,14 @@ export function LeftTab() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* RECENT */}
         <SidebarGroup>
           <SidebarGroupLabel>RECENT</SidebarGroupLabel>
           <SidebarGroupContent>
             <RecentSubreddits />
           </SidebarGroupContent>
         </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>FOLLOWING</SidebarGroupLabel>
-          <SidebarGroupContent />
-        </SidebarGroup> 
-
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
