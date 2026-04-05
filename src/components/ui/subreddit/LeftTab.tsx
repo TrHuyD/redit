@@ -10,64 +10,70 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarHeader,
-  SidebarFooter,
+  SidebarRail,
+  SidebarTrigger,
 } from '@/components/ui/sidebar'
+
+const feeds = [
+  { title: 'Home', url: '/', icon: Home },
+  { title: 'Everyone', url: '/r/all', icon: Sparkle },
+]
 
 export function LeftTab() {
   const { openModal } = useModal()
 
   return (
-    <Sidebar collapsible='icon' >
-      <SidebarHeader />
+
+    <Sidebar collapsible='icon' className='pt-12'>
+      <SidebarHeader>
+      <SidebarTrigger className='pl-2' ></SidebarTrigger>
+      </SidebarHeader>
       <SidebarContent>
+      
+
         <SidebarGroup>
           <SidebarGroupLabel>FEEDS</SidebarGroupLabel>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href="/">
-                  <Home className="w-5 h-5" />
-                  <span>Home</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href="/r/all">
-                  <Sparkle className="w-5 h-5" />
-                  <span>Everyone</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton onClick={() => openModal(<CreateSubReddit />)}>
-                <Plus className="w-5 h-5" />
-                <span>Create a new community</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {feeds.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link href={item.url}>
+                      <item.icon className="w-5 h-5" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => openModal(<CreateSubReddit />)}>
+                  <Plus className="w-5 h-5" />
+                  <span>Create a new community</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
-
-        {/* RECENT */}
         <SidebarGroup>
           <SidebarGroupLabel>RECENT</SidebarGroupLabel>
-          <RecentSubreddits />
-        </SidebarGroup>
-        {/* FOLLOWING */}
-        <SidebarGroup>
-          <SidebarGroupLabel>FOLLOWING</SidebarGroupLabel>
-          {/* future joined subs */}
+          <SidebarGroupContent>
+            <RecentSubreddits />
+          </SidebarGroupContent>
         </SidebarGroup>
 
+        <SidebarGroup>
+          <SidebarGroupLabel>FOLLOWING</SidebarGroupLabel>
+          <SidebarGroupContent />
+        </SidebarGroup> 
+
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarRail />
     </Sidebar>
   )
 }

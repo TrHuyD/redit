@@ -1,5 +1,5 @@
 'use client'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { loginToast } from '@/lib/customToast'
 import { cn } from '@/lib/utils'
 import { CommentUnVotePayload, CommentVotePayload } from '@/lib/validators/post'

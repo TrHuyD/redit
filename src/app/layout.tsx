@@ -31,21 +31,22 @@ export default async function RootLayout({
       <body className="data-[scroll-locked]:!overflow-visible">
         <div className="min-h-screen antialiased">
           <AuthProvider isLoggedIn={!!session}>
-            <Providers>
-              <TopLoader />
-              <Navbar />
-              <div className='pt-14'>
-              <SidebarProvider>
-                <LeftTab />
-                  <main className=" px-10">
-                    <SidebarTrigger className='pl-80'/>
-                    {children}
-                  </main>
-              </SidebarProvider>
-              </div>
-              {popModal}
-              <SpeedInsights />
-            </Providers>
+          <Providers>
+  <TopLoader />
+  <Navbar />
+  <div className='pt-14'>
+  <SidebarProvider>
+    <LeftTab/>
+    <SidebarInset>
+      <main className="px-8 ">
+        {children}
+      </main>
+    </SidebarInset>
+  </SidebarProvider>
+  </div>
+  {popModal}
+  <SpeedInsights />
+</Providers>
           </AuthProvider>
         </div>
       </body>

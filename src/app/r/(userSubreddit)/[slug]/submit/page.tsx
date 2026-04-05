@@ -1,7 +1,7 @@
 
 import { notFound } from "next/navigation"
 
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 import { EditorCombo } from "./EditorCombo"
 import { SubRedditDto } from "@/types/subreddit"
 import { getSubredditId, getSubredditMetadata } from "@/server/services/subreddit/loader"

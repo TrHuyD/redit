@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import {  ChevronDown } from 'lucide-react'
 import { useRouterWithLoader } from '@/lib/utilui'
 

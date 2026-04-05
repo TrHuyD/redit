@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '../Button'
+import { Button } from '../button'
 import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
 
 interface CommentEditorProps {

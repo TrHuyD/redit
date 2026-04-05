@@ -4,7 +4,7 @@ import CreatePostButton from "@/components/post/CreatePostButton"
 import { SubscribeLeaveToggle } from "@/components/ui/subreddit/SubscribeLeaveToggle"
 
 import { SubredditAvatar } from "./SubredditAvatar"
-import { Button } from "../Button"
+import { Button } from "../button"
 import { UserSubredditBaseMd } from "@/types/subreddit"
 
 

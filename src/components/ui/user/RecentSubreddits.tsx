@@ -9,6 +9,7 @@ import { UserSubredditHistory } from '@/lib/validators/user'
 import { SubRedditDto } from '@/types/subreddit'
 import { SubredditAvatar } from '../subreddit/SubredditAvatar'
 import { delay } from '@/lib/utils'
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '../sidebar'
 
 export function RecentSubreddits() {
     const { isLoggedIn } = useAuth()
@@ -46,24 +47,20 @@ export function RecentSubreddits() {
         load();
       }, [isLoggedIn, pathname]);
     return (
-        <div className="flex flex-col gap-1">
-
+        <SidebarMenu>
         {recent.length === 0 && (
             <p className="px-3 text-zinc-400">No recent</p>
         )}
-
         {recent.map(sub => (
-            <Link
-            key={sub.Id}
-            href={`/r/${sub.name}`}
-            className="px-3 py-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800"
-            >
-            <div className='flex gap-1'>
-            <SubredditAvatar subreddit={sub} className='h-5 w-5'/>
-            r/{sub.name}
-            </div>
-            </Link>
+            <SidebarMenuItem key={sub.Id}>
+            <SidebarMenuButton asChild>
+                <Link href={`/r/${sub.name}`}>
+                <SubredditAvatar subreddit={sub} className='h-5 w-5' />
+                <span>r/{sub.name}</span>
+                </Link>
+            </SidebarMenuButton>
+            </SidebarMenuItem>
         ))}
-        </div>
+        </SidebarMenu>
     )
 }

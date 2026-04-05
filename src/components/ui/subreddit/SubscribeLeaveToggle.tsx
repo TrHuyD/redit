@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 import { withToast } from "@/lib/withToast"
 import { SubscribeToSubredditPayload } from "@/lib/validators/subreddit"
 
