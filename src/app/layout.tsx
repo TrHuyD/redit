@@ -10,7 +10,7 @@ import TopLoader from '@/components/ui/TopLoader'
 
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { LeftTab } from '@/components/ui/subreddit/LeftTab'
-
+import NextTopLoader from 'nextjs-toploader';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
@@ -33,6 +33,7 @@ export default async function RootLayout({
           <AuthProvider isLoggedIn={!!session}>
           <Providers>
   <TopLoader />
+  <NextTopLoader color="#f97316" />
   <Navbar />
   <div className='pt-14'>
   <SidebarProvider>
