@@ -30,7 +30,6 @@ export default function InfiniteFeed<T>({
         root: lastItemRef.current,
         threshold: 0
     })
-
     const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey,
         queryFn: ({ pageParam }) => fetcher(pageParam as string | null),
@@ -45,6 +44,7 @@ export default function InfiniteFeed<T>({
             pageParams: [null],
         },
         staleTime: 60 * 10*1000,
+        refetchOnMount: 'always'
     })
 
     useEffect(() => {
