@@ -27,8 +27,8 @@ export default async function RootLayout({
   const session = await getAuthToken()
 
   return (
-    <html lang="en" className={cn('text-slate-900 antialiased', inter.className)}>
-      <body className="data-[scroll-locked]:!overflow-visible">
+    <html lang="en" >
+      <body className={cn(' antialiased', inter.className)}>
         <div className="min-h-screen antialiased">
           <AuthProvider isLoggedIn={!!session}>
           <Providers>

@@ -14,11 +14,6 @@ export const POST = withErrorHandler(withAuth(async (req: NextRequest, token) =>
     const body = await req.json()
     const { title, content, subredditId } = PostValidator.parse(body)
     const userId = getId(token)
-    //check if user is banned from subreddit
-    //nothing
-    //nothing
-    
-    //create post
     var id= generatePostId()
     await db.post.create({
         data: {

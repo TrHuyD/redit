@@ -16,6 +16,7 @@ import axios, { AxiosError } from 'axios'
 
 import '@/styles/editor.css'
 import { ID } from '@/types/ID'
+import { withToast } from '@/lib/withToast'
 
 type FormData = z.infer<typeof PostValidator>
 
@@ -66,20 +67,12 @@ export default function Editor({ id, registerSaveDraft }: EditorProps) {
     registerSaveDraft(saveDraft)
   }, [registerSaveDraft, saveDraft])
 
-  const { mutate: createPost } = useMutation({
-    mutationFn: async ({ title, content, subredditId }: PostCreationRequest) => {
+  const { mutate: createPost } = useMutation<{ postId: bigint }, Error, PostCreationRequest>({
+    mutationFn:  withToast(async ({ title, content, subredditId }: PostCreationRequest) => {
       const payload: PostCreationRequest = { title, content, subredditId }
       const { data } = await axios.post('/api/subreddit/post/create', payload)
-      return data
-    },
-    onError: (err: AxiosError) => {
-      const message =
-        err.response?.status === 422
-          ? 'Please fill in all required fields correctly.'
-          : 'Your post was not published. Please try again.'
-
-      toast.error('Something went wrong.', { description: message })
-    },
+      return data 
+    }),
     onSuccess: (data) => {
       const newPathname = pathname.split('/')[2]
 

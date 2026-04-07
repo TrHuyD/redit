@@ -94,7 +94,7 @@ export const authOptions: NextAuthOptions = {
   },
 }
 
-export const getAuthSession = cache(() => getServerSession(authOptions))
+// export const getAuthSession = cache(() => getServerSession(authOptions))
 
 export const getAuthToken = cache(async (): Promise<JWT | null> => {
   const cookieStore = await cookies()

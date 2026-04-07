@@ -24,11 +24,11 @@ const feeds = [
   { title: 'Everyone', url: '/r/all', icon: Sparkle },
 ]
 
-export function LeftTab() {
+export function LeftTab({ ...props }: React.ComponentProps<typeof Sidebar>){
   const { openModal } = useModal()
 
   return (
-    <Sidebar collapsible="icon" className="pt-12">
+    <Sidebar collapsible="icon" className="pt-12"  {...props}>
       
       <SidebarContent>
 

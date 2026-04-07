@@ -34,6 +34,15 @@
     --ring: 215 20.2% 65.1%;
 
     --radius: 0.5rem;
+
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(0.269 0 0);
+    --sidebar-ring: oklch(0.439 0 0);
   }
 
   .dark {
@@ -67,7 +76,17 @@
     --ring: 216 34% 17%;
 
     --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 226 70% 55%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 0 0% 40%;
   }
+  
 }
 
 @layer base {
@@ -84,3 +103,4 @@ html {
   @apply overflow-y-scroll;
 }
 body { @apply !min-w-full; }
+

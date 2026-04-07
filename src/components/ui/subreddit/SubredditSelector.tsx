@@ -18,6 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { SubRedditDto } from '@/types/subreddit'
 import { useRouterWithLoader } from '@/lib/utilui'
 
+
 type SubredditSelectorProps = {
   slug?: string
   initialImage?: string
@@ -84,7 +85,6 @@ export function SubredditSelector({
   }, [search, open])
 
   const { push } = useRouterWithLoader()
-
   return (
     <div className="relative w-full max-w-xl">
       <div className="h-[48px] w-full">

@@ -1,5 +1,5 @@
 
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { EditorCombo } from "./EditorCombo"
@@ -14,6 +14,7 @@ interface PageProps {
   
   export default async function Page({ params }: PageProps) {
     const { slug } = await params
+
     const id = await getSubredditId(slug)
     if(!id)
       return notFound()
