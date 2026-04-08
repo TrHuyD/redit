@@ -8,20 +8,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { BloomFilter } from "bloom-filters";
 import fs from "fs";
 import path from "path";
+import { RedditPostResponse, RedditSubredditResponse } from "@/types/reddit";
+import { cleanImageUrl } from "@/lib/utils";
 
-interface RedditPost {
-  title: string;
-  selftext: string;
-  ups: number;
-  author: string;
-  id: string;
-}
-
-interface RedditApiResponse {
-  data: {
-    children: { data: RedditPost }[];
-  };
-}
 
 const BLOOM_FILE = path.join(process.cwd(), "bloom_posts.json");
 function loadBloomFilter(): BloomFilter {
@@ -58,14 +47,13 @@ export async function GET(req: NextRequest) {
     if (password != process.env.NEXTAUTH_SECRET)
       return NextResponse.json({ error: "wrong password" }, { status: 500 });
 
-    const redditRes = await fetch(
-      `https://www.reddit.com/r/${subredditName}/hot.json?limit=${limit}&t=hour`
-    );
-    const redditJson: RedditApiResponse = await redditRes.json();
-
+    const redditRes = await fetch(`https://www.reddit.com/r/${subredditName}/hot.json?limit=${limit}&t=hour`);
+    const redditJson: RedditPostResponse = await redditRes.json();
     let subreddit = await db.subreddit.findUnique({ where: { name: subredditName } });
     if (!subreddit) {
-      const createSubRe = await createSubreddit({ name: subredditName, userId: BigInt("100000000000000") });
+      const subredditRes = await fetch(`https://www.reddit.com/r/${subredditName}/about.json`)
+      const subredditJson:RedditSubredditResponse=await subredditRes.json()
+      const createSubRe = await createSubreddit({ name: subredditName, userId: BigInt("100000000000000"),avatarImage: cleanImageUrl(subredditJson.data.community_icon),bannerImage:cleanImageUrl(subredditJson.data.banner_img )});
       if (createSubRe.ok) subreddit = createSubRe.data;
       else return NextResponse.json({ error: createSubRe.error }, { status: 500 });
     }

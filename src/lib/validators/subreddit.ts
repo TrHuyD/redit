@@ -12,7 +12,10 @@ export type SubscribeToSubredditPayload = z.infer<typeof SubscriptionValidator>
 
 
 
-export const CreateSubredditRequestValidator = SubredditValidator.merge(UserValidator)
+export const CreateSubredditRequestValidator = SubredditValidator.merge(UserValidator).merge(z.object({
+    avatarImage: z.string().url().optional(),
+    bannerImage: z.string().url().optional()
+}))
 export const UserSubredditRequestValidator = SubscriptionValidator.merge(UserValidator)
 export type CreateSubredditRequestPayload = z.infer<typeof CreateSubredditRequestValidator>
 export type UserSubredditRequestPayload = z.infer<typeof UserSubredditRequestValidator>

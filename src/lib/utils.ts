@@ -100,3 +100,8 @@ export function zipToMap<K extends string | bigint, V>(keys: K[], values: (V | n
   return map
 }
 export const delay = (ms:number) => new Promise(res => setTimeout(res, ms));
+
+export function cleanImageUrl(url?: string): string | undefined {
+  if (!url) return undefined
+  return url.split('?')[0]
+}

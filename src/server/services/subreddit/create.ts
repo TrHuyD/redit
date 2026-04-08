@@ -4,6 +4,7 @@ import { Result } from "@/lib/Result"
 import { Subreddit } from "@prisma/client"
 import {  generateSubredditId } from "../Snowflake"
 import { addSubredditsAutocomplete } from "./loader"
+import { error } from "node:console"
 export async function createSubreddit(data: CreateSubredditRequestPayload): Promise<Result<Subreddit>> {
 
   if(data.name=="metadata"||data.name=="membercount")
@@ -16,7 +17,9 @@ export async function createSubreddit(data: CreateSubredditRequestPayload): Prom
       data: {
         id: id,
         name: data.name,
-        creatorId: data.userId
+        creatorId: data.userId,
+        ...(data.avatarImage ? { image: data.avatarImage } : {}),
+        ...(data.bannerImage ? { bannerImage: data.bannerImage } : {}),
       }
     })
     await tx.subscription.create({
