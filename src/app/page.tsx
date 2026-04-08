@@ -9,7 +9,7 @@ const Home = async () => {
   const token = await getAuthToken()
 
   return (
-    <div className="min-h-screen dark:bg-[#0B1416]  ">
+    <div className="min-h-screen   ">
 
       <DiscoveryLayout>
               {token ? <CustomFeedServer /> : <DiscoveryFeedServer/>}
