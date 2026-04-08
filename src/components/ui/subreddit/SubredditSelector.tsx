@@ -119,7 +119,6 @@ export function SubredditSelector({
                       <SubredditAvatar image={s.image} name={s.name} />
                       <span className="px-1">r/{s.name}</span>
                     </div>
-                      {/* <Check className={cn('h-4 w-4',value === s.name ? 'opacity-100' : 'opacity-0')}/> */}
                   </CommandItem>
                 ))}
               </CommandGroup>
