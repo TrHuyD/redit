@@ -15,13 +15,17 @@ export async function getSubreddits(ids: bigint[]): Promise<SubredditBaseMd[]> {
         createdAt:true,
         latestUpdateAt:true,
         creatorId:true,
-
+        bannerImage:true
       },
     });
 
 
     return rows.map(r => ({
-      ...r ,
+      id:r.id ,
+      name:r.name,
+      creatorId:r.creatorId,
+      image:r.image,
+      bannerImage:r.bannerImage,
       createdAt:BigInt(r.createdAt.getTime()),
       latestUpdateAt:BigInt(r.latestUpdateAt.getTime()),
       Id:r.id,

@@ -16,6 +16,7 @@ export interface SubredditBaseMd extends Version,SubredditMinimalMd{
     createdAt:bigint;
     latestUpdateAt:bigint;
     creatorId: bigint;
+    bannerImage?:string;
 }
 export interface UserSubredditBaseMd extends SubredditBaseMd{
     isCreator:boolean,
