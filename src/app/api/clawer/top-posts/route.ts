@@ -10,6 +10,7 @@ import fs from "fs";
 import path from "path";
 import { RedditPostResponse, RedditSubredditResponse } from "@/types/reddit";
 import { cleanImageUrl } from "@/lib/utils";
+import { number } from "zod";
 
 
 const BLOOM_FILE = path.join(process.cwd(), "bloom_posts.json");
@@ -41,7 +42,7 @@ async function getRedditAvatar(username: string): Promise<string> {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const subredditName = searchParams.get("subreddit") || "javascript";
+    const subredditName = (searchParams.get("subreddit") || "javascript").toLocaleLowerCase();
     const limit = Math.min(parseInt(searchParams.get("limit") || "5"), 20);
     const password = searchParams.get("password") || "";
     if (password != process.env.NEXTAUTH_SECRET)
@@ -88,11 +89,12 @@ export async function GET(req: NextRequest) {
     const allUsers = await db.user.findMany({ where: { username: { in: uniqueAuthors } } });
     const usernameToId = Object.fromEntries(allUsers.map((u) => [u.username, u.id]));
     const postsToInsert = newPosts.map((p) => ({
-      id: generatePostId(),
+      id: generatePostId(BigInt(p.created_utc*1000)),
       title: p.title,
       content: { text: p.selftext },
       subredditId: subreddit.id,
       authorId: usernameToId[p.author],
+      createdAt: new Date(p.created_utc*1000)
     }));
     await db.post.createMany({ data: postsToInsert, skipDuplicates: true });
     const VOTE_BATCH_SIZE = 4000;
@@ -100,7 +102,7 @@ export async function GET(req: NextRequest) {
     const voteBaseId = BigInt("100000000000000");
     for (let i = 0; i < postsToInsert.length; i++) {
       const post = postsToInsert[i];
-      const voteCount = Math.min(Math.random() * 10000, MAX_VOTES);
+      const voteCount = Math.min(Math.random() * 100, MAX_VOTES);
       const allVotes = Array.from({ length: voteCount }, (_, j) => ({
         type: 1,
         postId: post.id,

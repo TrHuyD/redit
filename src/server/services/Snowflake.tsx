@@ -5,33 +5,33 @@ let lastTimestamp = 0n
 let sequence = 0n
 
 const MAX_SEQUENCE = 127n
-
-function generateSnowflake(): bigint {
-  let timestamp = BigInt(Date.now())
+function generateSnowflake(ts?: bigint): bigint {
+  let timestamp = ts ?? BigInt(Date.now());
 
   if (timestamp === lastTimestamp) {
-    sequence++
+    sequence++;
 
     if (sequence > MAX_SEQUENCE) {
       while (timestamp <= lastTimestamp) {
-        timestamp = BigInt(Date.now())
+        timestamp = BigInt(Date.now());
       }
-      sequence = 0n
+      sequence = 0n;
     }
   } else {
-    sequence = 0n
+    sequence = 0n;
   }
 
-  lastTimestamp = timestamp
+  lastTimestamp = timestamp;
 
   const id =
     ((timestamp - EPOCH) << 12n) |
     (MACHINE_ID << 7n) |
-    sequence
+    sequence;
 
-  return id
+  return id;
 }
-export const generatePostId = () => generateSnowflake()
-export const generateUserId = () => generateSnowflake()
-export const generateCommentId = () => generateSnowflake()
-export const generateSubredditId = () => generateSnowflake()
+
+export const generatePostId = (ts?: bigint) => generateSnowflake(ts);
+export const generateUserId = (ts?: bigint) => generateSnowflake(ts);
+export const generateCommentId = (ts?: bigint) => generateSnowflake(ts);
+export const generateSubredditId = (ts?: bigint) => generateSnowflake(ts);

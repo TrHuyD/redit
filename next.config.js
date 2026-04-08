@@ -1,11 +1,40 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['uploadthing.com', 'lh3.googleusercontent.com','cdn.discordapp.com','utfs.io','i.redd.it','styles.redditmedia.com','redditstatic.com','www.redditstatic.com'],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.uploadthing.com",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.discordapp.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.utfs.io",
+      },
+      {
+        protocol: "https",
+        hostname: "*.redd.it",
+      },
+      {
+        protocol: "https",
+        hostname: "*.redditmedia.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.redditstatic.com",
+      },
+    ],
   },
   experimental: {
-    appDir: true
-  }
-}
+    appDir: true,
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

@@ -9,6 +9,7 @@ export async function createSubreddit(data: CreateSubredditRequestPayload): Prom
 
   if(data.name=="metadata"||data.name=="membercount")
     {return { ok: false, error: { code: "409", message: "SUBREDDIT_EXISTS" } }}
+  data.name=data.name.toLowerCase()
   const existing = await db.subreddit.findUnique({where: { name: data.name }})
   if (existing) {return { ok: false, error: { code: "409", message: "SUBREDDIT_EXISTS" } }}
   const id = generateSubredditId()

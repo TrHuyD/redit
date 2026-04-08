@@ -2,7 +2,7 @@
 import { CachedPost, PostStatMapped, toCachePost } from "@/types/post";
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
 import { db } from "@/lib/db";
-import { UserVote, VoteScore } from "../type";
+import { UserVote } from "../type";
 
 
 export async function getCommentVoteScore(ids: bigint[]): Promise<number[]> {
@@ -53,17 +53,14 @@ export async function getPostsStatByIds(ids: bigint[]): Promise<PostStatMapped[]
           })
         ]);
         const commentMap = new Map<bigint, number>();
-        for (const r of commentCounts) {
+        for (const r of commentCounts)
           commentMap.set(r.postId, r._count.postId);
-        }
         const voteMap = new Map<bigint, number>();
-        for (const r of voteScores) {
+        for (const r of voteScores) 
           voteMap.set(r.postId, r._sum.type ?? 0);
-        }
         const postMap =  new Map<bigint, number>();
-        for(const r of posts){
+        for(const r of posts)
             postMap.set(r.id,r.createdAt.getTime())
-        }
         return ids.map(id => ({
           id,
           commentsAmt: commentMap.get(id) ?? 0,
