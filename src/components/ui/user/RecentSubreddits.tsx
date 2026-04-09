@@ -33,16 +33,16 @@ export function RecentSubreddits() {
   return (
     <SidebarMenu>
       {isLoading && (
-        <p className="px-3 text-zinc-400">Loading...</p>
+        <p className="px-3">Loading...</p>
       )}
       {!isLoading && recent.length === 0 && (
-        <p className="px-3 text-zinc-400">No recent</p>
+        <p className="px-3">No recent</p>
       )}
       {recent.map(sub => (
         <SidebarMenuItem key={sub.Id}>
           <SidebarMenuButton asChild className="hover:bg-accent">
             <Link href={`/r/${sub.name}`}>
-              <SubredditAvatar subreddit={sub} className="h-5 w-5" />
+              <SubredditAvatar subreddit={sub} size='sm' />
               <span>r/{sub.name}</span>
             </Link>
           </SidebarMenuButton>

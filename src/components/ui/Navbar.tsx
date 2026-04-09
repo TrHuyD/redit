@@ -19,8 +19,8 @@ const Navbar = async () => {
       </p>
     </Link>
 
-    <div className="flex-1 flex justify-center">
-      <div className="relative">
+    <div className="flex-1 flex justify-center ">
+      <div className="relative w-full max-w-xl ">
         <SearchBar />
       </div>
     </div>
