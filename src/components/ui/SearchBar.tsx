@@ -1,12 +1,6 @@
   "use client";
 
-  import {
-    useState,
-    useRef,
-    forwardRef,
-    useImperativeHandle,
-    KeyboardEvent,
-  } from "react";
+  import { useState, useRef, forwardRef, useImperativeHandle, KeyboardEvent,} from "react";
   import { X } from "lucide-react";
   import { Badge } from "@/components/ui/badge";
   import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -19,6 +13,7 @@
     CommandList,
   } from "@/components/ui/command";
   import { SubRedditDto } from "@/types/subreddit";
+import { useRouterWithLoader } from "@/lib/utilui";
 
   export interface SearchBarHandle {
     applyTag: (subreddit: SubRedditDto) => void;
@@ -36,7 +31,7 @@
       const [subreddits, setSubreddits] = useState<SubRedditDto[]>([]);
       const [loading, setLoading] = useState(false);
       const [open, setOpen] = useState(false);
-
+      const {push} =useRouterWithLoader()
       const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
       const abortRef = useRef<AbortController | null>(null);
 
@@ -120,10 +115,11 @@
                           key={s.Id.toString()}
                           value={s.name}
                           onSelect={() => {
-                            setTag(s);
+                           // setTag(s);
                             setInput("");
                             setOpen(false);
                             setSubreddits([]);
+                            push(`/r/${s.name}`)
                           }}
                         >
                           <div className="flex items-center w-full -ml-1">
