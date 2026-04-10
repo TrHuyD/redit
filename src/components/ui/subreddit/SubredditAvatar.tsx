@@ -1,13 +1,14 @@
-import { Subreddit } from "@prisma/client"
+
 import { Avatar, AvatarFallback } from "../avatar"
 import { UserLogo } from "../Icons"
 import Image from "next/image"
 import clsx from "clsx"
+import { SubRedditDto } from "@/types/subreddit"
 
 type Size = "sm" | "md" | "lg" | "xl"
 
 interface SubredditAvatarProps {
-  subreddit: Pick<Subreddit, "image" | "name">
+  subreddit: Pick<SubRedditDto, "image" | "name">
   size?: Size
   className?: string
 }

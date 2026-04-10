@@ -14,6 +14,7 @@
   } from "@/components/ui/command";
   import { SubRedditDto } from "@/types/subreddit";
 import { useRouterWithLoader } from "@/lib/utilui";
+import { SubredditAvatar } from "./subreddit/SubredditAvatar";
 
   export interface SearchBarHandle {
     applyTag: (subreddit: SubRedditDto) => void;
@@ -123,12 +124,7 @@ import { useRouterWithLoader } from "@/lib/utilui";
                           }}
                         >
                           <div className="flex items-center w-full -ml-1">
-                            <Avatar className="w-7 h-7 shrink-0">
-                              <AvatarImage src={s.image ?? undefined} alt={s.name} />
-                              <AvatarFallback className="text-xs bg-primary/20">
-                                {s.name?.[0]?.toUpperCase() ?? "r"}
-                              </AvatarFallback>
-                            </Avatar>
+                            <SubredditAvatar subreddit={s} size="sm"/>
                             <span className="px-1">r/{s.name}</span>
                           </div>
                         </CommandItem>
