@@ -3,7 +3,7 @@
 import CreatePostButton from "@/components/post/CreatePostButton"
 import { SubscribeLeaveToggle } from "@/components/ui/subreddit/SubscribeLeaveToggle"
 
-import { SubredditAvatar } from "./SubredditAvatar"
+import { SubredditAvatar, SubredditAvatarHeader } from "./SubredditAvatar"
 import { Button } from "../button"
 import { UserSubredditBaseMd } from "@/types/subreddit"
 
@@ -23,13 +23,13 @@ export function SubredditHeader({ subreddit }: Props) {
       <div className="max-w-5xl  px-4 flex items-end gap-4 pb-3">
 
         {/* Community icon */}
-        <div className="w-[72px] h-[72px] rounded-full border-4 border-white dark:border-zinc-800 bg-blue-500 flex items-center justify-center -mt-4 shrink-0 overflow-hidden">
-          <SubredditAvatar subreddit={subreddit} className="w-[72px] h-[72px]" />
+        <div className="h-22 w-22 rounded-full  flex items-center justify-center -mt-8 shrink-0 overflow-hidden ring-4 ring-white dark:ring-zinc-800 z-20">
+          <SubredditAvatarHeader subreddit={subreddit} size="x2" isAdmin={subreddit.isCreator}/>
         </div>
 
         {/* Name + actions */}
         <div className="flex flex-1 items-center justify-between flex-wrap gap-3 pb-1">
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-zinc-900 dark:text-white">
             r/{name}
           </h1>
           <div className="flex items-center gap-2">
