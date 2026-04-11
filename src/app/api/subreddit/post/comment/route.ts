@@ -6,6 +6,7 @@ import { withAuth } from '@/server/lib/withAuth'
 import { getId } from '@/lib/utils'
 import { generateCommentId } from '@/server/services/Snowflake'
 import { incrHashFields } from '@/server/services/cache/Pipeline'
+import { rediskey } from '@/types/rediskey'
 export const POST = withErrorHandler(withAuth(async (req: NextRequest,token) =>{
   try {
     const id = getId(token)
@@ -23,7 +24,7 @@ export const POST = withErrorHandler(withAuth(async (req: NextRequest,token) =>{
         authorId: id,
       },
     })
-    await incrHashFields([`post:${postId}:stats`],"commentsAmt",1  )
+    await incrHashFields([rediskey.post.stats(result.postId)],"commentsAmt",1  )
     return NextResponse.json(comment)
   } catch (err) {
     return NextResponse.json(

@@ -1,6 +1,6 @@
 
 import { UserAvatar } from "../user/UserAvatar";
-import EntityTag from "../EntityTag";
+import {EntityTag} from "../EntityTag";
 import { User } from "@prisma/client";
 
 interface UsernameProp {

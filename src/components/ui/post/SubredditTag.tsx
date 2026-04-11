@@ -1,13 +1,14 @@
 import { Subreddit } from "@prisma/client";
 import { SubredditAvatar } from "../subreddit/SubredditAvatar";
-import EntityTag from "../EntityTag";
+import {EntityTag, EntityTagDes} from "../EntityTag";
+import { SubRedditDto } from "@/types/subreddit";
 
 interface SubredditTagProps {
-  subreddit: Pick<Subreddit, "image" | "name">;
+  subreddit: SubRedditDto
   className?: string;
 }
 
-export default function SubredditTag({ subreddit, className }: SubredditTagProps) {
+export  function SubredditTag({ subreddit, className }: SubredditTagProps) {
   return (
     <EntityTag
       href={`/r/${subreddit.name}`}
@@ -15,5 +16,21 @@ export default function SubredditTag({ subreddit, className }: SubredditTagProps
       label={`r/${subreddit.name}`}
       className={className}
     />
+  );
+}
+interface SubredditDesTagProps {
+  subreddit: SubRedditDto;
+  className?: string;
+  onClick?: () => void;
+}
+export  function SubredditDes( props: SubredditDesTagProps) {
+  return (
+    <EntityTagDes
+      onClick={() => props.onClick?.()}
+      avatar={<SubredditAvatar subreddit={props.subreddit} size="md" />}
+      label={`r/${props.subreddit.name}`}
+      description={props.subreddit.Descriptions|| `Community for ${props.subreddit.name}`}
+      className={props.className}
+      />
   );
 }

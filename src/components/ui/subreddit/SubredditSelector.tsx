@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { SubRedditDto } from '@/types/subreddit'
 import { useRouterWithLoader } from '@/lib/utilui'
+import { SubredditDes } from '../post/SubredditTag'
 
 
 type SubredditSelectorProps = {
@@ -115,10 +116,7 @@ export function SubredditSelector({
                       setSearch('')
                       setOpen(false)
                       push(`/r/${s.name}/submit`)}}>
-                    <div className="flex items-center w-full -ml-1">
-                      <SubredditAvatar image={s.image} name={s.name} />
-                      <span className="px-1">r/{s.name}</span>
-                    </div>
+                    <SubredditDes subreddit={s} />
                   </CommandItem>
                 ))}
               </CommandGroup>

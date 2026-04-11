@@ -27,7 +27,7 @@ export default async function RootLayout({
   const session = await getAuthToken()
 
   return (
-    <html lang="en" className="dark" >
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body className={cn(' antialiased', inter.className)}>
         <div className="min-h-screen antialiased">
           <AuthProvider isLoggedIn={!!session}>

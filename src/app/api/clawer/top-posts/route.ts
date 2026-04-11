@@ -113,7 +113,6 @@ export async function GET(req: NextRequest) {
         await db.postVote.createMany({ data: batch, skipDuplicates: true });
       }
     }
-    await generateDumbRankPosts(postsToInsert.map((p) => p.id), subreddit.id);
     await recomputeRankForSubreddit(subreddit.id);
     return NextResponse.json({ message: `Inserted ${postsToInsert.length} new posts into DB.` });
   } catch (error: any) {

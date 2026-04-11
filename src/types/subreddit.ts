@@ -4,7 +4,9 @@ import { ID } from "./ID";
 export type SubRedditDto = {
     Id: ID
     name: string
-    image: string         
+    image: string
+    Descriptions:string
+
 }
 export interface SubredditMinimalMd{
     Id:bigint,

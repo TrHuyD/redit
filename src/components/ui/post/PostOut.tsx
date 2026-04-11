@@ -2,7 +2,7 @@
 
 import { formatTimeToNow } from '@/lib/utils'
 import UsernameTag from './UsernameTag'
-import SubredditTag from './SubredditTag'
+import {SubredditTag} from './SubredditTag'
 import CombinedTag from './CombinedTag'
 import { useRef } from 'react'
 import CommentAmtDisplay from './CommentAmtDisplay'
