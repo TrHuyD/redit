@@ -6,7 +6,7 @@ import { db } from "./db"
 import { cookies } from "next/headers"
 import { getToken, JWT } from "next-auth/jwt"
 import { generateUserId } from "@/server/services/Snowflake"
-
+import slugify from "slugify";
 
 
 export const authOptions: NextAuthOptions = {
@@ -40,7 +40,6 @@ export const authOptions: NextAuthOptions = {
         let dbUser = await db.user.findUnique({
           where: { googleId },
         })
-
         if (!dbUser && googleProfile.email) {
           dbUser = await db.user.findUnique({
             where: { email: googleProfile.email },
@@ -54,19 +53,32 @@ export const authOptions: NextAuthOptions = {
           }
         }
         var id =generateUserId()
+        var name =  googleProfile.name??id.toString()
         if (!dbUser) {
-          dbUser = await db.user.create({
-            data: {
-              id: id,
-              email: googleProfile.email!,
-              googleId,
-              name: googleProfile.name??id.toString(),
-              image: googleProfile.picture??"",
-              username: nanoid(10),
-            },
-          })
+          let attempt = 0;
+          while (true) {
+            const username =generateSlug(name);
+            try {
+              dbUser = await db.user.create({
+                data: {
+                  id,
+                  email: googleProfile.email!,
+                  googleId,
+                  name: username,
+                  image: googleProfile.picture ?? "",
+                  username,
+                },
+              });
+              break; 
+            } catch (err: any) {
+              if (err.code === "P2002") {
+                attempt++;
+                continue; 
+              }
+              throw err; 
+            }
+          }
         }
-
         token.id = dbUser.id.toString()
         token.image = dbUser.image
         token.username = dbUser.username
@@ -111,3 +123,15 @@ export const getAuthToken = cache(async (): Promise<JWT | null> => {
   if (!token?.id) return null
   return token
 })
+
+function generateSlug(input:string) {
+  const slug = slugify(input, {
+    lower: true,   
+    strict: true,   
+    locale: "vi",    
+    trim: true
+  });
+  const random = Math.random().toString(36).substring(2, 6);
+
+  return `${slug}-${random}`;
+}
