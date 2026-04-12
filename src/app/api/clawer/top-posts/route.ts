@@ -54,9 +54,13 @@ export async function GET(req: NextRequest) {
     if (!subreddit) {
       const subredditRes = await fetch(`https://www.reddit.com/r/${subredditName}/about.json`)
       const subredditJson:RedditSubredditResponse=await subredditRes.json()
-      const createSubRe = await createSubreddit({ name: subredditName, userId: BigInt("100000000000000"),
+      const createSubRe = await createSubreddit({ 
+        name: subredditName, userId: BigInt("100000000000000"),
         avatarImage: cleanImageUrl(subredditJson.data.community_icon),
-        bannerImage:cleanImageUrl(subredditJson.data.banner_img||subredditJson.data.banner_background_image )});
+        bannerImage:cleanImageUrl(subredditJson.data.banner_img||subredditJson.data.banner_background_image ),
+        description: subredditJson.data.public_description
+      });
+        
       if (createSubRe.ok) subreddit = createSubRe.data;
       else return NextResponse.json({ error: createSubRe.error }, { status: 500 });
     }

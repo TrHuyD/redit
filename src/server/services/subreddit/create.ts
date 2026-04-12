@@ -21,6 +21,7 @@ export async function createSubreddit(data: CreateSubredditRequestPayload): Prom
         creatorId: data.userId,
         ...(data.avatarImage ? { image: data.avatarImage } : {}),
         ...(data.bannerImage ? { bannerImage: data.bannerImage } : {}),
+        description: data.description||`Community of r/${data.name}`
       }
     })
     await tx.subscription.create({

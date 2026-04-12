@@ -78,7 +78,7 @@ model Subreddit{
   image    String @default("https://cdn.discordapp.com/embed/avatars/4.png")
   bannerImage String @default("")
   subscribers Subscription[]
-  Description String @default("")
+  description String @default("")
   creatorId   BigInt
   Creator     User         @relation("CreatedBy", fields: [creatorId], references: [id])
 }

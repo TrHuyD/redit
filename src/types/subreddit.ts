@@ -5,8 +5,7 @@ export type SubRedditDto = {
     Id: ID
     name: string
     image: string
-    Descriptions:string
-
+    description:string
 }
 export interface SubredditMinimalMd{
     Id:bigint,
@@ -19,6 +18,7 @@ export interface SubredditBaseMd extends Version,SubredditMinimalMd{
     latestUpdateAt:bigint;
     creatorId: bigint;
     bannerImage?:string;
+    description:string;
 }
 export interface UserSubredditBaseMd extends SubredditBaseMd{
     isCreator:boolean,

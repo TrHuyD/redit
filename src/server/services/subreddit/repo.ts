@@ -15,7 +15,8 @@ export async function getSubreddits(ids: bigint[]): Promise<SubredditBaseMd[]> {
         createdAt:true,
         latestUpdateAt:true,
         creatorId:true,
-        bannerImage:true
+        bannerImage:true,
+        description:true
       },
     });
 
@@ -30,6 +31,7 @@ export async function getSubreddits(ids: bigint[]): Promise<SubredditBaseMd[]> {
       latestUpdateAt:BigInt(r.latestUpdateAt.getTime()),
       Id:r.id,
       v: 0n,
+      description:r.description
     }));
   }
 

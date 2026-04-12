@@ -29,7 +29,7 @@ export  function SubredditDes( props: SubredditDesTagProps) {
       onClick={() => props.onClick?.()}
       avatar={<SubredditAvatar subreddit={props.subreddit} size="md" />}
       label={`r/${props.subreddit.name}`}
-      description={props.subreddit.Descriptions|| `Community for ${props.subreddit.name}`}
+      description={props.subreddit.description|| `Community for ${props.subreddit.name}`}
       className={props.className}
       />
   );
