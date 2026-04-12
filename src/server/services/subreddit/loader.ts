@@ -66,7 +66,7 @@ export async function addSubredditsAutocomplete(subreddits:{ id: bigint; name: s
     await pipeline.exec();
 }
 
-export async function searchSubredditAutocomplete(query: string, maxResults = 10, fuzzy = false): Promise<SubRedditDto[]> {
+export async function searchSubredditAutocomplete(query: string, maxResults = 10, fuzzy = false): Promise<SubredditBaseMd[]> {
     const args: string[] = [ rediskey.subreddit.autocomplete, query, "MAX", maxResults.toString(), "WITHPAYLOADS",];
     if (fuzzy) args.push("FUZZY");
     const result = (await redis.call("FT.SUGGET", ...args)) as string[];
@@ -75,5 +75,5 @@ export async function searchSubredditAutocomplete(query: string, maxResults = 10
         ids.push(BigInt(result[i+1]))
     }
     let subs=filterNull(await getSubredditsMetadata(ids))
-    return subs.map(s=>({...s} as SubRedditDto));
+    return subs.map(s=>({...s} as SubredditBaseMd));
   }

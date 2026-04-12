@@ -1,7 +1,7 @@
 import { Subreddit } from "@prisma/client";
 import { SubredditAvatar } from "../subreddit/SubredditAvatar";
 import {EntityTag, EntityTagDes} from "../EntityTag";
-import { SubRedditDto } from "@/types/subreddit";
+import { SubredditBaseMd, SubRedditDto } from "@/types/subreddit";
 
 interface SubredditTagProps {
   subreddit: SubRedditDto
@@ -19,7 +19,7 @@ export  function SubredditTag({ subreddit, className }: SubredditTagProps) {
   );
 }
 interface SubredditDesTagProps {
-  subreddit: SubRedditDto;
+  subreddit: SubredditBaseMd;
   className?: string;
   onClick?: () => void;
 }

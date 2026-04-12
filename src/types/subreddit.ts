@@ -5,7 +5,6 @@ export type SubRedditDto = {
     Id: ID
     name: string
     image: string
-    description:string
 }
 export interface SubredditMinimalMd{
     Id:bigint,
