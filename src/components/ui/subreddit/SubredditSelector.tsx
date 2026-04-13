@@ -108,7 +108,7 @@ export function SubredditSelector({
             <CommandEmpty>No result found</CommandEmpty>
               <CommandGroup >
                 {subreddits.map((s) => (
-                  <CommandItem key={s.Id.toString()} value={s.name} data-checked={value === s.name}
+                  <CommandItem key={s.id.toString()} value={s.name} data-checked={value === s.name}
                     onSelect={async () => {
                       await onBeforeChange?.()
                       setValue(s.name)

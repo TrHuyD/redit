@@ -1,4 +1,4 @@
-import { Subreddit } from "@prisma/client";
+
 import { SubredditAvatar } from "../subreddit/SubredditAvatar";
 import {EntityTag, EntityTagDes} from "../EntityTag";
 import { SubredditBaseMd, SubRedditDto } from "@/types/subreddit";

@@ -25,7 +25,7 @@ export function toSubRedditDto(subreddit: {
     image: string | null
 }): SubRedditDto {
     return {
-        Id: subreddit.id,
+        id: subreddit.id,
         name: subreddit.name,
         image: subreddit.image ?? '',
     }

@@ -14,14 +14,14 @@ import { rediskey } from "@/types/rediskey";
 export const getSubredditsMetadata = createCachedBatchLoader2<bigint, SubredditBaseMd>({
     keyFn: (id) =>rediskey.subreddit.metadata(id),
     fetch: db.getSubreddits,
-    map: (post) => post.Id,
+    map: (post) => post.id,
     ttl: 120000,nullTtl:30})
 
 export const getSubredditsId = createCachedBatchLoader<string,SubredditMinimalMd,bigint>({
     keyFn: (str) => `idParse:subreddit:${str.toLowerCase()}`,
     fetch: db.getSubredditsIdDb,
     map: (md) => md.name,
-    select: (md) => md?.Id ?? null,
+    select: (md) => md?.id ?? null,
     ttl: 1200000,
     nullTtl: 30,
   })
@@ -29,7 +29,7 @@ export const getSubredditsId = createCachedBatchLoader<string,SubredditMinimalMd
 export const getSubredditsMemberCount = createCachedBatchLoader<bigint,subredditMemCount,number>({
     keyFn: (id) => rediskey.subreddit.membercount(id),
     fetch: db.getMemberCount,
-    map: (md) => md.Id,
+    map: (md) => md.id,
     select: (md) => md?.Count ?? 1,
     ttl: 1200000,
     nullTtl: 30,

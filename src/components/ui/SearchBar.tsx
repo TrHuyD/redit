@@ -113,7 +113,7 @@ import { SubredditAvatar } from "./subreddit/SubredditAvatar";
                     <CommandGroup heading="Communities">
                       {subreddits.map((s) => (
                         <CommandItem
-                          key={s.Id.toString()}
+                          key={s.id.toString()}
                           value={s.name}
                           onSelect={() => {
                            // setTag(s);

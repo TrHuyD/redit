@@ -29,7 +29,6 @@ export async function getSubreddits(ids: bigint[]): Promise<SubredditBaseMd[]> {
       bannerImage:r.bannerImage,
       createdAt:BigInt(r.createdAt.getTime()),
       latestUpdateAt:BigInt(r.latestUpdateAt.getTime()),
-      Id:r.id,
       v: 0n,
       description:r.description
     }));
@@ -45,7 +44,7 @@ export async function getSubreddits(ids: bigint[]): Promise<SubredditBaseMd[]> {
         name:true      
      },
     });
-    return rows.map(r => ({Id:r.id,name:r.name}));
+    return rows.map(r => ({id:r.id,name:r.name}));
   }
 
 export async function getMemberCount(ids:bigint[]): Promise<subredditMemCount[]>{
@@ -55,7 +54,7 @@ export async function getMemberCount(ids:bigint[]): Promise<subredditMemCount[]>
     _count:{subredditId:true}
   })
   console.log(rows)
-  return rows.map(r => ({Id:r.subredditId,Count:r._count.subredditId}))
+  return rows.map(r => ({id:r.subredditId,Count:r._count.subredditId}))
 }
 
 export async function getAllSubreddits(): Promise<{ id: bigint; name: string }[]> {

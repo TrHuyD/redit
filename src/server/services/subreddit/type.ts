@@ -1,15 +1,15 @@
 export interface Delta{
   delta:number,
-  Id:bigint,
+  id:bigint,
   date:Date
 }
 
 export interface VoteScore{
-    Id:bigint,
+    id:bigint,
     Count:number
 }
 
 export interface UserVote {
-  Id: bigint,
+  id: bigint,
   type: number
 }

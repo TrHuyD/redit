@@ -199,7 +199,7 @@ export async function getUserPostVotes(userId: bigint, postIds: bigint[]): Promi
         where: { userId, postId: { in: postIds } },
         select: { postId: true, type: true }
     })
-    return rows.map(r => ({ Id: r.postId, type: r.type }))
+    return rows.map(r => ({ id: r.postId, type: r.type }))
 }
 
 export async function getUserCommentVotes(userId: bigint, commentIds: bigint[]): Promise<UserVote[]> {
@@ -207,5 +207,5 @@ export async function getUserCommentVotes(userId: bigint, commentIds: bigint[]):
         where: { userId, commentId: { in: commentIds } },
         select: { commentId: true, type: true }
     })
-    return rows.map(r => ({ Id: r.commentId, type: r.type }))
+    return rows.map(r => ({ id: r.commentId, type: r.type }))
 }

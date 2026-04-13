@@ -5,8 +5,9 @@ export const rediskey = {
       content: (id: bigint) => `post:${id}`,
     },
     user: {
-      info: (id: bigint) => `user:${id}:metadata`,
-      subHistory : (id:bigint) => `user:${id}:subhistory`,
+      baseInfo: (id: bigint) => `user:base:${id}`,
+      profileInfo:(id:bigint) => `user:profile:${id}`,
+      subHistory : (id:bigint) => `user:subhistory:${id}`,
       subHistoryLimit : 5
     },
     subreddit:{
@@ -18,6 +19,6 @@ export const rediskey = {
         toprank:(id:bigint)=>`subreddit:toprank:${id}`
     },
     comment:{
-      stats: (id: bigint) => `comment:${id}:stats`
+      stats: (id: bigint) => `comment:stats:${id}`
     }
   };

@@ -1,10 +1,12 @@
-import { Subreddit, User } from "@prisma/client";
+
 import Link from "next/link";
 import { SubredditAvatar } from "../subreddit/SubredditAvatar";
+import { SubRedditDto } from "@/types/subreddit";
+import { UserDto } from "@/types/Users/dto";
 
 interface CombinedTagProps {
-  subreddit: Pick<Subreddit, "image" | "name">;
-  user: Pick<User, "image" | "id" | "name">;
+  subreddit:SubRedditDto
+  user: UserDto
   className?: string;
 }
 
@@ -24,15 +26,13 @@ export default function CombinedTag({ subreddit, user }: CombinedTagProps) {
         <Link
           prefetch={false}
           href={`/r/${subreddit.name}`}
-          className="relative z-20 text-zinc-800 hover:text-zinc-500 dark:text-zinc-400 dark:hover:text-zinc-600 text-xs font-medium leading-tight"
-        >
+          className="relative z-20 text-zinc-800 hover:text-zinc-500 dark:text-zinc-400 dark:hover:text-zinc-600 text-xs font-medium leading-tight">
           r/{subreddit.name}
         </Link>
         <Link
           prefetch={false}
-          href={`/u/${user.id}`}
-          className="relative z-20 text-xs text-muted-foreground leading-tight"
-        >
+          href={`/u/${user.username}`}
+          className="relative z-20 text-xs text-muted-foreground leading-tight">
           u/{user.name}
         </Link>
       </div>

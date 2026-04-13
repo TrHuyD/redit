@@ -2,12 +2,12 @@ import { Version } from "./dto";
 import { ID } from "./ID";
 
 export type SubRedditDto = {
-    Id: ID
+    id: ID
     name: string
     image: string
 }
 export interface SubredditMinimalMd{
-    Id:bigint,
+    id:bigint,
     name:string,
 }
 
@@ -25,6 +25,6 @@ export interface UserSubredditBaseMd extends SubredditBaseMd{
     userCount:number
 }
 export interface subredditMemCount{
-    Id: bigint,
+    id: bigint,
     Count:number
   }

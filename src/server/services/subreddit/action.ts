@@ -41,8 +41,8 @@ async function ReCalculatePostRank( {postId,delta}:{delta:VoteDelta,postId:bigin
     var newScore =await incrHashField(rediskey.post.stats(postId), "votesAmt", delta.delta)
     var newHot= hotScore(newScore,delta.date.getTime())
     var pipeline = redis.pipeline()
-    pipeline.zadd(rediskey.subreddit.hotrank(delta.Id),newHot,postId.toString())
-    pipeline.zadd(rediskey.subreddit.toprank(delta.Id),newScore,postId.toString())
+    pipeline.zadd(rediskey.subreddit.hotrank(delta.id),newHot,postId.toString())
+    pipeline.zadd(rediskey.subreddit.toprank(delta.id),newScore,postId.toString())
     await pipeline.exec()
 }
 

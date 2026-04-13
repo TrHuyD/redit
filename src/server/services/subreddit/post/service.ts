@@ -21,8 +21,8 @@ export async function getPostsWithMeta( postIds: bigint[],userId?: bigint): Prom
         cache.getPostsStatByIds(postIds),
     ])
     const userMap = toMap(users, u => u.id.toString())
-    const subredditMap = toMap(filterNull(subreddits), s => s.Id.toString())
-    const userVoteMap = toMap(userVotes, v => v.Id.toString())
+    const subredditMap = toMap(filterNull(subreddits), s => s.id.toString())
+    const userVoteMap = toMap(userVotes, v => v.id.toString())
     const postStatMap = zipToMap(postIds, postStats)
     return filterNull(posts.map<PostUserDto | null>(p => {
         const subreddit = subredditMap.get(p.subredditId.toString())
@@ -37,7 +37,7 @@ export async function getPostsWithMeta( postIds: bigint[],userId?: bigint): Prom
             currentVote: userVoteMap.get(p.id.toString())?.type ?? null,
             creator: userMap.get(p.creatorId.toString())!,
             subreddit: {
-                Id: subreddit.Id,
+                id: subreddit.id,
                 name: subreddit.name,
                 image: subreddit.image,
             },

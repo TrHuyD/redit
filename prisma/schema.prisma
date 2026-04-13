@@ -40,14 +40,14 @@ model Session {
 model User {
   id            BigInt    @id 
   name          String
-  username      String?
+  username      String
   email         String?   @unique
   emailVerified DateTime?
   googleId String? @unique
   image    String
   accounts Account[]
   sessions Session[]
-
+  createdAt DateTime @default(now())
   posts Post[]  
   postVotes PostVote[]
   comments Comment[]

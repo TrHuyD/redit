@@ -87,7 +87,7 @@ async function upsertVote(
     `
     const row = rows[0]
     const old_type = row?.old_type ?? 0
-    return { delta: type - old_type, Id: row.subredditId, date: row.createdAt }
+    return { delta: type - old_type, id: row.subredditId, date: row.createdAt }
   } else {
     const rows = await db.$queryRaw<{
       old_type: VoteType | null
@@ -110,7 +110,7 @@ async function upsertVote(
     `
     const row = rows[0]
     const old_type = row?.old_type ?? 0
-    return { delta: type - old_type, Id: row.postId, date: row.createdAt }
+    return { delta: type - old_type, id: row.postId, date: row.createdAt }
   }
 }
 
@@ -138,7 +138,7 @@ async function removeVote(
     `
     const row = rows[0]
     const old_type = row?.old_type ?? 0
-    return { delta: 0 - old_type, Id: row.subredditId, date: row.createdAt }
+    return { delta: 0 - old_type, id: row.subredditId, date: row.createdAt }
   } else {
     const rows = await db.$queryRaw<{
       old_type: VoteType | null
@@ -158,7 +158,7 @@ async function removeVote(
     `
     const row = rows[0]
     const old_type = row?.old_type ?? 0
-    return { delta: 0 - old_type, Id: row.postId, date: row.createdAt }
+    return { delta: 0 - old_type, id: row.postId, date: row.createdAt }
   }
 }
 export async function VotePost(payload: PostVoteRequestPayload): Promise<Result<VoteDelta>>  {

@@ -14,10 +14,10 @@ import { UserSubredditBaseMd } from "@/types/subreddit"
 
 type SubredditToggleProps = Pick<
   UserSubredditBaseMd,
-  "Id" | "name" | "isMember" | "isCreator"
+  "id" | "name" | "isMember" | "isCreator"
 >
 export const SubscribeLeaveToggle = ({ subreddit }: { subreddit: SubredditToggleProps }) => {
-  const { Id, name, isMember, isCreator } = subreddit
+  const { id: Id, name, isMember, isCreator } = subreddit
   const router = useRouter()
 
   const [member, setMember] = useState(isMember)

@@ -15,6 +15,6 @@ interface EditorComboProps {
       return (<>
             <SubredditSelector slug={subreddit.name} initialImage={subreddit.image}  onBeforeChange={async () => {await saveDraftRef.current?.()}}/>
             <div className="border-b pb-5" />
-            <Editor id={subreddit.Id}  registerSaveDraft={(fn) => {saveDraftRef.current = fn}}/>
+            <Editor id={subreddit.id}  registerSaveDraft={(fn) => {saveDraftRef.current = fn}}/>
             </> )
 }
