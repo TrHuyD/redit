@@ -1,5 +1,4 @@
 "use client"
-import {User} from 'next-auth'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger,DropdownMenuPortal, DropdownMenuItem,DropdownMenuSeparator } from '../dropdown-menu'
 import { UserAvatar } from './UserAvatar'
 
@@ -9,7 +8,7 @@ import { useThemeToggle } from '@/lib/themeSwap'
 import { Moon, Sun } from 'lucide-react'
 interface UserAccountNavProp 
 {
-    user:Pick<User,'name'|'image'|'email'>
+    user:{email?:string|null,id:string,name:string,image:string}
 }
 
 export const UserAccountNav = ({ user }: UserAccountNavProp) => {

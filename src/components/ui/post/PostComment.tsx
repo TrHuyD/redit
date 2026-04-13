@@ -35,8 +35,8 @@ const PostComment = ({ comment, parentsId, postId, children }: PostCommentProps)
       <div className="flex items-center gap-2 mb-1">
         <UserAvatar
           user={{
-            name: comment.author.name || null,
-            image: comment.author.image || null,
+            name: comment.author.name ,
+            image: comment.author.image ,
           }}
           className="h-8 w-8 rounded-full flex-shrink-0"
         />
