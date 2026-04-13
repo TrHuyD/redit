@@ -3,19 +3,12 @@ import { createCachedBatchLoader, createCachedBatchLoader2 } from "../cache/Pipe
 
 import { createSingleLoader, filterNull } from "@/lib/utils";
 import * as db from "./repo";
-import { SubredditBaseMd, SubRedditDto, subredditMemCount, SubredditMinimalMd, UserSubredditBaseMd } from "@/types/subreddit";
+import { SubredditBaseMd, SubredditCompeteMd, SubRedditDto, subredditMemCount, SubredditMinimalMd, UserSubredditBaseMd } from "@/types/subreddit";
 import { isMember } from "@/server/services/subreddit/Get"
 import { cache } from "react";
 import { redis } from "@/server/lib/redis";
 import { rediskey } from "@/types/rediskey";
 
-
-
-export const getSubredditsMetadata = createCachedBatchLoader2<bigint, SubredditBaseMd>({
-    keyFn: (id) =>rediskey.subreddit.metadata(id),
-    fetch: db.getSubreddits,
-    map: (post) => post.id,
-    ttl: 120000,nullTtl:30})
 
 export const getSubredditsId = createCachedBatchLoader<string,SubredditMinimalMd,bigint>({
     keyFn: (str) => `idParse:subreddit:${str.toLowerCase()}`,
@@ -25,6 +18,13 @@ export const getSubredditsId = createCachedBatchLoader<string,SubredditMinimalMd
     ttl: 1200000,
     nullTtl: 30,
   })
+export const getSubredditsMetadata = createCachedBatchLoader2<bigint, SubredditBaseMd>({
+    keyFn: (id) =>rediskey.subreddit.metadata(id),
+    fetch: db.getSubreddits,
+    map: (post) => post.id,
+    ttl: 120000,nullTtl:30})
+
+
 
 export const getSubredditsMemberCount = createCachedBatchLoader<bigint,subredditMemCount,number>({
     keyFn: (id) => rediskey.subreddit.membercount(id),
@@ -50,8 +50,20 @@ export const getSubredditUserMD = cache(async (slug: string, userId?: bigint) =>
     const subreddit= {...subredditMd!,userCount:memberCount!,isCreator:subredditMd?.creatorId==userId,isMember:isMem} as UserSubredditBaseMd
     return subreddit
 })
-
-
+export const getSubredditsCompleteMd = async (slug: bigint[]): Promise<(SubredditCompeteMd)[]> => {
+    const [baseMd, stats] = await Promise.all([
+        getSubredditsMetadata(slug),
+        getSubredditsMemberCount(slug)
+    ])
+    return filterNull( baseMd.map((base, i) => {
+        if (!base) return null
+        return {
+            ...base,
+            userCount: stats[i] ?? 0,
+        }
+    }))
+}
+export const getSubredditCompleteMd=createSingleLoader(getSubredditsCompleteMd)
 
 export async function seedSubredditAutocomplete(): Promise<void> {
     const subreddits = await db.getAllSubreddits();
@@ -66,7 +78,7 @@ export async function addSubredditsAutocomplete(subreddits:{ id: bigint; name: s
     await pipeline.exec();
 }
 
-export async function searchSubredditAutocomplete(query: string, maxResults = 10, fuzzy = false): Promise<SubredditBaseMd[]> {
+export async function searchSubredditAutocomplete(query: string, maxResults = 10, fuzzy = false): Promise<SubredditCompeteMd[]> {
     const args: string[] = [ rediskey.subreddit.autocomplete, query, "MAX", maxResults.toString(), "WITHPAYLOADS",];
     if (fuzzy) args.push("FUZZY");
     const result = (await redis.call("FT.SUGGET", ...args)) as string[];
@@ -74,6 +86,6 @@ export async function searchSubredditAutocomplete(query: string, maxResults = 10
     for(let i =0;i+1<result.length;i+=2){
         ids.push(BigInt(result[i+1]))
     }
-    let subs=filterNull(await getSubredditsMetadata(ids))
-    return subs.map(s=>({...s} as SubredditBaseMd));
+    let subs=await getSubredditsCompleteMd(ids)
+    return subs
   }

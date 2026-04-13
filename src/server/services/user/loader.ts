@@ -1,4 +1,4 @@
-import { UserDto, UserProfileDto } from "@/types/Users/dto";
+import { UserDto, UserProfileDto } from "@/types/user";
 import * as db from "./repo";
 import { createCachedBatchLoader2, getSortedUnique } from "../cache/Pipeline";
 import { createSingleLoader } from "@/lib/utils";

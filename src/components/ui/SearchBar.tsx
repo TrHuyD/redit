@@ -12,7 +12,7 @@
     CommandItem,
     CommandList,
   } from "@/components/ui/command";
-  import { SubRedditDto } from "@/types/subreddit";
+  import { SubredditCompeteMd, SubRedditDto } from "@/types/subreddit";
 import { useRouterWithLoader } from "@/lib/utilui";
 import { SubredditAvatar } from "./subreddit/SubredditAvatar";
 
@@ -29,7 +29,7 @@ import { SubredditAvatar } from "./subreddit/SubredditAvatar";
     function SearchBar({ onSearch }, ref) {
       const [input, setInput] = useState("");
       const [tag, setTag] = useState<SubRedditDto | null>(null);
-      const [subreddits, setSubreddits] = useState<SubRedditDto[]>([]);
+      const [subreddits, setSubreddits] = useState<SubredditCompeteMd[]>([]);
       const [loading, setLoading] = useState(false);
       const [open, setOpen] = useState(false);
       const {push} =useRouterWithLoader()
@@ -71,7 +71,7 @@ import { SubredditAvatar } from "./subreddit/SubredditAvatar";
               `/api/subreddit/where-to-post?name=${encodeURIComponent(value)}`,
               { signal: controller.signal }
             );
-            const data: SubRedditDto[] = await res.json();
+            const data: SubredditCompeteMd[] = await res.json();
             setSubreddits(data);
             setOpen(data.length > 0);
           } catch (e: any) {
@@ -125,7 +125,10 @@ import { SubredditAvatar } from "./subreddit/SubredditAvatar";
                         >
                           <div className="flex items-center w-full -ml-1">
                             <SubredditAvatar subreddit={s} size="sm"/>
+                            <div className="flex flex-col pl-1">
                             <span className="px-1">r/{s.name}</span>
+                            <span className="px-1 text-gray-500">{s.userCount} members</span>
+                            </div>
                           </div>
                         </CommandItem>
                       ))}

@@ -12,10 +12,10 @@ export const rediskey = {
     },
     subreddit:{
         autocomplete:"autocomplete:subreddit",
+        metadata:(id:bigint)=>`subreddit:metadata:${id}`,
         membercount:(id:bigint)=> `subreddit:membercount:${id}`,
         hotrank:(id:bigint)=>`subreddit:hotrank:${id}`,
         hotrankall:'subreddit:hotrank:*',
-        metadata:(id:bigint)=>`subreddit:metadata:${id}`,
         toprank:(id:bigint)=>`subreddit:toprank:${id}`
     },
     comment:{

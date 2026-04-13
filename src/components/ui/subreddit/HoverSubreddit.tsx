@@ -1,30 +1,30 @@
 "use client"
 
 import { Hover, useHoverData } from "@/components/Hover"
-import { UserProfileDto } from "@/types/user"
-import { UserAvatar } from "./UserAvatar"
 import { CakeSliceIcon } from "lucide-react"
 import { LoadingSpinner } from "../LoadSpiner"
+import { SubredditCompeteMd } from "@/types/subreddit"
+import { SubredditAvatar } from "./SubredditAvatar"
 
 
 
-async function fetchUser(userId: bigint): Promise<UserProfileDto> {
-  const res = await fetch(`/api/user/hover?userId=${userId}`)
+async function fetchPost(id: bigint): Promise<SubredditCompeteMd> {
+  const res = await fetch(`/api/subreddit/hover?subredditId=${id}`)
+  console.log(res)
   if (!res.ok) throw new Error("Failed to fetch user")
   return res.json()
 }
-
-function HoverUserContent() {
-  const { data, isLoading } = useHoverData<UserProfileDto>()
+function HoverContent() {
+  const { data, isLoading } = useHoverData<SubredditCompeteMd>()
   if (isLoading) return <LoadingSpinner/>
   if (!data) return <div className="text-sm text-gray-500">No data</div>
-  const date= new Date(data.createdAt).toLocaleString()
+  const date= new Date(Number(data.createdAt)).toLocaleString()
+  
   return ( 
     <div className="flex gap-3 font-semibold">
-      <UserAvatar user={data} size="lg"/>
+      <SubredditAvatar subreddit={data} size="lg"/>
       <div>
         <div className=" text-base">{data.name}</div>
-        <div className="text-gray-500 text-xs">{`u/${data.username}`}</div>
         <div className="text-sm text-gray-500 flex gap-2 items-center">
             <CakeSliceIcon className="w-4 h-4"/> 
             <span title={date}>
@@ -36,6 +36,6 @@ function HoverUserContent() {
     </div>
   )
 }
-export function HoverUser({ userId, children }: { userId: bigint; children: React.ReactNode }) {
-  return <Hover queryKey={["user-hover", userId.toString()]} queryFn={() => fetchUser(userId)} content={<HoverUserContent />}>{children}</Hover>
+export function HoverSubreddit({ subId, children }: { subId: bigint; children: React.ReactNode }) {
+  return <Hover queryKey={["user-hover", subId.toString()]} queryFn={() => fetchPost(subId)} content={<HoverContent />}>{children}</Hover>
 }

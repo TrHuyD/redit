@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/command'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { SubredditBaseMd, SubRedditDto } from '@/types/subreddit'
+import { SubredditBaseMd, SubredditCompeteMd, SubRedditDto } from '@/types/subreddit'
 import { useRouterWithLoader } from '@/lib/utilui'
 import { SubredditDes } from '../post/SubredditTag'
 
@@ -44,7 +44,7 @@ export function SubredditSelector({
   const [value, setValue] = React.useState<string | undefined>(slug)
   const [selectedImage, setSelectedImage] = React.useState<string | undefined>(initialImage)
   const [search, setSearch] = React.useState('')
-  const [subreddits, setSubreddits] = React.useState<SubredditBaseMd[]>([])
+  const [subreddits, setSubreddits] = React.useState<SubredditCompeteMd[]>([])
   const [loading, setLoading] = React.useState(false)
 
   const debounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -72,7 +72,7 @@ export function SubredditSelector({
       setLoading(true)
       try {
         const res = await fetch(`/api/subreddit/where-to-post?name=${encodeURIComponent(search)}`,{ signal: controller.signal })
-        const data: SubredditBaseMd[] = await res.json()
+        const data: SubredditCompeteMd[] = await res.json()
         setSubreddits(data)
       } 
       catch (e: any) {if (e.name !== 'AbortError') setSubreddits([])} 

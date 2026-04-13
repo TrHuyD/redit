@@ -4,11 +4,11 @@ import { ID } from "@/types/ID"
 export const SubredditValidator = z.object({
     name: z.string().min(3).max(21).regex(/^[a-zA-Z0-9_]+$/, "Subreddit name can only contain letters, numbers, and underscores")
 })
-export const SubscriptionValidator = z.object({
+export const SubredditIdValidator = z.object({
     subredditId: ID.zod()
 })
 export type UserCreateSubredditPayload = z.infer<typeof SubredditValidator>
-export type SubscribeToSubredditPayload = z.infer<typeof SubscriptionValidator>
+export type SubscribeToSubredditPayload = z.infer<typeof SubredditIdValidator>
 
 
 
@@ -17,7 +17,7 @@ export const CreateSubredditRequestValidator = SubredditValidator.merge(UserVali
     bannerImage: z.string().url().optional(),
     description: z.string().optional()
 }))
-export const UserSubredditRequestValidator = SubscriptionValidator.merge(UserValidator)
+export const UserSubredditRequestValidator = SubredditIdValidator.merge(UserValidator)
 export type CreateSubredditRequestPayload = z.infer<typeof CreateSubredditRequestValidator>
 export type UserSubredditRequestPayload = z.infer<typeof UserSubredditRequestValidator>
 

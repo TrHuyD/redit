@@ -1,7 +1,7 @@
 'use client'
 import { UserAvatar } from "../user/UserAvatar";
 import {EntityTag} from "../EntityTag";
-import { UserDto } from "@/types/Users/dto";
+import { UserDto } from "@/types/user";
 import { HoverUser } from "../user/HoverUser";
 
 interface UsernameProp {
@@ -15,7 +15,7 @@ export default function UsernameTag({ user, className }: UsernameProp) {
       <span>
     <EntityTag
       href={`/u/${user.username}`}
-      avatar={<UserAvatar user={user} className="h-6 w-6" />}
+      avatar={<UserAvatar user={user} size="md" />}
       label={`u/${user.name}`}
       className={className}
     />

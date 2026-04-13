@@ -1,7 +1,7 @@
 import { JsonValue } from "@prisma/client/runtime/client"
 import { ID } from "./ID"
 import { VoteType } from "@/types/enum"
-import { UserDto } from "./Users/dto"
+import { UserDto } from "./user"
 
 
 export interface CommentDto {

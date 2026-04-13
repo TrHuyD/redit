@@ -1,12 +1,10 @@
 
-import { Avatar, AvatarFallback } from "../avatar"
+import { Avatar, AvatarFallback, iconSizeMap, Size, sizeClasses, sizePx } from "../avatar"
 import { UserLogo } from "../Icons"
 import Image from "next/image"
 import clsx from "clsx"
 import { SubRedditDto } from "@/types/subreddit"
 import { Pen } from "lucide-react"
-
-type Size = "sm" | "md" | "lg" | "xl" |"x2"
 
 interface SubredditAvatarProps {
   subreddit: Pick<SubRedditDto, "image" | "name">
@@ -14,27 +12,6 @@ interface SubredditAvatarProps {
   className?: string
 }
 
-const sizeClasses: Record<Size, string> = {
-  sm: "h-6 w-6",
-  md: "h-8 w-8",
-  lg: "h-12 w-12",
-  xl: "h-16 w-16",
-  x2: "h-20 w-20"
-}
-const sizePx: Record<Size, number> = {
-  sm: 24,
-  md: 32,
-  lg: 48,
-  xl: 64,
-  x2: 80
-}
- const iconSizeMap: Record<Size, "sm" | "md" | "lg"> = {
-  sm: "sm",
-  md: "sm",
-  lg: "md",
-  xl: "lg",
-  x2: "lg"
-}
 export const SubredditAvatar = ({ subreddit, size = "md", className }: SubredditAvatarProps) => {
   const px = sizePx[size]
 

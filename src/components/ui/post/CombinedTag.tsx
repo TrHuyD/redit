@@ -2,7 +2,9 @@
 import Link from "next/link";
 import { SubredditAvatar } from "../subreddit/SubredditAvatar";
 import { SubRedditDto } from "@/types/subreddit";
-import { UserDto } from "@/types/Users/dto";
+import { UserDto } from "@/types/user";
+import { HoverUser } from "../user/HoverUser";
+import { HoverSubreddit } from "../subreddit/HoverSubreddit";
 
 interface CombinedTagProps {
   subreddit:SubRedditDto
@@ -23,18 +25,22 @@ export default function CombinedTag({ subreddit, user }: CombinedTagProps) {
       </Link>
 
       <div className="flex flex-col">
+        <HoverSubreddit subId={subreddit.id} >
         <Link
           prefetch={false}
           href={`/r/${subreddit.name}`}
           className="relative z-20 text-zinc-800 hover:text-zinc-500 dark:text-zinc-400 dark:hover:text-zinc-600 text-xs font-medium leading-tight">
           r/{subreddit.name}
         </Link>
+        </HoverSubreddit>
+        <HoverUser userId={user.id}>
         <Link
           prefetch={false}
           href={`/u/${user.username}`}
           className="relative z-20 text-xs text-muted-foreground leading-tight">
           u/{user.name}
         </Link>
+        </HoverUser>
       </div>
     </div>
   );

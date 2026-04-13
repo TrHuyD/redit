@@ -28,21 +28,15 @@ export async function getPostsWithMeta( postIds: bigint[],userId?: bigint): Prom
         const subreddit = subredditMap.get(p.subredditId.toString())
         if (!subreddit) return null
         return {
-            id: p.id,
-            title: p.title,
-            content: p.content,
-            createdAt: new Date(Number(p.createdAt)),
-            lastEdited: p.lastEdited ? new Date(Number(p.lastEdited)) : null,
-            stat: postStatMap.get(p.id.toString())!,
-            currentVote: userVoteMap.get(p.id.toString())?.type ?? null,
-            creator: userMap.get(p.creatorId.toString())!,
-            subreddit: {
-                id: subreddit.id,
-                name: subreddit.name,
-                image: subreddit.image,
-            },
+          id: p.id, title: p.title, content: p.content,
+          createdAt: new Date(Number(p.createdAt)),
+          lastEdited: p.lastEdited ? new Date(Number(p.lastEdited)) : null,
+          stat: postStatMap.get(p.id.toString())!,
+          currentVote: userVoteMap.get(p.id.toString())?.type ?? null,
+          creator: userMap.get(p.creatorId.toString())!,
+          subreddit: { id: subreddit.id, name: subreddit.name, image: subreddit.image },
         }
-    }))
+      }))
 }
 
 export async function getSubredditPosts({slug,orderBy = "desc",take = INFINITE_SCROLLING_PAGINATION_RESULTS,cursor,userId,}: 

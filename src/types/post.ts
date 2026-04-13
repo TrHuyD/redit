@@ -1,7 +1,7 @@
 import { JsonValue } from "@prisma/client/runtime/client"
 
 import { ID } from "./ID"
-import { UserDto } from "./Users/dto"
+import { UserDto } from "./user"
 import { VoteType } from "./enum"
 import { SubRedditDto } from "./subreddit"
 export interface PostStat{

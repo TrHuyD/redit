@@ -19,10 +19,15 @@ export interface SubredditBaseMd extends Version,SubredditMinimalMd{
     bannerImage?:string;
     description:string;
 }
-export interface UserSubredditBaseMd extends SubredditBaseMd{
+export interface SubredditStats{
+    userCount:number
+}
+export interface SubredditCompeteMd extends SubredditBaseMd,SubredditStats{
+
+}
+export interface UserSubredditBaseMd extends SubredditCompeteMd{
     isCreator:boolean,
     isMember:boolean,
-    userCount:number
 }
 export interface subredditMemCount{
     id: bigint,

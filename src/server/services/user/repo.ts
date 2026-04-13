@@ -1,5 +1,5 @@
 import { db } from "@/lib/db"
-import { UserDto, UserProfileDto } from "@/types/Users/dto"
+import { UserDto, UserProfileDto } from "@/types/user"
 
 export async function getUsersBaseInfoById(ids: bigint[]): Promise<UserDto[]> {
     const rows = await db.user.findMany({

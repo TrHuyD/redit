@@ -3,7 +3,7 @@ import { ExtendedComment, ExtendedPost } from "./db"
 import { CommentDto, CommentPerDto, } from "./dto"
 import { ID } from "./ID"
 
-import { UserDto } from "./Users/dto"
+import { UserDto } from "./user"
 import { PostUserDto } from "./post"
 import { SubRedditDto } from "./subreddit"
 
