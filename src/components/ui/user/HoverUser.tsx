@@ -6,7 +6,7 @@ import { UserAvatar } from "./UserAvatar"
 
 
 
-async function fetchUser(userId: string): Promise<UserProfileDto> {
+async function fetchUser(userId: bigint): Promise<UserProfileDto> {
   const res = await fetch(`/api/user/hover?userId=${userId}`)
   if (!res.ok) throw new Error("Failed to fetch user")
   return res.json()
@@ -27,6 +27,6 @@ function HoverUserContent() {
     </div>
   )
 }
-export function HoverUser({ userId, children }: { userId: string; children: React.ReactNode }) {
-  return <Hover queryKey={["user-hover", userId]} queryFn={() => fetchUser(userId)} content={<HoverUserContent />}>{children}</Hover>
+export function HoverUser({ userId, children }: { userId: bigint; children: React.ReactNode }) {
+  return <Hover queryKey={["user-hover", userId.toString()]} queryFn={() => fetchUser(userId)} content={<HoverUserContent />}>{children}</Hover>
 }
