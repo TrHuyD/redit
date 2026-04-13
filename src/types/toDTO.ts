@@ -9,13 +9,15 @@ import { SubRedditDto } from "./subreddit"
 
 export function toUserDto(user: {
     id: bigint
-    name: string | null
-    image: string | null
+    name: string 
+    image: string
+    username:string 
 }): UserDto {
     return {
         id: user.id,
         name: user.name ?? '',
         image: user.image ?? '',
+        username:user.username
     }
 }
 
