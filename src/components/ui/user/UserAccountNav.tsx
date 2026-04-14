@@ -19,10 +19,8 @@ export const UserAccountNav = ({ user }: UserAccountNavProp) => {
         <DropdownMenuTrigger>
           <UserAvatar user={user} />
         </DropdownMenuTrigger>
-  
         <DropdownMenuPortal>
           <DropdownMenuContent
-     
             align="end"
             sideOffset={8}
           >
