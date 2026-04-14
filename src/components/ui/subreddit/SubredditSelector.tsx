@@ -1,23 +1,13 @@
 'use client'
 
-import * as React from 'react'
-import { Check, ChevronDown } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandShortcut,
-} from '@/components/ui/command'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { SubredditBaseMd, SubredditCompeteMd, SubRedditDto } from '@/types/subreddit'
-import { useRouterWithLoader } from '@/lib/utilui'
-import { SubredditDes } from '../post/SubredditTag'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "@/components/ui/command";
+import { useRouterWithLoader } from '@/lib/utilui';
+import { SubredditCompeteMd } from '@/types/subreddit';
+import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
+import { SubredditDes } from '../post/SubredditTag';
 
 
 type SubredditSelectorProps = {

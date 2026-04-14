@@ -1,16 +1,14 @@
 // app/api/fetch-top-posts/route.ts
 import { db } from "@/lib/db";
-import { generatePostId, generateUserId, generateSubredditId } from "@/server/services/Snowflake";
+import { cleanImageUrl } from "@/lib/utils";
+import { generatePostId, generateUserId } from "@/server/services/Snowflake";
 import { createSubreddit } from "@/server/services/subreddit/create";
-import { generateDumbRankPosts } from "@/server/services/subreddit/post/hotscore";
 import { recomputeRankForSubreddit } from "@/server/services/subreddit/post/rankhelper";
-import { NextRequest, NextResponse } from "next/server";
+import { RedditPostResponse, RedditSubredditResponse } from "@/types/reddit";
 import { BloomFilter } from "bloom-filters";
 import fs from "fs";
+import { NextRequest, NextResponse } from "next/server";
 import path from "path";
-import { RedditPostResponse, RedditSubredditResponse } from "@/types/reddit";
-import { cleanImageUrl } from "@/lib/utils";
-import { number } from "zod";
 
 
 const BLOOM_FILE = path.join(process.cwd(), "bloom_posts.json");

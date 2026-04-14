@@ -1,7 +1,6 @@
-import { UserSubredditBaseMd } from "@/types/subreddit"
-import { AspectRatio } from "../aspect-ratio"
-import Image from "next/image";
+import { UserSubredditBaseMd } from "@/types/subreddit";
 import { Pen } from "lucide-react";
+import Image from "next/image";
 import { Button } from "../button";
 
 

@@ -1,6 +1,6 @@
-import {bigint, z} from "zod"
-import { UserValidator } from "./user"
 import { ID } from "@/types/ID"
+import { z } from "zod"
+import { UserValidator } from "./user"
 export const SubredditValidator = z.object({
     name: z.string().min(3).max(21).regex(/^[a-zA-Z0-9_]+$/, "Subreddit name can only contain letters, numbers, and underscores")
 })

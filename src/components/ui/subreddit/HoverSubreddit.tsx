@@ -1,12 +1,11 @@
 "use client"
 
 import { Hover, useHoverData } from "@/components/Hover"
-import { CakeSliceIcon } from "lucide-react"
-import { LoadingSpinner } from "../LoadSpiner"
 import { SubredditCompeteMd } from "@/types/subreddit"
-import { SubredditAvatar } from "./SubredditAvatar"
 import Image from "next/image"
 import { Button } from "../button"
+import { LoadingSpinner } from "../LoadSpiner"
+import { SubredditAvatar } from "./SubredditAvatar"
 
 
 async function fetchPost(id: bigint): Promise<SubredditCompeteMd> {

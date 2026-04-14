@@ -1,19 +1,9 @@
   "use client";
 
-  import { useState, useRef, forwardRef, useImperativeHandle, KeyboardEvent,} from "react";
-  import { X } from "lucide-react";
-  import { Badge } from "@/components/ui/badge";
-  import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-  import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-  } from "@/components/ui/command";
-  import { SubredditCompeteMd, SubRedditDto } from "@/types/subreddit";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "@/components/ui/command";
 import { useRouterWithLoader } from "@/lib/utilui";
+import { SubredditCompeteMd, SubRedditDto } from "@/types/subreddit";
+import { forwardRef, KeyboardEvent, useImperativeHandle, useRef, useState, } from "react";
 import { SubredditAvatar } from "./subreddit/SubredditAvatar";
 
   export interface SearchBarHandle {

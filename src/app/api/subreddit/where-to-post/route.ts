@@ -1,7 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { withErrorHandler } from '@/server/lib/withErrorHandler'
 import { withAuth } from '@/server/lib/withAuth'
-import { getId } from '@/lib/utils'
+import { withErrorHandler } from '@/server/lib/withErrorHandler'
+import { NextRequest, NextResponse } from 'next/server'
 
 import { SearchSubreditACValidator } from '@/lib/validators/subreddit'
 import { searchSubredditAutocomplete } from '@/server/services/subreddit/loader'

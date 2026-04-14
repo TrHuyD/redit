@@ -1,7 +1,7 @@
 'use client'
 
+import { CornerUpRightIcon } from "lucide-react"
 import { useState } from "react"
-import { Clipboard } from "lucide-react"
 
 interface ShareButtonProps {
   link: string
@@ -25,7 +25,7 @@ export default function ShareButton({ link }: ShareButtonProps) {
       onClick={handleClick}
       className="w-fit flex items-center gap-1 px-3 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs text-gray-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
     >
-      <Clipboard className="h-3.5 w-3.5" />
+      <CornerUpRightIcon className="h-3.5 w-3.5" />
       <span>{copied ? "Copied!" : "Share"}</span>
     </button>
   )

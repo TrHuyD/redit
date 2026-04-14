@@ -1,7 +1,6 @@
-import { JsonValue } from "@prisma/client/runtime/client"
-import { ID } from "./ID"
-import { VoteType } from "@/types/enum"
-import { UserDto } from "./user"
+import { VoteType } from "@/types/enum";
+import { JsonValue } from "@prisma/client/runtime/client";
+import { UserDto } from "./user";
 
 
 export interface CommentDto {
