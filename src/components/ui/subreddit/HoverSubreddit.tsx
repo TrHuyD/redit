@@ -48,11 +48,11 @@ function HoverContent() {
   
         <div className="flex gap-6 border-t border-border pt-2">
           <div>
-            <p className="text-sm font-medium">placeholder</p>
+            <p className="text-sm font-medium">PHH</p>
             <p className="text-xs text-muted-foreground">Weekly visitors</p>
           </div>
           <div>
-            <p className="text-sm font-medium">placeholder</p>
+            <p className="text-sm font-medium">PHH</p>
             <p className="text-xs text-muted-foreground">Weekly contributions</p>
           </div>
         </div>
