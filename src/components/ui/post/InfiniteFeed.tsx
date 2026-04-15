@@ -1,9 +1,8 @@
 'use client'
 import { useIntersection } from "@mantine/hooks"
 import { useInfiniteQuery } from "@tanstack/react-query"
-import { useEffect, useMemo, useRef } from "react"
 import { Loader2 } from "lucide-react"
-import { SortBy } from "@/types/enum"
+import { useEffect, useMemo, useRef } from "react"
 
 interface InfiniteFeedProps<T> {
     queryKey: string[]
@@ -44,7 +43,7 @@ export default function InfiniteFeed<T>({
             pageParams: [null],
         },
         staleTime: 60 * 10*1000,
-        refetchOnMount: 'always'
+        refetchOnMount: true
     })
 
     useEffect(() => {
@@ -53,9 +52,8 @@ export default function InfiniteFeed<T>({
     const items = useMemo(() => {
         const seen = new Set<string | number>()
         const result: T[] = []
-
         for (const page of data?.pages ?? []) {
-            for (const item of page) {
+            for (const item of  page) {
                 const key = getKey(item)
                 if (!seen.has(key)) {
                     seen.add(key)

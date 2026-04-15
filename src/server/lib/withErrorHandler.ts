@@ -1,21 +1,17 @@
-import { ZodError } from "zod"
+import { ZodError } from "zod";
 
-export function withErrorHandler<T extends (...args: any[]) => any>(handler: T) {
-  return async (...args: Parameters<T>) => {
+export function withErrorHandler<TArgs extends unknown[], TReturn>(
+  handler: (...args: TArgs) => Promise<TReturn>
+) {
+  return async (...args: TArgs): Promise<TReturn | Response> => {
     try {
-      return await handler(...args)
+      return await handler(...args);
     } catch (err) {
-      if (err instanceof ZodError) {
-        return Response.json(
-          { error: err.errors[0].message },
-          { status: 400 }
-        )
-      }
       console.log(err);
-      return Response.json(
-        { error: "Internal server error" },
-        { status: 500 }
-      )
+      if (err instanceof ZodError) {
+        return Response.json({ error: err.errors[0].message }, { status: 400 });
+      }
+      return Response.json({ error: "Internal server error" }, { status: 500 });
     }
-  }
+  };
 }

@@ -93,6 +93,7 @@
     "@types/he": "^1.2.3",
     "@types/lodash.debounce": "^4.0.7",
     "@types/pg": "^8.18.0",
+    "prettier": "^3.8.2",
     "typescript": "^5.9.3"
   }
 }
