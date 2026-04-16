@@ -3,7 +3,7 @@
 import Image from 'next/image'
 
 function CustomImageRenderer({ data }: any) {
-  const src = data.file.url
+  const src = data.file.ufsUrl??data.file.url
 
   return (
     <div className='relative w-full min-h-[15rem]'>

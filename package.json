@@ -41,6 +41,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "18.2.4",
     "@uploadthing/react": "^7.3.3",
+    "@upstash/qstash": "^2.10.1",
     "@upstash/redis": "^1.21.0",
     "@vercel/speed-insights": "^2.0.0",
     "autoprefixer": "10.4.14",

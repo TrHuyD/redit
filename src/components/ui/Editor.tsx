@@ -6,19 +6,17 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
-import { z } from 'zod'
 
-import { toast } from 'sonner'
 import { useUploadThing } from '@/lib/uploadthing'
 import { PostCreationRequest, PostValidator } from '@/lib/validators/post'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
+import { toast } from 'sonner'
 
+import { withToast } from '@/lib/withToast'
 import '@/styles/editor.css'
 import { ID } from '@/types/ID'
-import { withToast } from '@/lib/withToast'
 
-type FormData = z.infer<typeof PostValidator>
 
 interface EditorProps {
   id: ID
@@ -28,21 +26,29 @@ interface EditorProps {
 let TEMP_DRAFT: {
   title: string
   blocks: any
+  mediaKeys: string[]
 } | null = null
+
+function extractMediaKeys(blocks: any): string[] {
+  const keys: string[] = []
+  for (const block of blocks.blocks || []) {
+    if (block.type === 'image') {
+      const key = block.data?.file?.key
+      if (key) keys.push(key)
+    }
+  }
+  return keys
+}
 
 export default function Editor({ id, registerSaveDraft }: EditorProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<PostCreationRequest>({
     resolver: zodResolver(PostValidator),
-    defaultValues: {
-      subredditId: id,
-      title: '',
-      content: null,
-    },
   })
+
   const ref = useRef<EditorJS | null>(null)
   const _titleRef = useRef<HTMLTextAreaElement>(null)
   const router = useRouter()
@@ -56,7 +62,8 @@ export default function Editor({ id, registerSaveDraft }: EditorProps) {
     try {
       const blocks = await ref.current.save()
       const title = _titleRef.current?.value ?? ''
-      TEMP_DRAFT = { title, blocks }
+      const mediaKeys = extractMediaKeys(blocks)
+      TEMP_DRAFT = { title, blocks, mediaKeys }
     } catch (err) {
       console.error('saveDraft failed', err)
     }
@@ -68,10 +75,9 @@ export default function Editor({ id, registerSaveDraft }: EditorProps) {
   }, [registerSaveDraft, saveDraft])
 
   const { mutate: createPost } = useMutation<{ postId: bigint }, Error, PostCreationRequest>({
-    mutationFn:  withToast(async ({ title, content, subredditId }: PostCreationRequest) => {
-      const payload: PostCreationRequest = { title, content, subredditId }
+    mutationFn: withToast(async (payload: PostCreationRequest) => {
       const { data } = await axios.post('/api/subreddit/post/create', payload)
-      return data 
+      return data
     }),
     onSuccess: (data) => {
       const newPathname = pathname.split('/')[2]
@@ -103,9 +109,23 @@ export default function Editor({ id, registerSaveDraft }: EditorProps) {
     if (ref.current) return
 
     const parsed = TEMP_DRAFT
-
     const editor = new EditorJS({
       holder: 'editor',
+      async onChange() {
+        if (!ref.current) return
+        const blocks = await ref.current.save()
+        const keys = extractMediaKeys(blocks)
+        if (!TEMP_DRAFT) {
+          TEMP_DRAFT = {
+            title: _titleRef.current?.value ?? '',
+            blocks,
+            mediaKeys: keys,
+          }
+        } else {
+          TEMP_DRAFT.blocks = blocks
+          TEMP_DRAFT.mediaKeys = keys
+        }
+      },
       onReady() {
         ref.current = editor
       },
@@ -126,12 +146,15 @@ export default function Editor({ id, registerSaveDraft }: EditorProps) {
             uploader: {
               async uploadByFile(file: File) {
                 const uploaded = await startUpload([file])
-                const url = uploaded?.[0]?.url
+                const fileData = uploaded?.[0]
+                if (!fileData) throw new Error('Upload failed')
+                const url = fileData.ufsUrl
+                const key = fileData.key
                 if (!url) throw new Error('Upload failed')
 
                 return {
                   success: 1,
-                  file: { url },
+                  file: { url, key },
                 }
               },
             },
@@ -176,13 +199,17 @@ export default function Editor({ id, registerSaveDraft }: EditorProps) {
     }
   }, [isMounted, initializeEditor])
 
-  async function onSubmit(data: FormData) {
+  async function onSubmit(data: PostCreationRequest) {
     const blocks = await ref.current?.save()
-
+    const mediaKeys = extractMediaKeys(blocks)
+    if(!blocks)
+      throw new Error("content must not be empty");
+    console.log('aa',id)
     createPost({
       title: data.title,
       content: blocks,
       subredditId: id,
+      mediaKeys:mediaKeys
     })
   }
 

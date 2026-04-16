@@ -1,11 +1,11 @@
 import { getIdnull } from "@/lib/utils";
 import { getToken, type JWT } from "next-auth/jwt";
-import { NextRequest } from "next/server";
-type AppRouteHandler = (req: NextRequest) => Promise<Response>;
+
+type AppRouteHandler = (req: Request) => Promise<Response>;
+
 type Schema = {
   parse: (input: any) => any;
 };
-
 type Infer<T> = T extends Schema ? ReturnType<T["parse"]> : undefined;
 
 type AuthMode = "required" | "optional" | "none";
@@ -16,11 +16,11 @@ type RouteOptions<TBodySchema, TQuerySchema> = {
     body?: TBodySchema;
     query?: TQuerySchema;
   };
-  handler: (ctx: { req: NextRequest; userId: bigint | undefined; token: JWT | null; body: Infer<TBodySchema>; query: Infer<TQuerySchema> }) => Promise<Response> | Response;
+  handler: (ctx: { req: Request; userId: bigint | undefined; token: JWT | null; body: Infer<TBodySchema>; query: Infer<TQuerySchema> }) => Promise<Response> | Response;
 };
 
 function withErrorHandler(fn: AppRouteHandler): AppRouteHandler {
-  return async (req: NextRequest) => {
+  return async (req: Request) => {
     try {
       return await fn(req);
     } catch (e) {
@@ -28,14 +28,16 @@ function withErrorHandler(fn: AppRouteHandler): AppRouteHandler {
     }
   };
 }
+
 export function createRoute<TBodySchema extends Schema | undefined = undefined, TQuerySchema extends Schema | undefined = undefined>(options: RouteOptions<TBodySchema, TQuerySchema>): AppRouteHandler {
-  return withErrorHandler(async (req: NextRequest) => {
+  return withErrorHandler(async (req: Request) => {
     const authMode = options.auth ?? "none";
+
     let token: JWT | null = null;
     let userId: bigint | undefined = undefined;
 
     if (authMode !== "none") {
-      token = (await getToken({ req })) as JWT | null;
+      token = (await getToken({ req: req as any })) as JWT | null;
       const hasUser = !!token?.id;
 
       if (authMode === "required" && !hasUser) {
@@ -53,10 +55,17 @@ export function createRoute<TBodySchema extends Schema | undefined = undefined, 
 
     let query: any = undefined;
     if (options.schema?.query) {
-      const rawQuery = Object.fromEntries(req.nextUrl.searchParams);
+      const url = new URL(req.url);
+      const rawQuery = Object.fromEntries(url.searchParams);
       query = options.schema.query.parse(rawQuery);
     }
 
-    return options.handler({ req, token, userId, body, query });
+    return options.handler({
+      req,
+      token,
+      userId,
+      body,
+      query,
+    });
   });
 }

@@ -1,14 +1,26 @@
 
-import {z} from 'zod'
-import { UserValidator } from './user'
 import { ID } from '@/types/ID'
 import { SortBy, VoteType } from '@/types/enum'
+import { z } from 'zod'
+import { UserValidator } from './user'
 export const subredditMentionValidator = z.object({
-    subredditId: ID.zod(),
+    subredditId: ID.zod().optional(),
+})
+
+const EditorBlock = z.object({
+    id: z.string().optional(),
+    type: z.string(),
+    data: z.any(),
+  })
+export const EditorContentSchema = z.object({
+time: z.number().optional(),
+blocks: z.array(EditorBlock),
+version: z.string().optional(),
 })
 export const PostValidator = z.object({ 
     title: z.string().min(3, "Title must be at least 3 characters long").max(30, "Title must be less than 30 characters long"),
-    content: z.any(),
+    content: EditorContentSchema.nullable().optional(),
+    mediaKeys: z.array(z.string()).default([]),
 }).merge(subredditMentionValidator)
 export type PostCreationRequest = z.infer<typeof PostValidator>
 export const PostVoteValidator = z.object({

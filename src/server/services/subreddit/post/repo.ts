@@ -1,7 +1,7 @@
 
-import { CachedPost, PostStatMapped, toCachePost } from "@/types/post";
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
 import { db } from "@/lib/db";
+import { CachedPost, PostStatMapped, toCachePost } from "@/types/post";
 import { UserVote } from "../type";
 
 

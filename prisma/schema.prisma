@@ -56,6 +56,10 @@ model User {
   subscriptions Subscription[]
 
   createdSubreddits Subreddit[] @relation("CreatedBy")
+
+  mediaImgs MediaImg[]
+
+  mediaImgPosts MediaImgPost[]
 }
 
 model Subscription {
@@ -81,6 +85,7 @@ model Subreddit{
   description String @default("")
   creatorId   BigInt
   Creator     User         @relation("CreatedBy", fields: [creatorId], references: [id])
+  isPrivate Boolean @default(false)
 }
 model Post{
   id  BigInt @id
@@ -98,6 +103,7 @@ model Post{
   votes PostVote[]
 
   @@index([title])
+  mediaImgPosts MediaImgPost[]
 }
 model Comment {
   id BigInt @id 
@@ -124,10 +130,10 @@ model PostVote {
   type Int
 
   postId BigInt
-  post Post @relation(fields: [postId], references: [id])
+  post Post @relation(fields: [postId], references: [id],onDelete: Cascade)
 
   userId BigInt
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id],onDelete: Cascade)
 
   @@id([postId, userId])
 }
@@ -141,4 +147,24 @@ model CommentVote {
   user User @relation(fields: [userId], references: [id])
 
   @@id([commentId, userId])
+}
+
+model MediaImg{
+  key String
+  url String
+  createdAt DateTime @default(now())
+  createdBy  BigInt?
+  user      User? @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  @@id([key])
+}
+
+model MediaImgPost{
+  key String
+  url String
+  createdAt DateTime @default(now())
+  createdBy  BigInt?
+  user      User? @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  postId BigInt?
+  post Post? @relation(fields: [postId],references: [id],onDelete: SetNull)
+  @@id([key])
 }
