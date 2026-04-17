@@ -35,7 +35,7 @@ interface PageProps {
          
          <div className="flex items-center gap-2">
            <CombinedTag user= {post.creator} subreddit={post.subreddit}/>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-gray-500" title={new Date(post.createdAt).toLocaleString()} >
             {formatTimeToNow(new Date(post.createdAt))}
           </span>
           </div>

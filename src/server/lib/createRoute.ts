@@ -1,5 +1,6 @@
 import { getIdnull } from "@/lib/utils";
 import { getToken, type JWT } from "next-auth/jwt";
+import { handleError } from "./withErrorHandler";
 
 type AppRouteHandler = (req: Request) => Promise<Response>;
 
@@ -24,7 +25,7 @@ function withErrorHandler(fn: AppRouteHandler): AppRouteHandler {
     try {
       return await fn(req);
     } catch (e) {
-      return new Response("Internal Server Error", { status: 500 });
+      return handleError(e);
     }
   };
 }

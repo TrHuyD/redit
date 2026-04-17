@@ -162,6 +162,8 @@ model MediaImgPost{
   key String
   url String
   createdAt DateTime @default(now())
+  markedForDeletion Boolean @default(false)
+
   createdBy  BigInt?
   user      User? @relation(fields: [createdBy], references: [id], onDelete: SetNull)
   postId BigInt?

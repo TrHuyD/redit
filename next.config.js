@@ -34,6 +34,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "redditinc.com",
       },
+      {
+        protocol: "https",
+        hostname: "*.ufs.sh",
+      },
     ],
   },
   experimental: {

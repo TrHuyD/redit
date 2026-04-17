@@ -2,10 +2,10 @@
 
 import { Hover, useHoverData } from "@/components/Hover"
 import { UserProfileDto } from "@/types/user"
-import { UserAvatar } from "./UserAvatar"
 import { CakeSliceIcon, MessageCircleIcon, PlusCircleIcon } from "lucide-react"
 import { LoadingSpinner } from "../LoadSpiner"
 import { Button } from "../button"
+import { UserAvatar } from "./UserAvatar"
 
 
 
@@ -19,7 +19,7 @@ function HoverUserContent() {
   const { data, isLoading } = useHoverData<UserProfileDto>()
   if (isLoading) return <LoadingSpinner/>
   if (!data) return <div className="text-sm text-gray-500">No data</div>
-  const date= new Date(data.createdAt).toLocaleString()
+  const date= new Date(data.createdAt).toDateString()
   return (
     <div className="flex flex-col gap-3 p-3 w-70">
       <div className="flex gap-3 items-start">

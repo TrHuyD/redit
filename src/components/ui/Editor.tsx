@@ -6,9 +6,10 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
+import { z } from 'zod'
 
 import { useUploadThing } from '@/lib/uploadthing'
-import { PostCreationRequest, PostValidator } from '@/lib/validators/post'
+import { PostUISchema, PostValidator } from '@/lib/validators/post'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { toast } from 'sonner'
@@ -17,6 +18,7 @@ import { withToast } from '@/lib/withToast'
 import '@/styles/editor.css'
 import { ID } from '@/types/ID'
 
+type PostUI = z.infer<typeof PostUISchema>
 
 interface EditorProps {
   id: ID
@@ -45,8 +47,14 @@ export default function Editor({ id, registerSaveDraft }: EditorProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PostCreationRequest>({
-    resolver: zodResolver(PostValidator),
+  } = useForm<PostUI>({
+    resolver: zodResolver(PostUISchema),
+    defaultValues: {
+      title: '',
+      content: null,
+      mediaKeys: [],
+      subredditId: id,
+    },
   })
 
   const ref = useRef<EditorJS | null>(null)
@@ -74,8 +82,12 @@ export default function Editor({ id, registerSaveDraft }: EditorProps) {
     registerSaveDraft(saveDraft)
   }, [registerSaveDraft, saveDraft])
 
-  const { mutate: createPost } = useMutation<{ postId: bigint }, Error, PostCreationRequest>({
-    mutationFn: withToast(async (payload: PostCreationRequest) => {
+  const { mutate: createPost } = useMutation<
+    { postId: bigint },
+    Error,
+    any
+  >({
+    mutationFn: withToast(async (payload: any) => {
       const { data } = await axios.post('/api/subreddit/post/create', payload)
       return data
     }),
@@ -109,12 +121,14 @@ export default function Editor({ id, registerSaveDraft }: EditorProps) {
     if (ref.current) return
 
     const parsed = TEMP_DRAFT
+
     const editor = new EditorJS({
       holder: 'editor',
       async onChange() {
         if (!ref.current) return
         const blocks = await ref.current.save()
         const keys = extractMediaKeys(blocks)
+
         if (!TEMP_DRAFT) {
           TEMP_DRAFT = {
             title: _titleRef.current?.value ?? '',
@@ -147,14 +161,15 @@ export default function Editor({ id, registerSaveDraft }: EditorProps) {
               async uploadByFile(file: File) {
                 const uploaded = await startUpload([file])
                 const fileData = uploaded?.[0]
+
                 if (!fileData) throw new Error('Upload failed')
-                const url = fileData.ufsUrl
-                const key = fileData.key
-                if (!url) throw new Error('Upload failed')
 
                 return {
                   success: 1,
-                  file: { url, key },
+                  file: {
+                    url: fileData.ufsUrl,
+                    key: fileData.key,
+                  },
                 }
               },
             },
@@ -199,18 +214,45 @@ export default function Editor({ id, registerSaveDraft }: EditorProps) {
     }
   }, [isMounted, initializeEditor])
 
-  async function onSubmit(data: PostCreationRequest) {
+  async function onSubmit(data: PostUI) {
     const blocks = await ref.current?.save()
+
+    if (!blocks) {
+      toast.error('Content must not be empty')
+      return
+    }
+
     const mediaKeys = extractMediaKeys(blocks)
-    if(!blocks)
-      throw new Error("content must not be empty");
-    console.log('aa',id)
-    createPost({
-      title: data.title,
-      content: blocks,
+
+    const payload = {
+      title: data.title.trim(),
+
+      content:
+        blocks.blocks.length === 0
+          ? null
+          : {
+              time: blocks.time ?? Date.now(),
+              version: blocks.version ?? '2.0.0',
+              blocks: blocks.blocks.map((b: any) => ({
+                id: b.id ?? crypto.randomUUID(),
+                type: b.type,
+                data: b.data,
+              })),
+            },
+
+      mediaKeys: mediaKeys ?? [],
       subredditId: id,
-      mediaKeys:mediaKeys
-    })
+    }
+
+    // 🔥 Optional strict validation before sending
+    const parsed = PostValidator.safeParse(payload)
+    if (!parsed.success) {
+      console.error(parsed.error)
+      toast.error('Invalid post data')
+      return
+    }
+
+    createPost(parsed.data)
   }
 
   if (!isMounted) return null

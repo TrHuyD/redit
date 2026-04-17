@@ -10,7 +10,6 @@ import { NextResponse } from "next/server"
 
 export const POST = createRoute({auth: "required",schema: {body: PostValidator},handler: async ({  userId, body :parsed }) => {
     var id= generatePostId()
-    console.log(parsed)
     await db.$transaction(async (tx) => {
         await tx.post.create({
           data: {
@@ -26,6 +25,7 @@ export const POST = createRoute({auth: "required",schema: {body: PostValidator},
             key: { in: parsed.mediaKeys },
             createdBy: userId,
             postId: null,
+            markedForDeletion:false
           },
           data: {
             postId: id,
