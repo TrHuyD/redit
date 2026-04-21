@@ -1,7 +1,7 @@
 import { ID } from "@/types/ID";
 import { SortBy, VoteType } from "@/types/enum";
 import { z } from "zod";
-import { zStringRequired } from "./generic";
+import { zBigInt, zStringRequired } from "./generic";
 import { UserValidator } from "./user";
 
 
@@ -60,11 +60,17 @@ export const PostUISchema = z.object({
 export type PostCreationRequest = z.infer<typeof PostValidator>;
 export const PostVoteValidator = z.object({
   type: z.nativeEnum(VoteType),
-  postId: z.coerce.bigint(),
+  postId:  zBigInt("post id")
 });
 export const PostUnVoteValidator = z.object({
-  postId: z.coerce.bigint(),
+  postId:  zBigInt("post id")
 });
+export const PostDeleteValidator = z.object({
+  postId : zBigInt("post id")
+})
+export const PostDeleteUserValidator = z.object({
+  userId : zBigInt("user id")
+}).merge(PostDeleteValidator)
 export const PostVoteRequestValidator = PostVoteValidator.merge(UserValidator);
 export const PostUnVoteRequestValidator = PostUnVoteValidator.merge(UserValidator);
 
@@ -72,6 +78,7 @@ export type PostVotePayload = z.infer<typeof PostVoteValidator>;
 export type PostVoteRequestPayload = z.infer<typeof PostVoteRequestValidator>;
 
 export type PostUnVotePayload = z.infer<typeof PostUnVoteValidator>;
+export type PostDeletePayload = z.infer<typeof PostDeleteValidator>;
 export type PostUnVoteRequestPayload = z.infer<typeof PostUnVoteRequestValidator>;
 export const SubredditPostRetrieveValidator = z.object({
   limit: z.coerce.number().int().positive().max(50).optional(),

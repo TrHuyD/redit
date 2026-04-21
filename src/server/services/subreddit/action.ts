@@ -1,15 +1,15 @@
-import { PostVoteRequestPayload, PostUnVoteRequestPayload, CommentVoteRequestPayload, CommentUnVoteRequestPayload } from "@/lib/validators/post";
+import { CommentUnVoteRequestPayload, CommentVoteRequestPayload, PostUnVoteRequestPayload, PostVoteRequestPayload } from "@/lib/validators/post";
 
 import { Result } from "@/lib/Result";
-import * as db from "./action-db";
-import { Delta as VoteDelta } from "./type";
-import { incrCache } from "../cache/util";
 import { UserSubredditRequestPayload, UserSubredditVisitRequestPayLoad } from "@/lib/validators/subreddit";
-import { incrHashField, incrHashFields, pushSortedUnique } from "../cache/Pipeline";
+import { redis } from "@/server/lib/redis";
 import { rediskey } from "@/types/rediskey";
 import { withLockOrSkip } from "../cache/Lock";
-import { redis } from "@/server/lib/redis";
+import { incrHashField, incrHashFields, pushSortedUnique } from "../cache/Pipeline";
+import { incrCache } from "../cache/util";
+import * as db from "./action-db";
 import { hotScore } from "./post/hotscore";
+import { Delta as VoteDelta } from "./type";
 
 
 export async function VotePost({ type, postId, userId }: PostVoteRequestPayload): Promise<Result<VoteDelta>> {
@@ -117,3 +117,4 @@ export async function MarkVisit(data :UserSubredditVisitRequestPayLoad) :Promise
     await pushSortedUnique(rediskey.user.subHistory(data.userId),data.subredditId,rediskey.user.subHistoryLimit) 
     return {ok:true,data: null}
 }
+

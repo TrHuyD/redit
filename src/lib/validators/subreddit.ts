@@ -30,3 +30,4 @@ export const SearchSubreditACValidator = z.object({
     name:z.string().max(30)
 })
 export type SearchSubredditACPayload =z.infer<typeof SearchSubreditACValidator>
+

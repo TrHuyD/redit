@@ -97,6 +97,7 @@ model Post{
   subredditId BigInt
   subreddit Subreddit @relation(fields: [subredditId], references: [id], onDelete: Cascade)
 
+  deleteType Int?
   authorId BigInt
   author User @relation(fields: [authorId], references: [id])
   comments Comment[]
@@ -116,9 +117,11 @@ model Comment {
   authorId BigInt
   author User @relation(fields: [authorId], references: [id])
 
+
   replyToId BigInt?
   replyTo Comment? @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: SetNull,onUpdate: SetNull)
   replies Comment[] @relation("ReplyTo")
+
 
   votes CommentVote[]
 

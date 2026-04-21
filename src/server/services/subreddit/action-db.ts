@@ -1,10 +1,9 @@
-import {UserSubredditRequestPayload } from "@/lib/validators/subreddit";
-import {db} from "@/lib/db"
-import { Result } from "@/lib/Result"
-import { Prisma } from "@prisma/client";
-import {  CommentUnVoteRequestPayload, CommentVoteRequestPayload, PostUnVoteRequestPayload, PostVoteRequestPayload } from "@/lib/validators/post";
-import { error } from "node:console";
+import { db } from "@/lib/db";
+import { Result } from "@/lib/Result";
+import { CommentUnVoteRequestPayload, CommentVoteRequestPayload, PostUnVoteRequestPayload, PostVoteRequestPayload } from "@/lib/validators/post";
+import { UserSubredditRequestPayload } from "@/lib/validators/subreddit";
 import { VoteTarget, VoteType } from "@/types/enum";
+import { Prisma } from "@prisma/client";
 import { Delta as VoteDelta } from "./type";
 
 
@@ -180,3 +179,7 @@ export async function UnVoteComment(payload: CommentUnVoteRequestPayload): Promi
   const result = await removeVote("comment", payload.commentId, payload.userId)
   return { ok: true, data: result }
 }
+
+// export async function DeletePost(payload:PostDeletePayload):Promise<Result<null>>{
+//   const 
+// }
