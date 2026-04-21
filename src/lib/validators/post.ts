@@ -105,7 +105,7 @@ export const CreateCommentValidator = z.object({
 });
 
 export const CommentContentValidator = z.object({
-  text: z.string().min(1, "Invalid comment (Size==0)").max(250, "Invalid comment (Size>250)"),
+  text: z.string().min(1, "Invalid comment (Size==0)").max(25000, "Invalid comment (Size>25000)"),
   media: z.string().max(250, "Invalid comment (Size>250)").optional(),
 });
 
