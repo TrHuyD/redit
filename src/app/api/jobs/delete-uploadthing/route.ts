@@ -1,8 +1,9 @@
-import { verifySignatureEdge } from "@upstash/qstash/nextjs";
+import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 import { UTApi } from "uploadthing/server";
 
 const utapi = new UTApi();
-export const POST = verifySignatureEdge(async (req: Request) => {
+
+export const POST = verifySignatureAppRouter(async (req: Request) => {
   const { key } = await req.json();
   try {
     await utapi.deleteFiles(key);
