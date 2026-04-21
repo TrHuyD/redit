@@ -1,4 +1,4 @@
-import { zStringRequired } from "./generic";
+import { zString } from "./generic";
 
-export const passwordSchema =zStringRequired("password")
+export const passwordSchema =zString("password")
 

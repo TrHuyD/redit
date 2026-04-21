@@ -12,7 +12,7 @@ export function SubredditBanner({ subreddit }: Props) {
   return <div className="group relative">
   {subreddit.bannerImage ? (
     <div className="h-32 w-full relative rounded-md overflow-hidden">
-      <Image src={subreddit.bannerImage} alt="Banner" className="object-cover w-full h-full" fill />
+      <Image src={subreddit.bannerImage} alt="Banner" className="object-cover w-full h-full" fill loading={"eager"}/>
     </div>
   ) : (
     <div className="h-32 w-full bg-blue-500 rounded-md"></div>

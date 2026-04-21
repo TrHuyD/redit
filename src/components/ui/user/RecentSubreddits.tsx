@@ -1,14 +1,14 @@
 'use client'
 
+import { useRecentSubreddits } from '@/hooks/useRecentSubreddits'
+import { delay } from '@/lib/utils'
+import { useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 import { useAuth } from '../providers/auth-provider'
-import { useQueryClient } from '@tanstack/react-query'
-import { SubredditAvatar } from '../subreddit/SubredditAvatar'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '../sidebar'
-import { useRecentSubreddits } from '@/hooks/useRecentSubreddits'
-import { delay } from '@/lib/utils'
+import { SubredditAvatar } from '../subreddit/SubredditAvatar'
 export function RecentSubreddits() {
   const { isLoggedIn } = useAuth()
   const pathname = usePathname()
@@ -21,7 +21,7 @@ export function RecentSubreddits() {
 
   }
   useEffect(() => {
-    if (!isLoggedIn) return
+    if (!isLoggedIn||isLoading) return
     const match = pathname.match(/^\/r\/([^/]+)/)
     if (!match) return
     const slug = match[1]

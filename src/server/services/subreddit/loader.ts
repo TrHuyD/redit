@@ -2,12 +2,12 @@
 import { createCachedBatchLoader, createCachedBatchLoader2 } from "../cache/Pipeline";
 
 import { createSingleLoader, filterNull } from "@/lib/utils";
-import * as db from "./repo";
-import { SubredditBaseMd, SubredditCompeteMd, SubRedditDto, subredditMemCount, SubredditMinimalMd, UserSubredditBaseMd } from "@/types/subreddit";
-import { isMember } from "@/server/services/subreddit/Get"
-import { cache } from "react";
 import { redis } from "@/server/lib/redis";
+import { isMember } from "@/server/services/subreddit/Get";
 import { rediskey } from "@/types/rediskey";
+import { SubredditBaseMd, SubredditCompeteMd, subredditMemCount, SubredditMinimalMd, UserSubredditBaseMd } from "@/types/subreddit";
+import { cache } from "react";
+import * as db from "./repo";
 
 
 export const getSubredditsId = createCachedBatchLoader<string,SubredditMinimalMd,bigint>({

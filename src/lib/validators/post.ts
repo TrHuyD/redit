@@ -1,16 +1,16 @@
 import { ID } from "@/types/ID";
 import { SortBy, VoteType } from "@/types/enum";
 import { z } from "zod";
-import { zBigInt, zStringRequired } from "./generic";
+import { zBigInt, zString } from "./generic";
 import { UserValidator } from "./user";
 
 
-export const zTitle = zStringRequired("Title")
+export const zTitle = zString("Title")
   .min(3, "Title must be at least 3 characters long")
   .max(30, "Title must be less than 30 characters long");
 
 export const zShortText = (field: string, max = 250) =>
-  zStringRequired(field)
+  zString(field)
     .min(1, `${field} cannot be empty`)
     .max(max, `${field} is too long`);
 
@@ -20,8 +20,8 @@ export const subredditMentionValidator = z.object({
 });
 
 const EditorBlock = z.object({
-  id: zStringRequired("id"),
-  type: zStringRequired("type"),
+  id: zString("id"),
+  type: zString("type"),
   data: z.any(),
 });
 export const EditorContentSchema = z.object({

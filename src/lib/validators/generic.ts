@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const zStringRequired = (field: string) =>
+export const zString = (field: string) =>
   z.string({
     required_error: `${field} is required`,
     invalid_type_error: `${field} must be a string`,
