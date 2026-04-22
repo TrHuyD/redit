@@ -27,4 +27,16 @@ export async function getUsersProfileInfoById(ids: bigint[]): Promise<UserProfil
     })
     return rows.map(r=>({...r,createdAt:r.createdAt.getTime(),banner:""}))
 }
-
+export async function getUsersByName(name:string[]): Promise<UserProfileDto[]>{
+    const rows = await db.user.findMany({
+        where: { username: { in: name } },
+        select: {
+            id: true,
+            name: true,
+            image: true,
+            username:true,
+            createdAt:true,
+        }
+    })
+    return rows.map(r=>({...r,createdAt:r.createdAt.getTime(),banner:""}))
+}

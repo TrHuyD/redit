@@ -143,6 +143,8 @@ function flattenComments(comments: RedditCommentData[]): RedditCommentData[] {
         if (child.kind === "t1") result.push(child.data as RedditCommentData);
       }
     }
+    if(result.length>10)
+      break;
   }
   return result;
 }

@@ -38,6 +38,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "*.ufs.sh",
       },
+      {
+        protocol: "https",
+        hostname: "picsum.photos*",
+      },
     ],
   },
   experimental: {
