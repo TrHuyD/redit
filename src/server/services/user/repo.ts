@@ -1,3 +1,4 @@
+import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config"
 import { db } from "@/lib/db"
 import { UserDto, UserProfileDto } from "@/types/user"
 
@@ -39,4 +40,28 @@ export async function getUsersByName(name:string[]): Promise<UserProfileDto[]>{
         }
     })
     return rows.map(r=>({...r,createdAt:r.createdAt.getTime(),banner:""}))
+}
+
+export async function getUsersPostIds({
+    Id,
+    orderBy = "desc",
+    take = INFINITE_SCROLLING_PAGINATION_RESULTS,
+    cursor,
+}: {
+    Id: bigint,
+    orderBy?: "asc" | "desc"
+    take?: number
+    cursor?: bigint | number
+}): Promise<bigint[]> {
+    const posts = await db.post.findMany({
+        where: { authorId: Id },
+        select: { id: true },
+        orderBy: { id: orderBy },
+        take,
+        ...(cursor && {
+            cursor: { id: cursor },
+            skip: 1,
+        }),
+    })
+    return posts.map(p => p.id)
 }

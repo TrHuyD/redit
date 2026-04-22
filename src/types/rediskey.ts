@@ -5,6 +5,7 @@ export const rediskey = {
       content: (id: bigint) => `post:${id}`,
     },
     user: {
+      nameParse:(name:string) => `idPrase:user:${name}`,
       baseInfo: (id: bigint) => `user:base:${id}`,
       profileInfo:(id:bigint) => `user:profile:${id}`,
       subHistory : (id:bigint) => `user:subhistory:${id}`,
